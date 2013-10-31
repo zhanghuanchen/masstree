@@ -1,0 +1,49 @@
+leaf 0x7f7850220040: 2 keys, version c0000000, permutation 10:edcba98765432, parent (nil), prev (nil), next (nil) [ksuf x4]
+  http://0 = SUBTREE #1/137
+    leaf 0x7f784b3fe540: 1 key, version c0000000, permutation 0:edcba987654321, parent (nil), prev (nil), next (nil) [ksuf x2]
+      800.loan = SUBTREE #0/137
+        leaf 0x7f784b3fe680: 1 key, version c0000000, permutation 0:edcba987654321, parent (nil), prev (nil), next (nil) [ksuf x2]
+          -line.co = SUBTREE #0/137
+            leaf 0x7f785001f740: 2 keys, version c0000000, permutation 01:edcba98765432, parent (nil), prev (nil), next (nil) [ksuf i2]
+              .uk/directory/car-insurance/index.html = 0 @2911715504.727383 #0/9
+              .uk/news/ = 0 @2911715504.727385 #1/9
+  http://1 = SUBTREE #0/137
+    leaf 0x7f785001f040: 6 keys, version c0000000, permutation 054312:edcba9876, parent (nil), prev (nil), next (nil) [ksuf i2x4]
+      -hydropo = SUBTREE #0/137
+        leaf 0x7f784b3fe040: 1 key, version c0000000, permutation 0:edcba987654321, parent (nil), prev (nil), next (nil) [ksuf x2]
+          nics.co. = SUBTREE #0/137
+            leaf 0x7f785001f200: 7 keys, version c0000000, permutation 3056214:edcba987, parent (nil), prev (nil), next (nil) [ksuf i2x8]
+              uk/environmental-controls/relays.htm = 0 @2911715504.727383 #3/9
+              uk/grow- = SUBTREE #0/137
+                leaf 0x7f785001f580: 3 keys, version c0000000, permutation 012:edcba9876543, parent (nil), prev (nil), next (nil) [ksuf i2]
+                  lights/400w-ballast.htm = 0 @2911715504.727383 #0/9
+                  lights/jupiter-light-rail.htm = 0 @2911715504.727383 #1/9
+                  media/jiffy-pellets-jiffy-sevens.htm = 0 @2911715504.727385 #2/9
+              uk/miscellaneous/kermith-trimming-machine.htm = 0 @2911715504.727383 #5/9
+              uk/nutrients-and-additives/bio-bizz.htm = 0 @2911715504.727385 #6/9
+              uk/starter-kits/green-room-400w-deluxe-kit.htm = 0 @2911715504.727383 #2/9
+              uk/video/realvideo/propagation-p1.htm = 0 @2911715504.727383 #1/9
+              uk/web/manual/doc/hydro-garden/ogp/index.html = 0 @2911715504.727385 #4/9
+      0coventry.boys-brigade.org.uk/anchorboys/points.htm = 0 @2911715504.727385 #5/9
+      24thnottinghamscouts.org.uk/scouts/recent.htm = 0 @2911715504.727383 #4/9
+      3edinburgh.boys-brigade.org.uk/Badgeweb/first.html = 0 @2911715504.727383 #3/9
+      3motherwell.boys-brigade.org.uk/news.htm = 0 @2911715504.727383 #1/9
+      3thcoven = SUBTREE #2/137
+        leaf 0x7f784b3fe180: 1 key, version c0000000, permutation 0:edcba987654321, parent (nil), prev (nil), next (nil) [ksuf x2]
+          try.co.u = SUBTREE #0/137
+            leaf 0x7f784b3fe2c0: 2 keys, version c0000000, permutation 10:edcba98765432, parent (nil), prev (nil), next (nil) [ksuf x2]
+              k/guestb = SUBTREE #1/137
+                leaf 0x7f784b3fe7c0: 1 key, version c0000000, permutation 0:edcba987654321, parent (nil), prev (nil), next (nil) [ksuf x2]
+                  ook.php? = SUBTREE #0/137
+                    leaf 0x7f785001f900: 2 keys, version c0000000, permutation 01:edcba98765432, parent (nil), prev (nil), next (nil) [ksuf i2]
+                      start=24&length=8 = 0 @2911715504.727385 #0/9
+                      start=83&length=8 = 0 @2911715504.727385 #1/9
+              k/links. = SUBTREE #0/137
+                leaf 0x7f784b3fe400: 1 key, version c0000000, permutation 0:edcba987654321, parent (nil), prev (nil), next (nil) [ksuf x2]
+                  php?sect = SUBTREE #0/137
+                    leaf 0x7f785001f3c0: 5 keys, version c0000000, permutation 01342:edcba98765, parent (nil), prev (nil), next (nil) [ksuf i2]
+                      ions=0000101 = 0 @2911715504.727383 #0/9
+                      ions=00101011 = 0 @2911715504.727383 #1/9
+                      ions=01001011 = 0 @2911715504.727385 #3/9
+                      ions=1000110 = 0 @2911715504.727385 #4/9
+                      ions=11001101 = 0 @2911715504.727385 #2/9    

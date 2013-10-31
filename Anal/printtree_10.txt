@@ -1,4 +1,4 @@
-f 0x7f8ded16a040: 1 key, version c0000000, permutation 0:edcba987654321, parent (nil), prev (nil), next (nil) [ksuf x2]
+leaf 0x7f8ded16a040: 1 key, version c0000000, permutation 0:edcba987654321, parent (nil), prev (nil), next (nil) [ksuf x2]
   http://1 = SUBTREE #0/137
     leaf 0x7f8dec568040: 5 keys, version c0000000, permutation 04312:edcba98765, parent (nil), prev (nil), next (nil) [ksuf i2x4]
       -hydropo = SUBTREE #0/137
@@ -25,3 +25,4 @@ f 0x7f8ded16a040: 1 key, version c0000000, permutation 0:edcba987654321, parent 
                       ions=0000101 = 0 @2911716989.560338 #0/9
                       ions=00101011 = 0 @2911716989.560338 #1/9
                       ions=11001101 = 0 @2911716989.560338 #2/9
+                      
