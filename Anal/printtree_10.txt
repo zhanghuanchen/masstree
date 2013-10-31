@@ -1,0 +1,27 @@
+f 0x7f8ded16a040: 1 key, version c0000000, permutation 0:edcba987654321, parent (nil), prev (nil), next (nil) [ksuf x2]
+  http://1 = SUBTREE #0/137
+    leaf 0x7f8dec568040: 5 keys, version c0000000, permutation 04312:edcba98765, parent (nil), prev (nil), next (nil) [ksuf i2x4]
+      -hydropo = SUBTREE #0/137
+        leaf 0x7f8dec367040: 1 key, version c0000000, permutation 0:edcba987654321, parent (nil), prev (nil), next (nil) [ksuf x2]
+          nics.co. = SUBTREE #0/137
+            leaf 0x7f8dec568200: 3 keys, version c0000000, permutation 021:edcba9876543, parent (nil), prev (nil), next (nil) [ksuf i2]
+              uk/grow- = SUBTREE #0/137
+                leaf 0x7f8dec568580: 2 keys, version c0000000, permutation 01:edcba98765432, parent (nil), prev (nil), next (nil) [ksuf i2]
+                  lights/400w-ballast.htm = 0 @2911716989.560338 #0/9
+                  lights/jupiter-light-rail.htm = 0 @2911716989.560338 #1/9
+              uk/starter-kits/green-room-400w-deluxe-kit.htm = 0 @2911716989.560338 #2/9
+              uk/video/realvideo/propagation-p1.htm = 0 @2911716989.560338 #1/9
+      24thnottinghamscouts.org.uk/scouts/recent.htm = 0 @2911716989.560338 #4/9
+      3edinburgh.boys-brigade.org.uk/Badgeweb/first.html = 0 @2911716989.560338 #3/9
+      3motherwell.boys-brigade.org.uk/news.htm = 0 @2911716989.560338 #1/9
+      3thcoven = SUBTREE #2/137
+        leaf 0x7f8dec367180: 1 key, version c0000000, permutation 0:edcba987654321, parent (nil), prev (nil), next (nil) [ksuf x2]
+          try.co.u = SUBTREE #0/137
+            leaf 0x7f8dec3672c0: 1 key, version c0000000, permutation 0:edcba987654321, parent (nil), prev (nil), next (nil) [ksuf x2]
+              k/links. = SUBTREE #0/137
+                leaf 0x7f8dec367400: 1 key, version c0000000, permutation 0:edcba987654321, parent (nil), prev (nil), next (nil) [ksuf x2]
+                  php?sect = SUBTREE #0/137
+                    leaf 0x7f8dec5683c0: 3 keys, version c0000000, permutation 012:edcba9876543, parent (nil), prev (nil), next (nil) [ksuf i2]
+                      ions=0000101 = 0 @2911716989.560338 #0/9
+                      ions=00101011 = 0 @2911716989.560338 #1/9
+                      ions=11001101 = 0 @2911716989.560338 #2/9
