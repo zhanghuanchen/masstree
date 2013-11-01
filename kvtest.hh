@@ -153,7 +153,7 @@ void kvtest_yingchao_seed(C &client, int seed)
     client.rand.reset(seed);
     double tp0 = client.now();
     unsigned n = 0;
-    unsigned bound = 30;
+    unsigned bound = 100000;
 
     //for (n = 0; !client.timeout(0) && n <= client.limit(); ++n) {
 	    //int32_t x = (int32_t) client.rand.next();
