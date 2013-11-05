@@ -153,14 +153,14 @@ void kvtest_yingchao_seed(C &client, int seed)
     client.rand.reset(seed);
     double tp0 = client.now();
     unsigned n = 0;
-    unsigned bound = 100000;
+    unsigned bound = 1000000;
 
     //for (n = 0; !client.timeout(0) && n <= client.limit(); ++n) {
 	    //int32_t x = (int32_t) client.rand.next();
 	    //client.put(x, x + 1);
         while (infile >> ops >> url && n < bound) {
             //std::cout << ops << " " << url << "\n";
-            urls.push_back(url);
+            //urls.push_back(url);
             client.put(url, 0.0);
             n++;
         }
@@ -194,7 +194,7 @@ void kvtest_yingchao_seed(C &client, int seed)
     }
 #else
    for (g = 0; g < n && !client.timeout(1); ++g)
-	    client.get_check(urls[g], 0.0);
+	    //client.get_check(urls[g], 0.0);
 #endif
     client.wait_all();
     double tg1 = client.now();
