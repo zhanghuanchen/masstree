@@ -157,7 +157,7 @@ void kvtest_yingchao_seed(C &client, int seed)
     //for (n = 0; !client.timeout(0) && n <= client.limit(); ++n) {
 	    //int32_t x = (int32_t) client.rand.next();
 	    //client.put(x, x + 1);
-        while (infile >> ops >> url && n <= client.limit()) {
+        while (infile >> ops >> url && n < client.limit()) {
             urls.push_back(url);
             client.put(url, 0.0);
             n++;
