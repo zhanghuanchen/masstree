@@ -9,7 +9,7 @@ for line in fileinput.input() :
     index = line.find(" key,")
     if (index > 0) :
         sKey = line[index-1: index]
-        print sKey
+        #print sKey
         nKey = int(sKey)
         totalKey += nKey
         totalNode += 1
@@ -17,7 +17,7 @@ for line in fileinput.input() :
     index = line.find(" keys,")
     if (index > 0) :
         sKey = line[index-2: index]
-        print sKey
+        #print sKey
         nKey = int(sKey)
         totalKey += nKey
         totalNode += 1
