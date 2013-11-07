@@ -158,7 +158,7 @@ void kvtest_yingchao_seed(C &client, int seed)
 	    //int32_t x = (int32_t) client.rand.next();
 	    //client.put(x, x + 1);
         while (infile >> ops >> url && n < client.limit()) {
-            urls.push_back(url);
+            //urls.push_back(url);
             client.put(url, 0.0);
             n++;
         }
@@ -178,8 +178,7 @@ void kvtest_yingchao_seed(C &client, int seed)
 	std::swap(a[i], a[client.rand.next() % n]);*/
 
     double tg0 = client.now();
-    unsigned g;
-    
+    unsigned g; 
 #if 0
 #define BATCH 8
     for(g = 0; g+BATCH < n && !client.timeout(1); g += BATCH){
@@ -192,7 +191,7 @@ void kvtest_yingchao_seed(C &client, int seed)
     }
 #else
    for (g = 0; g < n && !client.timeout(1); ++g)
-	    client.get_check(urls[g], 0.0);
+	    //client.get_check(urls[g], 0.0);
 #endif
     client.wait_all();
     double tg1 = client.now();

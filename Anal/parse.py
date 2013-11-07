@@ -6,18 +6,18 @@ totalKey = 0;
 totalNode = 0;
 for line in fileinput.input() :
     #find ? key
-    index = line.find("key,")
+    index = line.find(" key,")
     if (index > 0) :
-        sKey = line[index-2: index]
-        #print sKey
+        sKey = line[index-1: index]
+        print sKey
         nKey = int(sKey)
         totalKey += nKey
         totalNode += 1
 
-    index = line.find("keys,")
+    index = line.find(" keys,")
     if (index > 0) :
-        sKey = line[index-3: index]
-        #print sKey
+        sKey = line[index-2: index]
+        print sKey
         nKey = int(sKey)
         totalKey += nKey
         totalNode += 1
