@@ -491,7 +491,7 @@ static pthread_cond_t subtest_cond;
 #define TESTRUNNER_SIGNATURE kvtest_client<Masstree::default_table>& client
 #include "testrunner.hh"
 
-MAKE_TESTRUNNER(yingchao, kvtest_yingchao(client));
+MAKE_TESTRUNNER(url, kvtest_url(client)); // hyw
 MAKE_TESTRUNNER(rw1, kvtest_rw1(client));
 // MAKE_TESTRUNNER(palma, kvtest_palma(client));
 // MAKE_TESTRUNNER(palmb, kvtest_palmb(client));
@@ -970,7 +970,7 @@ static void run_one_test_body(int trial, const char *treetype, const char *test)
 	    current_trial = trial;
 	    test_thread_map[i].func(main_ti); // initialize table
 	    runtest(tcpthreads, test_thread_map[i].func);
-        //yingchao change
+        // hyw
         tree_stats = true;
             if (tree_stats)
                 test_thread_map[i].func(0); // print tree_stats
