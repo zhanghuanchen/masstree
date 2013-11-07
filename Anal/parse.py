@@ -2,9 +2,18 @@ import re
 import fileinput
 #read line by line
 
-totalKey = 0;
-totalNode = 0;
-for line in fileinput.input() :
+totalKey = 0
+totalNode = 0
+urlsTotalLength = 0
+
+f_url_input = open("../hyw_url_init.dat")
+f_tree_output = open("../output.txt")
+
+for line in f_url_input.readlines():
+   tokens = line.split(' ')
+   urlsTotalLength  += len(tokens[1])
+
+for line in f_tree_output:
     #find ? key
     index = line.find(" key,")
     if (index > 0) :
@@ -22,5 +31,12 @@ for line in fileinput.input() :
         totalKey += nKey
         totalNode += 1
 
-print "%d %d" % (totalKey, totalNode)
-print totalKey/ 15.0 / totalNode
+print "number of key slices: %d, number of nodes: %d" % (totalKey, totalNode)
+print "memory usage: %f" % (totalKey/ 15.0 / totalNode)
+
+print "key compression: %f" % (float(totalKey * 8) / urlsTotalLength)
+
+f_url_input.close()
+f_tree_output.close()
+
+
