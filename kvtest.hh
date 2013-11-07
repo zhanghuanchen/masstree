@@ -149,7 +149,6 @@ void kvtest_url_seed(C &client, int seed) // hyw
     std::ifstream infile("hyw_url_init.dat");
     std::string ops;
     std::string url;
-    std::vector<std::string> urls;
     client.rand.reset(seed);
     double tp0 = client.now();
     unsigned n = 0;
@@ -158,8 +157,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
 	    //int32_t x = (int32_t) client.rand.next();
 	    //client.put(x, x + 1);
     while (infile >> ops >> url && n < client.limit()) {
-      //urls.push_back(url);
-      client.put(url, n);
+      client.put(url, 0.0);
       n++;
     }
    // }
@@ -190,7 +188,8 @@ void kvtest_url_seed(C &client, int seed) // hyw
       client.many_get_check(BATCH, key, expected);
     }
 #else
-   for (g = 0; g < n && !client.timeout(1); ++g)
+    for (g = 0; g < n && !client.timeout(1); ++g)
+      ;
      //client.get_check(urls[g], 0.0);
 #endif
     client.wait_all();
