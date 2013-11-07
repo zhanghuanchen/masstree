@@ -178,8 +178,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
 	std::swap(a[i], a[client.rand.next() % n]);*/
 
     double tg0 = client.now();
-    unsigned g;
-    
+    unsigned g; 
 #if 0
 #define BATCH 8
     for(g = 0; g+BATCH < n && !client.timeout(1); g += BATCH){
