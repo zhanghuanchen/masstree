@@ -144,9 +144,9 @@ void kvtest_rw1(C &client)
 }
 
 template <typename C>
-void kvtest_yingchao_seed(C &client, int seed)
+void kvtest_url_seed(C &client, int seed) // hyw
 {
-    std::ifstream infile("input.txt");
+    std::ifstream infile("hyw_url_init.dat");
     std::string ops;
     std::string url;
     std::vector<std::string> urls;
@@ -157,11 +157,11 @@ void kvtest_yingchao_seed(C &client, int seed)
     //for (n = 0; !client.timeout(0) && n <= client.limit(); ++n) {
 	    //int32_t x = (int32_t) client.rand.next();
 	    //client.put(x, x + 1);
-        while (infile >> ops >> url && n < client.limit()) {
-            urls.push_back(url);
-            client.put(url, 0.0);
-            n++;
-        }
+    while (infile >> ops >> url && n < client.limit()) {
+      //urls.push_back(url);
+      client.put(url, n);
+      n++;
+    }
    // }
     client.wait_all();
     double tp1 = client.now();
@@ -192,7 +192,7 @@ void kvtest_yingchao_seed(C &client, int seed)
     }
 #else
    for (g = 0; g < n && !client.timeout(1); ++g)
-	    client.get_check(urls[g], 0.0);
+     //client.get_check(urls[g], 0.0);
 #endif
     client.wait_all();
     double tg1 = client.now();
@@ -206,9 +206,9 @@ void kvtest_yingchao_seed(C &client, int seed)
 }
 
 template <typename C>
-void kvtest_yingchao(C &client)
+void kvtest_url(C &client) // hyw
 {
-    kvtest_yingchao_seed(client, kvtest_first_seed + client.id() % 48);
+    kvtest_url_seed(client, kvtest_first_seed + client.id() % 48);
 }
 
 // do a bunch of inserts to distinct keys, then check that they all showed up.
