@@ -19,6 +19,11 @@
 #include "misc.hh"
 #include "kvproto.hh"
 #include <vector>
+#include <fstream>
+#include <string>
+#include <iostream>
+#include <vector>
+
 using lcdf::Str;
 using lcdf::String;
 using lcdf::Json;
@@ -136,6 +141,74 @@ template <typename C>
 void kvtest_rw1(C &client)
 {
     kvtest_rw1_seed(client, kvtest_first_seed + client.id() % 48);
+}
+
+template <typename C>
+void kvtest_yingchao_seed(C &client, int seed)
+{
+    std::ifstream infile("input.txt");
+    std::string ops;
+    std::string url;
+    std::vector<std::string> urls;
+    client.rand.reset(seed);
+    double tp0 = client.now();
+    unsigned n = 0;
+
+    //for (n = 0; !client.timeout(0) && n <= client.limit(); ++n) {
+	    //int32_t x = (int32_t) client.rand.next();
+	    //client.put(x, x + 1);
+        while (infile >> ops >> url && n < client.limit()) {
+            urls.push_back(url);
+            client.put(url, 0.0);
+            n++;
+        }
+   // }
+    client.wait_all();
+    double tp1 = client.now();
+
+    client.puts_done();
+    client.notice("now getting\n");
+    
+   /* int32_t *a = (int32_t *) malloc(sizeof(int32_t) * n);
+    assert(a);
+    client.rand.reset(seed);
+    for (unsigned i = 0; i < n; ++i)
+	a[i] = (int32_t) client.rand.next();
+    for (unsigned i = 0; i < n; ++i)
+	std::swap(a[i], a[client.rand.next() % n]);*/
+
+    double tg0 = client.now();
+    unsigned g;
+    
+#if 0
+#define BATCH 8
+    for(g = 0; g+BATCH < n && !client.timeout(1); g += BATCH){
+      long key[BATCH], expected[BATCH];
+      for(int i = 0; i < BATCH; i++){
+        key[i] = a[g+i];
+        expected[i] = a[g+i] + 1;
+      }
+      client.many_get_check(BATCH, key, expected);
+    }
+#else
+   for (g = 0; g < n && !client.timeout(1); ++g)
+	    client.get_check(urls[g], 0.0);
+#endif
+    client.wait_all();
+    double tg1 = client.now();
+
+    Json result = Json();
+    kvtest_set_time(result, "puts", n, tp1 - tp0);
+    kvtest_set_time(result, "gets", g, tg1 - tg0);
+    kvtest_set_time(result, "ops", n + g, (tp1 - tp0) + (tg1 - tg0));
+    client.report(result);
+    //free(a);
+}
+
+template <typename C>
+void kvtest_yingchao(C &client)
+{
+    kvtest_yingchao_seed(client, kvtest_first_seed + client.id() % 48);
 }
 
 // do a bunch of inserts to distinct keys, then check that they all showed up.
