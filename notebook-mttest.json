@@ -125,6 +125,20 @@
       "machine": "ghc54.ghc.andrew.cmu.edu",
       "cores": 1,
       "runs": ["x17\/url\/mb\/0"]
+    },
+    "x18": {
+      "git-revision": "bf0cb554160a72ac6da4aa5e031fef9bb82ebe62",
+      "time": "Thu Nov  7 20:27:23 2013",
+      "machine": "ghc54.ghc.andrew.cmu.edu",
+      "cores": 1,
+      "runs": ["x18\/url\/mb\/0"]
+    },
+    "x19": {
+      "git-revision": "bf0cb554160a72ac6da4aa5e031fef9bb82ebe62M",
+      "time": "Thu Nov  7 20:36:37 2013",
+      "machine": "ghc54.ghc.andrew.cmu.edu",
+      "cores": 1,
+      "runs": ["x19\/url\/mb\/0"]
     }
   },
   "data": {
@@ -376,6 +390,34 @@
 	"gets_per_sec": 1396704628.7,
 	"ops": 2000000,
 	"ops_per_sec": 993177.902233
+      }
+    ],
+    "x18\/url\/mb\/0": [
+      {
+	"table": "mb",
+	"test": "url",
+	"trial": 0,
+	"thread": 0,
+	"puts": 500000,
+	"puts_per_sec": 744163.864574,
+	"gets": 500000,
+	"gets_per_sec": 1355625080.8,
+	"ops": 1000000,
+	"ops_per_sec": 1487511.16705
+      }
+    ],
+    "x19\/url\/mb\/0": [
+      {
+	"table": "mb",
+	"test": "url",
+	"trial": 0,
+	"thread": 0,
+	"puts": 1000000,
+	"puts_per_sec": 466170.469319,
+	"gets": 1000000,
+	"gets_per_sec": 1398567522.51,
+	"ops": 2000000,
+	"ops_per_sec": 932030.274345
       }
     ]
   }
