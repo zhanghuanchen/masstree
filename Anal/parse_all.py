@@ -146,6 +146,6 @@ key_compress = totalKeysliceLen / 1.0 / totalKeyLen
 totalSpace += totalKeysliceLen
 struct_overhead = (totalSpace - totalKeysliceLen - leafValues) / 1.0 / totalSpace
 
-print "\nkeyslice_array_usage = ", keyslice_array_usage, "\nkey_compress = ", key_compress, "\navgmLevel = ", avgmLevel, "\navgbLevel = ", avgbLevel, "\navgDepth = ", avgDepth, "\nmaxmLevel = ", maxmLevel, "\nmaxbLevel = ", maxbLevel, "\nmaxDepth = ", maxDepth, "\ntotalKeysliceLen: ", totalKeysliceLen, "\ntotalValueSize: ", leafValues, "\ntotalSpace: ", totalSpace, "\nstruct_overhead: ", struct_overhead
+print "\nkeyslice_array_usage = ", keyslice_array_usage, "\nkey_compress = ", key_compress, "\navgmLevel = ", avgmLevel, "\navgbLevel = ", avgbLevel, "\navgDepth = ", avgDepth, "\nmaxmLevel = ", maxmLevel, "\nmaxbLevel = ", maxbLevel, "\nmaxDepth = ", maxDepth, "\ntotalKeysliceLen: ", totalKeysliceLen, "\ntotalKeySize: ", totalKeyLen, "\ntotalValueSize: ", leafValues, "\ntotalSpace: ", totalSpace, "\nstruct_overhead: ", struct_overhead
 
 
