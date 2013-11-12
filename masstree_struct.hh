@@ -23,6 +23,14 @@
 namespace Masstree {
 
 template <typename P>
+// namespace mass is defined in compiler.hh
+// in compiler.hh:
+// template <bool B, typename T, typename F>
+// using conditional = std::conditional<B, T, F>, where B is bool;
+// Provides member typedef type, which is defined as T if B is true at compile time, or as F if B is false.
+// in nodeversion.hh
+// typedef basic_nodeversion<nodeversion32_parameters> nodeversion;
+// typedef basic_singlethreaded_nodeversion<nodeversion32_parameters> singlethreaded_nodeversion;
 struct make_nodeversion {
     typedef typename mass::conditional<P::concurrent,
 				       nodeversion,
@@ -30,6 +38,7 @@ struct make_nodeversion {
 };
 
 template <typename P>
+// struct do_nothing is defined in compiler.hh
 struct make_prefetcher {
     typedef typename mass::conditional<P::prefetch,
 				       value_prefetcher<typename P::value_type>,
@@ -37,10 +46,12 @@ struct make_prefetcher {
 };
 
 template <typename P>
+// class basic_nodeversion<P>, basic_singlethreaded_nodeversion<P> is defined in nodeversion.hh
 class node_base : public make_nodeversion<P>::type {
   public:
-    static constexpr bool concurrent = P::concurrent;
-    static constexpr int nikey = 1;
+  // constexpr allows computations to take place at compile time
+    static constexpr bool concurrent = P::concurrent; // multithread or not
+    static constexpr int nikey = 1; // ? appear only once in this file
     typedef leaf<P> leaf_type;
     typedef internode<P> internode_type;
     typedef node_base<P> base_type;
@@ -51,6 +62,7 @@ class node_base : public make_nodeversion<P>::type {
     typedef typename make_nodeversion<P>::type nodeversion_type;
     typedef typename P::threadinfo_type threadinfo;
 
+  // single colon followed by a initialization list
     node_base(bool isleaf)
 	: nodeversion_type(isleaf) {
     }
@@ -73,13 +85,14 @@ class node_base : public make_nodeversion<P>::type {
         (void) higher_layer;
         return 0;
     }
+  // helper function
     static inline bool parent_exists(base_type* p) {
         return p != 0;
     }
     inline bool has_parent() const {
         return parent_exists(parent());
     }
-    inline internode_type* locked_parent(threadinfo& ti) const;
+    inline internode_type* locked_parent(threadinfo& ti) const; // ??
     inline void set_parent(base_type* p) {
 	if (this->isleaf())
 	    static_cast<leaf_type*>(this)->parent_ = p;
@@ -88,12 +101,14 @@ class node_base : public make_nodeversion<P>::type {
     }
     inline base_type* unsplit_ancestor() const {
 	base_type* x = const_cast<base_type*>(this), *p;
+        // while the root_bit of nodeversion of x is NOT set && x has parent, walk up the tree
 	while (x->has_split() && (p = x->parent()))
 	    x = p;
 	return x;
     }
     inline leaf_type* leftmost() const {
         base_type* x = unsplit_ancestor();
+        // find the leftmost leaf in subtree x
         while (!x->isleaf()) {
             internode_type* in = static_cast<internode_type*>(x);
             x = in->child_[0];

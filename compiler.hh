@@ -1140,7 +1140,7 @@ template <typename T> struct fast_argument<T, false> {
 template <typename T> constexpr bool fast_argument<T, true>::is_reference;
 template <typename T> constexpr bool fast_argument<T, false>::is_reference;
 
-}
+} // namespace mass
 
 
 template <typename T>
