@@ -56,6 +56,8 @@ template <typename T> struct string_slice {
 	If a = make_comparable(s1, l1) and b = make_comparable(s2, l2),
 	then a < b iff the string (s1, l1) is lexicographically less than
 	the string (s2, l2), and similarly for other comparators. */
+  // host_to_net_order, net_to_host_order functions are defined in compiler.hh
+  // they are used to convert between native byte order and network byte order, or to unify endianess
     static T make_comparable(const char *s, int len) {
 	return net_to_host_order(make(s, len));
     }

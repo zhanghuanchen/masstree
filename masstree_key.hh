@@ -33,6 +33,7 @@ namespace Masstree {
     and its effects can be undone by the <code>k.unshift_all()</code>
     method. */
 template <typename I>
+// key = ikey (initial slice) + suffix
 class key {
   public:
     static constexpr int nikey = 1;
