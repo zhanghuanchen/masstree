@@ -150,6 +150,8 @@ class internode : public node_base<P> {
     }
 
     static internode<P>* make(threadinfo& ti) {
+      // pool_allocate is defined in kvthread.hh
+      // take a multiple cache-line sized memory chunk from the pool in threadinfo
 	void* ptr = ti.pool_allocate(sizeof(internode<P>),
                                      memtag_masstree_internode);
 	internode<P>* n = new(ptr) internode<P>;
@@ -162,10 +164,11 @@ class internode : public node_base<P> {
     int size() const {
 	return nkeys_;
     }
-
+  // return an object of class key
     key_type get_key(int p) const {
 	return key_type(ikey0_[p]);
     }
+  // return the key slice directly
     ikey_type ikey(int p) const {
 	return ikey0_[p];
     }
@@ -173,12 +176,13 @@ class internode : public node_base<P> {
                                        threadinfo& ti) const;
 
     void prefetch() const {
+      // prefetch 4 cache-line at most
 	for (int i = 64; i < std::min(16 * width + 1, 4 * 64); i += 64)
 	    ::prefetch((const char *) this + i);
     }
 
     void print(FILE* f, const char* prefix, int indent, int kdepth);
-
+  // free this node by putting the memory chunk back to the pool
     void deallocate(threadinfo& ti) {
 	ti.pool_deallocate(this, sizeof(*this), memtag_masstree_internode);
     }
@@ -187,12 +191,13 @@ class internode : public node_base<P> {
     }
 
   private:
+  // given the position in the ikey0_ array, put the ikey and right child in the tree
     void assign(int p, ikey_type ikey, node_base<P>* child) {
 	child->set_parent(this);
 	child_[p + 1] = child;
 	ikey0_[p] = ikey;
     }
-
+  // partial node copy, used when internode splits
     void shift_from(int p, const internode<P>* x, int xp, int n) {
 	masstree_precondition(x != this);
 	if (n) {
@@ -200,7 +205,9 @@ class internode : public node_base<P> {
 	    memcpy(child_ + p + 1, x->child_ + xp + 1, sizeof(child_[0]) * n);
 	}
     }
+  // ikey and child array chunk copy within a node
     void shift_up(int p, int xp, int n) {
+      // with memcpy, the destination CANNOT overlap the source. with memmove it can.
 	memmove(ikey0_ + p, ikey0_ + xp, sizeof(ikey0_[0]) * n);
 	for (node_base<P> **a = child_ + p + n, **b = child_ + xp + n; n; --a, --b, --n)
 	    *a = *b;
@@ -263,10 +270,13 @@ class leafvalue {
     }
 
   private:
+  // link-or-value structure
+  // node_base<P> ptr is usually reinterpreted and stored in u_.x which guarantees
+  // the size of a pointer
     union {
 	node_base<P>* n;
 	value_type v;
-	uintptr_t x;
+        uintptr_t x; // an unsigned int guaranteed to be the same size as a pointer
     } u_;
 };
 
@@ -285,6 +295,8 @@ class leaf : public node_base<P> {
     int8_t extrasize64_;
     int8_t nremoved_;
     uint8_t keylenx_[width];
+  // permutation is described in section 4.6.2 Border inserts in Masstree paper
+  // kpermuter<int width> is defined in kpermuter.hh
     typename permuter_type::storage_type permutation_;
     ikey_type ikey0_[width];
     leafvalue_type lv_[width];
@@ -304,6 +316,7 @@ class leaf : public node_base<P> {
 	: node_base<P>(true), nremoved_(0),
 	  permutation_(permuter_type::make_empty()),
 	  ksuf_(), parent_(), node_ts_(node_ts), iksuf_{} {
+      // masstree_precondition is defined in config.h.in
 	masstree_precondition(sz % 64 == 0 && sz / 64 < 128);
 	extrasize64_ = (int(sz) >> 6) - ((int(sizeof(*this)) + 63) >> 6);
 	if (extrasize64_ > 0)
