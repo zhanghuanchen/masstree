@@ -38,7 +38,7 @@ struct make_nodeversion {
 };
 
 template <typename P>
-// struct do_nothing is defined in compiler.hh
+// struct value_prefetcher, do_nothing is defined in compiler.hh
 struct make_prefetcher {
     typedef typename mass::conditional<P::prefetch,
 				       value_prefetcher<typename P::value_type>,
@@ -92,7 +92,7 @@ class node_base : public make_nodeversion<P>::type {
     inline bool has_parent() const {
         return parent_exists(parent());
     }
-    inline internode_type* locked_parent(threadinfo& ti) const; // ??
+    inline internode_type* locked_parent(threadinfo& ti) const; // defined in internode class
     inline void set_parent(base_type* p) {
 	if (this->isleaf())
 	    static_cast<leaf_type*>(this)->parent_ = p;
@@ -115,10 +115,12 @@ class node_base : public make_nodeversion<P>::type {
         }
         return x;
     }
-
+  // defined in internode class
     inline leaf_type* reach_leaf(const key_type& k, nodeversion_type& version,
                                  threadinfo& ti) const;
 
+  // prefetch instruction is defined in compiler.hh: 565 - 584
+  // CACHE_LINE_SIZE is defined in configure and is currently 64
     void prefetch_full() const {
 	for (int i = 0; i < std::min(16 * std::min(P::leaf_width, P::internode_width) + 1, 4 * 64); i += 64)
 	    ::prefetch((const char *) this + i);
@@ -130,7 +132,7 @@ class node_base : public make_nodeversion<P>::type {
 template <typename P>
 class internode : public node_base<P> {
   public:
-    static constexpr int width = P::internode_width;
+    static constexpr int width = P::internode_width; // width is fanout
     typedef typename node_base<P>::nodeversion_type nodeversion_type;
     typedef key<typename P::ikey_type> key_type;
     typedef typename P::ikey_type ikey_type;
