@@ -318,6 +318,9 @@ class leaf : public node_base<P> {
 	  ksuf_(), parent_(), node_ts_(node_ts), iksuf_{} {
       // masstree_precondition is defined in config.h.in
 	masstree_precondition(sz % 64 == 0 && sz / 64 < 128);
+        // >> 6 actually means divided by CACHE_LINE_SIZE
+        // sizeof(*this) is the fixed size of every leaf node
+        // extrasize64_ = # extra cacheline needed to accommodate the suffixes and values
 	extrasize64_ = (int(sz) >> 6) - ((int(sizeof(*this)) + 63) >> 6);
 	if (extrasize64_ > 0)
 	    new((void *)&iksuf_[0]) stringbag<uint16_t>(width, sz - sizeof(*this));
