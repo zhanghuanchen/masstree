@@ -22,6 +22,7 @@
 template <typename L>
 class stringbag {
     typedef L info_type;
+  // max_halfinfo is a bit mask
     static constexpr int max_halfinfo = (1 << (4 * sizeof(info_type))) - 1;
 
   public:
@@ -109,18 +110,20 @@ class stringbag {
 
     union {
 	struct {
-	    info_type main_;
-	    info_type info_[0];
+            info_type main_; // | pos | len |
+            info_type info_[0]; // does NOT take space initially
 	};
 	char s_[0];
     };
-
+  // create an info structure: | pos | len |
     static info_type make_info(int pos, int len) {
 	return (info_type(pos) << (4 * sizeof(info_type))) | len;
     }
+  // retrieve pos
     static int info_pos(info_type info) {
 	return info >> (4 * sizeof(info));
     }
+  // retrieve len
     static int info_len(info_type info) {
 	return info & ((info_type(1) << (4 * sizeof(info))) - 1);
     }

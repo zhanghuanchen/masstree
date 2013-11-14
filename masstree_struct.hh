@@ -327,6 +327,7 @@ class leaf : public node_base<P> {
     }
 
     static leaf<P>* make(int ksufsize, kvtimestamp_t node_ts, threadinfo& ti) {
+      // # cache-lines needed to store the leaf node, maximum total suffix size is 128
 	size_t sz = iceil(sizeof(leaf<P>) + std::min(ksufsize, 128), 64);
 	void* ptr = ti.pool_allocate(sz, memtag_masstree_leaf);
 	leaf<P>* n = new(ptr) leaf<P>(sz, node_ts);
@@ -342,25 +343,31 @@ class leaf : public node_base<P> {
         n->mark_root();
         return n;
     }
-
+  // return # of cache lines allocated
     size_t allocated_size() const {
 	int es = (extrasize64_ >= 0 ? extrasize64_ : -extrasize64_ - 1);
 	return (sizeof(*this) + es * 64 + 63) & ~size_t(63);
     }
     int size() const {
-	return permuter_type::size(permutation_);
+        return permuter_type::size(permutation_); // permutation & 0x1111 (lower 4 bits = nkeys)
     }
     permuter_type permutation() const {
 	return permuter_type(permutation_);
     }
+  // knock off MS 4 bits (locked, inserting, splitting, deleted), append 4 size bits
     typename nodeversion_type::value_type full_version_value() const {
         static_assert(int(nodeversion_type::traits_type::top_stable_bits) >= int(permuter_type::size_bits), "not enough bits to add size to version");
+        // version_value is defined in nodeversion.hh, returns v_
+        // size_bits = 4 defined in kpermuter.hh
         return (this->version_value() << permuter_type::size_bits) + size();
     }
 
     using node_base<P>::has_changed;
     bool has_changed(nodeversion_type oldv,
                      typename permuter_type::storage_type oldperm) const {
+      // has_changed(oldv) is defined in nodeversion.hh
+      // To determine whether a leaf node has changed or not,
+      // compare version # and permutation to old ones, respectively
         return this->has_changed(oldv) || oldperm != permutation_;
     }
 
