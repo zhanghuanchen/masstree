@@ -204,9 +204,33 @@ void kvtest_url_seed(C &client, int seed) // hyw
 }
 
 template <typename C>
+void kvtest_hugeUrl_seed(C &client, int seed) // hyw
+{
+    std::string huge_url;
+    client.rand.reset(seed);
+    huge_url = "http://0800.loan-line.co.uk/ \
+http://0800.loan-line.co.uk/about.html \
+http://0800.loan-line.co.uk/appform.html \
+http://0800.loan-line.co.uk/bad_credit_loan.html \
+http://0800.loan-line.co.uk/car_loan.html \
+http://0800.loan-line.co.uk/careers.html \
+http://0800.loan-line.co.uk/ccj_loan.html \
+http://0800.loan-line.co.uk/commercial.html \
+http://0800.loan-line.co.uk/commercialform.html \
+http://0800.loan-line.co.uk/customer.html";
+    double tp0 = client.now();
+    client.put(huge_url, 0);
+    client.puts_done();
+    double tp1 = client.now();
+    Json result = Json();
+    kvtest_set_time(result, "puts", 1, tp1 - tp0);
+    client.report(result);
+}
+template <typename C>
 void kvtest_url(C &client) // hyw
 {
-    kvtest_url_seed(client, kvtest_first_seed + client.id() % 48);
+    //kvtest_url_seed(client, kvtest_first_seed + client.id() % 48);
+    kvtest_hugeUrl_seed(client, kvtest_first_seed + client.id() % 48);
 }
 
 // do a bunch of inserts to distinct keys, then check that they all showed up.
