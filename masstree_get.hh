@@ -17,6 +17,9 @@
 #define MASSTREE_GET_HH 1
 #include "masstree_tcursor.hh"
 #include "masstree_key.hh"
+#include <deque>
+#include <iostream>
+
 namespace Masstree {
 
 template <typename P>
@@ -53,6 +56,46 @@ inline int unlocked_tcursor<P>::lower_bound_linear() const
     }
     return -1;
 }
+
+/*
+	hyw:
+	This method is a sample to get number of keys
+	in each masstree node
+*/
+
+template<typename p>
+void unlocked_tcursor<P>::keyCountsPerMass(threadinfo& ti)
+{	
+	std::deque <leafvalue<p>> q;
+	int kp, keylenx_ = 0;
+	node_base<P>* root = const_cast<node_base<P>*>(root_);
+	leaf<P> *next;
+
+nextLayer:
+	n_ = root->leftmost();
+nextNeighbor:
+	n_->prefetch();
+	perm_ = n_->permutation();
+	std::cout<< perm_.size() << " ";
+	for(int i = 0 ; i < perm_.size(); i++) {
+		kp = perm_[i];
+		keylenx = n_->keylenx_[kp];
+		if (n_->keylenx_is_layer(keylenx) {
+			q.push_back(n_->lv_[kp]);
+		}
+	}
+	if((next = n_->safe_next()) {
+		n_ = next;
+		goto nextNeighbor;
+	} 
+
+	else if(q.size() != 0) {
+		root = q.pop_front().layer();
+		goto nextLayer;
+	}
+}
+
+
 
 template <typename P>
 bool unlocked_tcursor<P>::find_unlocked(threadinfo& ti)

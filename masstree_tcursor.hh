@@ -60,6 +60,9 @@ class unlocked_tcursor {
 
     bool find_unlocked(threadinfo& ti);
 
+    //hyw
+    void unlocked_tcursor<P>::keyCountsPerMass(threadinfo& ti);
+
     inline value_type value() const {
         return lv_.value();
     }
