@@ -68,6 +68,7 @@ void unlocked_tcursor<P>::keyCountsPerMass(threadinfo& ti)
 {	
 	std::deque <leafvalue<p>> q;
 	int kp, keylenx_ = 0;
+	int l1, l2 = 0;
 	node_base<P>* root = const_cast<node_base<P>*>(root_);
 	leaf<P> *next;
 
@@ -82,15 +83,23 @@ nextNeighbor:
 		keylenx = n_->keylenx_[kp];
 		if (n_->keylenx_is_layer(keylenx) {
 			q.push_back(n_->lv_[kp]);
+			l1++;
 		}
 	}
 	if((next = n_->safe_next()) {
 		n_ = next;
 		goto nextNeighbor;
 	} 
+	else if (l2 == 0) {
+		l2 = l1;
+		l1 = 0;
+	}
 
-	else if(q.size() != 0) {
+	if(q.size() != 0) {
 		root = q.pop_front().layer();
+		if(--l2 == 0){
+			std::cout<<"\n";
+		}
 		goto nextLayer;
 	}
 }
