@@ -98,7 +98,7 @@ class node_base : public make_nodeversion<P>::type {
             internode_type* in = static_cast<internode_type*>(x);
             x = in->child_[0];
         }
-        return static_cast<leaf_type*>;
+        return static_cast<leaf_type*>(x);
     }
 
     inline leaf_type* reach_leaf(const key_type& k, nodeversion_type& version,

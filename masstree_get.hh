@@ -67,7 +67,8 @@ template<typename P>
 void unlocked_tcursor<P>::keyCountsPerMass() {	
 	std::deque <leafvalue<P> > q;
 	int kp, keylenx = 0;
-	int l1, l2 = 0;
+	int l1 = 0;
+    int l2 = 0;
 	node_base<P>* root = const_cast<node_base<P>*>(root_);
 	leaf<P> *next;
 
