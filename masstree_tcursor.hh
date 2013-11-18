@@ -67,7 +67,7 @@ class unlocked_tcursor {
     bool find_unlocked(threadinfo& ti);
 
     //hyw
-    void keyCountsPerMass(threadinfo& ti);
+    void keyCountsPerMass();
 
     inline value_type value() const {
         return lv_.value();

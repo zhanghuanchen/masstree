@@ -234,8 +234,8 @@ http://0800.loan-line.co.uk/customer.html";
 template <typename C>
 void kvtest_url(C &client) // hyw
 {
-    //kvtest_url_seed(client, kvtest_first_seed + client.id() % 48);
-    kvtest_hugeUrl_seed(client, kvtest_first_seed + client.id() % 48);
+    kvtest_url_seed(client, kvtest_first_seed + client.id() % 48);
+    //kvtest_hugeUrl_seed(client, kvtest_first_seed + client.id() % 48);
 }
 
 // do a bunch of inserts to distinct keys, then check that they all showed up.

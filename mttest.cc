@@ -320,7 +320,7 @@ template <typename T> inline void kvtest_json_stats(T& table, Json& j, threadinf
 //hyw
 template <typename T>
 void kvtest_client<T>::count_keys() {
-    (void) q_[0].run_countKeys(table_->table(), *ti_);
+    (void) q_[0].run_countKeys(table_->table());
 }
 
 template <typename T>
@@ -541,7 +541,6 @@ MAKE_TESTRUNNER(scan1q80, kvtest_scan1(client, 0.8));
 MAKE_TESTRUNNER(rscan1, kvtest_rscan1(client, 0));
 MAKE_TESTRUNNER(rscan1q80, kvtest_rscan1(client, 0.8));
 MAKE_TESTRUNNER(splitremove1, kvtest_splitremove1(client));
-
 
 template <typename T>
 struct test_thread {

@@ -64,7 +64,7 @@ inline int unlocked_tcursor<P>::lower_bound_linear() const
 */
 
 template<typename P>
-void unlocked_tcursor<P>::keyCountsPerMass(threadinfo& ti) {	
+void unlocked_tcursor<P>::keyCountsPerMass() {	
 	std::deque <leafvalue<P> > q;
 	int kp, keylenx = 0;
 	int l1, l2 = 0;
@@ -95,7 +95,8 @@ void unlocked_tcursor<P>::keyCountsPerMass(threadinfo& ti) {
  	}
 
  	if(q.size() != 0) {
- 		root = q.pop_front().layer();
+ 		root = q.front().layer();
+        q.pop_front();
  		if(--l2 == 0){
  			std::cout<<"\n";
  		}

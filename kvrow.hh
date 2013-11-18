@@ -69,7 +69,7 @@ class query {
 
     //hyw
     template<typename T>
-    void  run_countKeys(T& table, threadinfo& ti);
+    void  run_countKeys(T& table);
 
 
     const loginfo::query_times& query_times() const {
@@ -128,9 +128,9 @@ void query<R>::emit_fields1(const R* value, Json& req, threadinfo& ti) {
     This is a count keys cursor wapper
 */
 template <typename R> template <typename T>
-void query<R>::run_countKeys(T& table, threadinfo& ti) {
+void query<R>::run_countKeys(T& table) {
     typename T::unlocked_cursor_type lp(table);
-    lp.keyCountsPerMass(ti);
+    lp.keyCountsPerMass();
 }
 
 
