@@ -69,15 +69,19 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
 	int kp, keylenx = 0;
 	int l1 = 0;
     int l2 = 0;
+    int total_mass = 0;
+    int total_keys = 0;
 	node_base<P>* root = const_cast<node_base<P>*>(root_);
 	leaf<P> *next;
 
  nextLayer:
  	n_ = root->leftmost();
  nextNeighbor:
- 	n_->prefetch();
+    std::cout<<"[";
+    n_->prefetch();
  	perm_ = n_->permutation();
- 	std::cout<< perm_.size() << " ";
+ 	std::cout<< perm_.size() << ", ";
+    total_keys += perm_.size(); 
  	for(int i = 0 ; i < perm_.size(); i++) {
  		kp = perm_[i];
  		keylenx = n_->keylenx_[kp];
@@ -87,6 +91,7 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
  		}
  	}
  	if((next = n_->safe_next())) {
+        std::cout<<"] ";
  		n_ = next;
  		goto nextNeighbor;
  	} 
@@ -96,13 +101,17 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
  	}
 
  	if(q.size() != 0) {
+        std::cout<<"] ";
  		root = q.front().layer();
         q.pop_front();
  		if(--l2 == 0){
  			std::cout<<"\n";
  		}
+        total_mass += 1;
  		goto nextLayer;
  	}
+
+    std::cout<<"\ntotal mass nodes: " << total_mass << "\n total keys: "<< total_keys <<"\n avg: "<<(float)total_keys/total_mass<<"\n";
 }
 
 
