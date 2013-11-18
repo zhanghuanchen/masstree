@@ -210,6 +210,12 @@ struct kvtest_client {
     void rscan_sync(const Str &firstkey, int n,
 		    std::vector<Str> &keys, std::vector<Str> &values);
 
+
+    //hyw
+    // This is a client operation wrapper of the key counts
+    void count_keys();
+
+
     void put(const Str &key, const Str &value);
     void put(const char *key, const char *value) {
 	put(Str(key), Str(value));
@@ -308,6 +314,13 @@ template <typename T> inline void kvtest_print(const T &table, FILE *f, int inde
 
 template <typename T> inline void kvtest_json_stats(T& table, Json& j, threadinfo& ti) {
     table.json_stats(j, ti);
+}
+
+
+//hyw
+template <typename T>
+void kvtest_client<T>::count_keys() {
+    (void) q_[0].run_countKeys(table_->table(), *ti_);
 }
 
 template <typename T>

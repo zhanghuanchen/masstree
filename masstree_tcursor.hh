@@ -29,6 +29,12 @@ class unlocked_tcursor {
     typedef typename leaf<P>::nodeversion_type nodeversion_type;
     typedef typename nodeversion_type::value_type nodeversion_value_type;
 
+    //hyw
+    inline unlocked_tcursor(const basic_table<P>& table)
+        : lv_(leafvalue<P>::make_empty(),   root_(table.root()) {
+
+        }  
+
     inline unlocked_tcursor(const basic_table<P>& table, Str str)
         : ka_(str), lv_(leafvalue<P>::make_empty()),
           root_(table.root()) {

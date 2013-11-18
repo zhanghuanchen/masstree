@@ -165,6 +165,11 @@ void kvtest_url_seed(C &client, int seed) // hyw
     double tp1 = client.now();
 
     client.puts_done();
+
+    client.notice("now counting keys\n");
+
+    client.count_keys();
+
     client.notice("now getting\n");
     
    /* int32_t *a = (int32_t *) malloc(sizeof(int32_t) * n);

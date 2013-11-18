@@ -67,6 +67,11 @@ class query {
     template <typename T>
     void run_rscan(T& table, Json& request, threadinfo& ti);
 
+    //hyw
+    template<typename T>
+    void  run_countKeys(T& table, threadinfo& ti);
+
+
     const loginfo::query_times& query_times() const {
         return qtimes_;
     }
@@ -116,6 +121,16 @@ void query<R>::emit_fields1(const R* value, Json& req, threadinfo& ti) {
         for (int i = 0; i != (int) f_.size(); ++i)
             req.push_back(lcdf::String::make_stable(snapshot->col(f_[i])));
     }
+}
+
+/*
+    hyw:
+    This is a count keys cursor wapper
+*/
+template <typename R> template <typename T>
+void query<R>::run_countKeys(T& table, threadinfo& ti) {
+    typename T::unlocked_cursor_type lp(table);
+    lp.keyCountsPerMass(ti);
 }
 
 
