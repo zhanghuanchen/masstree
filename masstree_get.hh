@@ -74,10 +74,11 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
 	node_base<P>* root = const_cast<node_base<P>*>(root_);
 	leaf<P> *next;
 
- nextLayer:
+ nextMass:
+    std::cout<<"{";
+    total_mass += 1;
  	n_ = root->leftmost();
  nextNeighbor:
-    std::cout<<"[";
     n_->prefetch();
  	perm_ = n_->permutation();
  	std::cout<< perm_.size() << ", ";
@@ -91,27 +92,24 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
  		}
  	}
  	if((next = n_->safe_next())) {
-        std::cout<<"] ";
  		n_ = next;
  		goto nextNeighbor;
  	} 
- 	else if (l2 == 0) {
- 		l2 = l1;
- 		l1 = 0;
- 	}
 
  	if(q.size() != 0) {
-        std::cout<<"] ";
+        std::cout<<"} ";
+ 	    if (l2 == 0) {
+ 		    l2 = l1;
+ 		    l1 = 0;
+ 			std::cout<<"\n";
+ 	    }
  		root = q.front().layer();
         q.pop_front();
- 		if(--l2 == 0){
- 			std::cout<<"\n";
- 		}
-        total_mass += 1;
- 		goto nextLayer;
+ 		--l2; 
+ 		goto nextMass;
  	}
 
-    std::cout<<"\ntotal mass nodes: " << total_mass << "\n total keys: "<< total_keys <<"\n avg: "<<(float)total_keys/total_mass<<"\n";
+    std::cout<<"}\ntotal mass nodes: " << total_mass << "\n total keys: "<< total_keys <<"\n avg: "<<(float)total_keys/total_mass<<"\n";
 }
 
 
