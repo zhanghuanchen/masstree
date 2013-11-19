@@ -210,6 +210,12 @@ struct kvtest_client {
     void rscan_sync(const Str &firstkey, int n,
 		    std::vector<Str> &keys, std::vector<Str> &values);
 
+
+    //hyw
+    // This is a client operation wrapper of the key counts
+    void count_keys();
+
+
     void put(const Str &key, const Str &value);
     void put(const char *key, const char *value) {
 	put(Str(key), Str(value));
@@ -308,6 +314,13 @@ template <typename T> inline void kvtest_print(const T &table, FILE *f, int inde
 
 template <typename T> inline void kvtest_json_stats(T& table, Json& j, threadinfo& ti) {
     table.json_stats(j, ti);
+}
+
+
+//hyw
+template <typename T>
+void kvtest_client<T>::count_keys() {
+    (void) q_[0].run_countKeys(table_->table());
 }
 
 template <typename T>
@@ -491,6 +504,7 @@ static pthread_cond_t subtest_cond;
 #define TESTRUNNER_SIGNATURE kvtest_client<Masstree::default_table>& client
 #include "testrunner.hh"
 
+MAKE_TESTRUNNER(url, kvtest_url(client)); // hyw
 MAKE_TESTRUNNER(rw1, kvtest_rw1(client));
 // MAKE_TESTRUNNER(palma, kvtest_palma(client));
 // MAKE_TESTRUNNER(palmb, kvtest_palmb(client));
@@ -528,7 +542,6 @@ MAKE_TESTRUNNER(rscan1, kvtest_rscan1(client, 0));
 MAKE_TESTRUNNER(rscan1q80, kvtest_rscan1(client, 0.8));
 MAKE_TESTRUNNER(splitremove1, kvtest_splitremove1(client));
 
-
 template <typename T>
 struct test_thread {
     test_thread(void *arg) {
@@ -547,7 +560,8 @@ struct test_thread {
 	    return 0;
 	}
         if (!arg) {
-	    table_->stats(test_output_file);
+	    //table_->stats(test_output_file);
+        table_->print(stdout, 0);
             return 0;
         }
 #if __linux__
@@ -968,6 +982,8 @@ static void run_one_test_body(int trial, const char *treetype, const char *test)
 	    current_trial = trial;
 	    test_thread_map[i].func(main_ti); // initialize table
 	    runtest(tcpthreads, test_thread_map[i].func);
+        // hyw
+        tree_stats = true;
             if (tree_stats)
                 test_thread_map[i].func(0); // print tree_stats
 	    break;
