@@ -86,7 +86,7 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
  	perm_ = n_->permutation();
  	std::cout<< perm_.size() << ", ";
     total_keys += perm_.size(); 
-    keysPerMass += perm.size();
+    keysPerMass += perm_.size();
  	for(int i = 0 ; i < perm_.size(); i++) {
  		kp = perm_[i];
  		keylenx = n_->keylenx_[kp];
@@ -111,7 +111,7 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
         q.pop_front();
  		--l2; 
 
- 		if(myMap.find(perm_.size()) != myMap.end()){
+ 		if(myMap.find(keysPerMass) != myMap.end()){
           	myMap[keysPerMass] += 1;
       		} else {
           	myMap[keysPerMass] = 1;
@@ -120,6 +120,11 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
  		goto nextMass;
  	}
 
+    if(myMap.find(keysPerMass) != myMap.end()){
+        myMap[keysPerMass] += 1;
+        } else {
+        myMap[keysPerMass] = 1;
+    }
     std::cout<<"}\ntotal mass nodes: " << total_mass << "\n total keys: "<< total_keys <<"\n avg: "<<(float)total_keys/total_mass<<"\n";
     for(std::map<int, int>:: iterator it= myMap.begin(); it != myMap.end(); ++it)
     	std::cout<< it->first << " => " << it->second <<"\n";
