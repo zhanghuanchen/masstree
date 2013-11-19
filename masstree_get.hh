@@ -18,6 +18,7 @@
 #include "masstree_tcursor.hh"
 #include "masstree_key.hh"
 #include <deque>
+#include <map>
 #include <iostream>
 
 namespace Masstree {
@@ -66,6 +67,7 @@ inline int unlocked_tcursor<P>::lower_bound_linear() const
 template<typename P>
 void unlocked_tcursor<P>::keyCountsPerMass() {	
 	std::deque <leafvalue<P> > q;
+	std::map<int, int>  myMap;
 	int kp, keylenx = 0;
 	int l1 = 0;
     int l2 = 0;
@@ -83,6 +85,11 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
  	perm_ = n_->permutation();
  	std::cout<< perm_.size() << ", ";
     total_keys += perm_.size(); 
+    if(myMap.find(perm_.size()) != myMap.end()){
+    	myMap[perm_.size()] += 1;
+    } else {
+    	myMap[perm_.size()] = 0;
+    }
  	for(int i = 0 ; i < perm_.size(); i++) {
  		kp = perm_[i];
  		keylenx = n_->keylenx_[kp];
@@ -110,6 +117,8 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
  	}
 
     std::cout<<"}\ntotal mass nodes: " << total_mass << "\n total keys: "<< total_keys <<"\n avg: "<<(float)total_keys/total_mass<<"\n";
+    for(std::map<int, int>:: iterator it= myMap.begin(); it != myMap.end(); ++it)
+    	std::cout<< it->first << " => " << it->second <<"\n";
 }
 
 
