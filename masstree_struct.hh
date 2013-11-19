@@ -406,6 +406,10 @@ class leaf : public node_base<P> {
 	masstree_precondition(has_ksuf(p));
 	return ksuf_ ? ksuf_->get(p) : iksuf_[0].get(p);
     }
+  // keylenx structure:
+  // | is_stable_layer | is_unstable_layer | keylen |
+  // |        7        |         6        | 5 - 0  |
+  // bit 7, 6 is used to distinguish between values or pointers in the value slot
     static int keylenx_ikeylen(int keylenx) {
 	return keylenx & 63;
     }
@@ -603,6 +607,8 @@ inline leaf<P>* node_base<P>::reach_leaf(const key_type& ka,
     sense = false;
     n[sense] = this;
     while (1) {
+      // stable_annotated is defined in nodeversion.hh
+      // basically it acquire_fence() if node is NOT dirty
 	v[sense] = n[sense]->stable_annotated(ti.stable_fence());
 	if (!v[sense].has_split())
 	    break;

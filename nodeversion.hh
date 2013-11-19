@@ -48,13 +48,14 @@ class basic_nodeversion {
 	return x;
     }
     template <typename SF>
+    // acquire_fence() if node is NOT dirty
     basic_nodeversion<P> stable_annotated(SF spin_function) const {
 	value_type x = v_;
 	while (x & P::dirty_mask) {
 	    spin_function(basic_nodeversion<P>(x));
 	    x = v_;
 	}
-	acquire_fence();
+	acquire_fence(); // prevent a compiler from reordering instructions
 	return x;
     }
 
