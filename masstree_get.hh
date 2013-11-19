@@ -73,6 +73,7 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
     int l2 = 0;
     int total_mass = 0;
     int total_keys = 0;
+    int keysPerMass = 0;
 	node_base<P>* root = const_cast<node_base<P>*>(root_);
 	leaf<P> *next;
 
@@ -85,11 +86,7 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
  	perm_ = n_->permutation();
  	std::cout<< perm_.size() << ", ";
     total_keys += perm_.size(); 
-    if(myMap.find(perm_.size()) != myMap.end()){
-    	myMap[perm_.size()] += 1;
-    } else {
-    	myMap[perm_.size()] = 0;
-    }
+    keysPerMass += perm.size();
  	for(int i = 0 ; i < perm_.size(); i++) {
  		kp = perm_[i];
  		keylenx = n_->keylenx_[kp];
@@ -113,6 +110,13 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
  		root = q.front().layer();
         q.pop_front();
  		--l2; 
+
+ 		if(myMap.find(perm_.size()) != myMap.end()){
+          	myMap[keysPerMass] += 1;
+      		} else {
+          	myMap[keysPerMass] = 1;
+      	}
+      	keysPerMass = 0;
  		goto nextMass;
  	}
 
