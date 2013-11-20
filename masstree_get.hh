@@ -17,6 +17,10 @@
 #define MASSTREE_GET_HH 1
 #include "masstree_tcursor.hh"
 #include "masstree_key.hh"
+#include <deque>
+#include <map>
+#include <iostream>
+
 namespace Masstree {
 
 template <typename P>
@@ -53,6 +57,79 @@ inline int unlocked_tcursor<P>::lower_bound_linear() const
     }
     return -1;
 }
+
+/*
+	hyw:
+	This method is a sample to get number of keys
+	in each masstree node
+*/
+
+template<typename P>
+void unlocked_tcursor<P>::keyCountsPerMass() {	
+	std::deque <leafvalue<P> > q;
+	std::map<int, int>  myMap;
+	int kp, keylenx = 0;
+	int l1 = 0;
+    int l2 = 0;
+    int total_mass = 0;
+    int total_keys = 0;
+    int keysPerMass = 0;
+	node_base<P>* root = const_cast<node_base<P>*>(root_);
+	leaf<P> *next;
+
+ nextMass:
+    std::cout<<"{";
+    total_mass += 1;
+ 	n_ = root->leftmost();
+ nextNeighbor:
+    n_->prefetch();
+ 	perm_ = n_->permutation();
+ 	std::cout<< perm_.size() << ", ";
+    total_keys += perm_.size(); 
+    keysPerMass += perm_.size();
+ 	for(int i = 0 ; i < perm_.size(); i++) {
+ 		kp = perm_[i];
+ 		keylenx = n_->keylenx_[kp];
+ 		if (n_->keylenx_is_layer(keylenx)) {
+ 			q.push_back(n_->lv_[kp]);
+ 			l1++;
+ 		}
+ 	}
+ 	if((next = n_->safe_next())) {
+ 		n_ = next;
+ 		goto nextNeighbor;
+ 	} 
+
+ 	if(q.size() != 0) {
+        std::cout<<"} ";
+ 	    if (l2 == 0) {
+ 		    l2 = l1;
+ 		    l1 = 0;
+ 			std::cout<<"\n";
+ 	    }
+ 		root = q.front().layer();
+        q.pop_front();
+ 		--l2; 
+
+ 		if(myMap.find(keysPerMass) != myMap.end()){
+          	myMap[keysPerMass] += 1;
+      		} else {
+          	myMap[keysPerMass] = 1;
+      	}
+      	keysPerMass = 0;
+ 		goto nextMass;
+ 	}
+
+    if(myMap.find(keysPerMass) != myMap.end()){
+        myMap[keysPerMass] += 1;
+        } else {
+        myMap[keysPerMass] = 1;
+    }
+    std::cout<<"}\ntotal mass nodes: " << total_mass << "\n total keys: "<< total_keys <<"\n avg: "<<(float)total_keys/total_mass<<"\n";
+    for(std::map<int, int>:: iterator it= myMap.begin(); it != myMap.end(); ++it)
+    	std::cout<< it->first << " => " << it->second <<"\n";
+}
+
 
 template <typename P>
 bool unlocked_tcursor<P>::find_unlocked(threadinfo& ti)
