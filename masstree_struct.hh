@@ -774,7 +774,7 @@ template <typename P>
 class massnode : public node_base<P> {
 public:
   typedef typename P::ikey_type ikey_type;
-  typedef typename key<typename P:: ikey_type> key_type;
+  typedef key<typename P::ikey_type> key_type;
   typedef typename node_base<P>::leafvalue_type leafvalue_type;
   typedef typename P::threadinfo_type threadinfo;
 
@@ -787,7 +787,7 @@ public:
   massnode (uint32_t nkeys)
     : nkeys_(nkeys) {
     keylenx_ = (uint8_t*)(this + sizeof(uint32_t));
-    ikey0_ = (ikey_type*)(keylenx + nkeys_ * sizeof(uint8_t));
+    ikey0_ = (ikey_type*)(keylenx_ + nkeys_ * sizeof(uint8_t));
     lv_ = (leafvalue_type*)(ikey0_ + nkeys_ * sizeof(ikey_type));
     ksuf = (stringbag<uint32_t>*)(lv_ + nkeys_ * sizeof(leafvalue_type));
   }
@@ -801,7 +801,8 @@ public:
   }
 
   size_t allocated_size() const {
-    
+	//TODO: figure out how to calculate this number
+  	return 0;  
   }
 
   uint32_t size() const {
@@ -825,7 +826,7 @@ public:
   }
 
   Str ksuf(int p) const {
-    masstree_precondition(has_ksuf(P));
+    masstree_precondition(has_ksuf(p));
     return ksuf_->get(p);
   }
 
@@ -859,7 +860,7 @@ public:
   }
 
   void prefetch() const {
-    for (int i = 64; i < std::min(sizeof(massnode<P>) + sizeof(ikey_type) * nkeys + sizeof(uint8_t) * nkeys + sizeof(leafvalue_type) * nkeys, 4 * 64); i += 64)
+    for (int i = 64; i < std::min((int)(sizeof(massnode<P>) + sizeof(ikey_type) * nkeys_ + sizeof(uint8_t) * nkeys_ + sizeof(leafvalue_type) * nkeys_), 4 * 64); i += 64)
       ::prefetch((const char *) this + i);
     if (ksuf) {
       ::prefetch((const char *) ksuf_);
@@ -875,8 +876,8 @@ public:
   }
 
 private:
-  
-}
+    template <typename PP> friend class tcursor;
+};
 
 
 

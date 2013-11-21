@@ -315,6 +315,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   int nkeys = 0;
   size_t ksufSize = 0;
   node_base<P>* root = const_cast <node_base<P>*> (root_);
+  leaf<P> *next;
 
  nextMass:
   n_ = root -> leftmost();
@@ -326,7 +327,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   for (int i = 0; i < perm_.size(); i++) {
     kp = perm_[i];
     keyList.push_back(n_ -> ikey0_[kp]);
-    keyLenList.push_back(n_ -> keylenx_[kp]);
+    keylenList.push_back(n_ -> keylenx_[kp]);
     link_or_value_list.push_back(n_ -> lv_[kp]);
     keylenx = n_ -> keylenx_[kp];
     if (n_ -> keylenx_is_layer(keylenx)) {
@@ -344,7 +345,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     goto nextLeaf;
   }
 
-  massnode<P>* newNode = massnode::make(ksufSize, nkeys, ti);
+  massnode<P>* newNode = massnode<P>::make(ksufSize, nkeys, ti);
   nodeList.push_back(newNode);
   for (int i = 0; i < nkeys; i++) {
     newNode -> keylenx[i] = keylenList.front();
@@ -353,7 +354,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     keyList.pop_front();
     newNode -> lv_[i] = link_or_value_list.front();
     link_or_value_list.pop_front();
-    if (leaf::keylenx_is_layer(keylenx[i])) {
+    if (leaf<P>::keylenx_is_layer(newNode -> keylenx[i])) {
       newNode -> lv_[i] = massID;
       massID++;
     }
@@ -378,7 +379,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
 
   for (int i = 0; i < nodeList.size(); i++) {
     for (int j = 0; j < nodeList[i] -> nkeys_; j++) {
-      if (leaf::keylenx_is_layer(nodeList[i] -> keylenx_[j]))
+      if (leaf<P>::keylenx_is_layer(nodeList[i] -> keylenx_[j]))
         nodeList[i] -> lv_[j] = nodeList[nodeList[i] -> lv_[j]];
     }
   }
