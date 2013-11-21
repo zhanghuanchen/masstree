@@ -20,6 +20,7 @@
 #include <deque>
 #include <map>
 #include <iostream>
+#include <fstream>
 
 namespace Masstree {
 
@@ -66,6 +67,8 @@ inline int unlocked_tcursor<P>::lower_bound_linear() const
 
 template<typename P>
 void unlocked_tcursor<P>::keyCountsPerMass() {	
+    std::ofstream myfile;
+    myfile.open("code_output.txt");
 	std::deque <leafvalue<P> > q;
 	std::map<int, int>  myMap;
 	int kp, keylenx = 0;
@@ -73,18 +76,19 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
     int l2 = 0;
     int total_mass = 0;
     int total_keys = 0;
+    int max_mass_level = 0;
     int keysPerMass = 0;
 	node_base<P>* root = const_cast<node_base<P>*>(root_);
 	leaf<P> *next;
 
  nextMass:
-    std::cout<<"{";
+    //myfile<<"{";
     total_mass += 1;
  	n_ = root->leftmost();
  nextNeighbor:
     n_->prefetch();
  	perm_ = n_->permutation();
- 	std::cout<< perm_.size() << ", ";
+ 	//myfile<< perm_.size() << ", ";
     total_keys += perm_.size(); 
     keysPerMass += perm_.size();
  	for(int i = 0 ; i < perm_.size(); i++) {
@@ -101,11 +105,12 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
  	} 
 
  	if(q.size() != 0) {
-        std::cout<<"} ";
+        //myfile<<"} ";
  	    if (l2 == 0) {
+            max_mass_level += 1;
  		    l2 = l1;
  		    l1 = 0;
- 			std::cout<<"\n";
+ 			//myfile<<"\n";
  	    }
  		root = q.front().layer();
         q.pop_front();
@@ -125,9 +130,10 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
         } else {
         myMap[keysPerMass] = 1;
     }
-    std::cout<<"}\ntotal mass nodes: " << total_mass << "\n total keys: "<< total_keys <<"\n avg: "<<(float)total_keys/total_mass<<"\n";
-    for(std::map<int, int>:: iterator it= myMap.begin(); it != myMap.end(); ++it)
-    	std::cout<< it->second<<"\n";
+    myfile<<"}\ntotalMassN: " << total_mass << "\ntotalK: "<< total_keys <<"\navg: "<<(float)total_keys/total_mass<<"\nmaxMassLevel: "<<max_mass_level<<"\n";
+    //for(std::map<int, int>:: iterator it= myMap.begin(); it != myMap.end(); ++it)
+    	//myfile<< it->first <<" "<<it->second<<"\n";
+    myfile.close();
 }
 
 
