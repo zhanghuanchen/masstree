@@ -168,7 +168,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
 
     client.notice("now counting keys\n");
 
-    client.count_keys();
+    //client.count_keys();
 
     client.notice("now getting\n");
     

@@ -127,7 +127,7 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
     }
     std::cout<<"}\ntotal mass nodes: " << total_mass << "\n total keys: "<< total_keys <<"\n avg: "<<(float)total_keys/total_mass<<"\n";
     for(std::map<int, int>:: iterator it= myMap.begin(); it != myMap.end(); ++it)
-    	std::cout<< it->first << " => " << it->second <<"\n";
+    	std::cout<< it->second<<"\n";
 }
 
 
