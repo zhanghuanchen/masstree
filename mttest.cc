@@ -214,7 +214,7 @@ struct kvtest_client {
     //hyw
     // This is a client operation wrapper of the key counts
     void count_keys();
-
+    void build_static_tree();
 
     void put(const Str &key, const Str &value);
     void put(const char *key, const char *value) {
@@ -321,6 +321,11 @@ template <typename T> inline void kvtest_json_stats(T& table, Json& j, threadinf
 template <typename T>
 void kvtest_client<T>::count_keys() {
     (void) q_[0].run_countKeys(table_->table());
+}
+//hyw
+template <typename T>
+void kvtest_client<T>::build_static_tree() {
+    (void) q_[0].run_buildStatic(table_->table(), *ti_);
 }
 
 template <typename T>

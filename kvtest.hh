@@ -216,6 +216,11 @@ void kvtest_url_seed(C &client, int seed) // hyw
     kvtest_set_time(result, "gets", g, tg1 - tg0);
     kvtest_set_time(result, "ops", n + g, (tp1 - tp0) + (tg1 - tg0));
     client.report(result);
+
+
+    client.notice("\n-----------start to build static tree---------------\n");
+    client.build_static_tree();
+
     //free(a);
 }
 
