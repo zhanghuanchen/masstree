@@ -70,6 +70,9 @@ class query {
     //hyw
     template<typename T>
     void  run_countKeys(T& table);
+    //hyw
+    template<typename T>
+    void run_buildStatic(T& table, threadinfo& ti);
 
 
     const loginfo::query_times& query_times() const {
@@ -125,12 +128,23 @@ void query<R>::emit_fields1(const R* value, Json& req, threadinfo& ti) {
 
 /*
     hyw:
-    This is a count keys cursor wapper
+    This is a count keys cursor's wrapper
 */
 template <typename R> template <typename T>
 void query<R>::run_countKeys(T& table) {
     typename T::unlocked_cursor_type lp(table);
     lp.keyCountsPerMass();
+}
+
+
+/*
+    hyw:
+    This is a build static tree cursor's wrapper
+*/
+template <typename R> template <typename T>
+void query<R>::run_buildStatic(T& table, threadinfo& ti) {
+    typename T::unlocked_cursor_type lp(table);
+    lp.buildStatic(ti);
 }
 
 

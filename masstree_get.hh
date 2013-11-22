@@ -390,7 +390,8 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
         nodeList[i] -> lv_[j] = nodeList[nodeList[i] -> lv_[j]];
     }
   }
-}
 
+  return nodeList[0];
+}
 } // namespace Masstree
 #endif
