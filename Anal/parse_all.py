@@ -87,7 +87,7 @@ for n in node_list :
     n.displayNode()
 
 INTERNODE_FIXED_SIZE = 261
-BORDERNODE_FIXED_SIZE = 172
+BORDERNODE_FIXED_SIZE = 292
 POINTER_SIZE = 8
 VALUE_SIZE = 8
 
@@ -101,6 +101,7 @@ maxbLevel = 0
 leafLinks = 0
 leafValues = 0
 totalSpace = 0
+suffixSize = 0
 
 for n in node_list :
     keys = n.keyValue.keys()
@@ -122,10 +123,8 @@ for n in node_list :
         for v in values :
            if (v == "SUBTREE") :
                leafLinks += POINTER_SIZE
-               totalSpace += POINTER_SIZE
            else :
                leafValues += VALUE_SIZE
-               totalSpace += POINTER_SIZE
                totalSpace += VALUE_SIZE
     else :
         exit(1)
@@ -144,10 +143,11 @@ for line in f_workload.readlines() :
 keyslice_array_usage = totalKeyslice / 15.0 / totalNode
 key_compress = totalKeysliceLen / 1.0 / totalKeyLen
 
-totalSpace += totalKeysliceLen
-totalSpace -= totalKeyslice * 8
+suffixSize = totalKeysliceLen - totalKeyslice * 8
+totalSpace += suffixSize
+
 struct_overhead = (totalSpace - totalKeysliceLen - leafValues) / 1.0 / totalSpace
 
-print "\nkeyslice_array_usage = ", keyslice_array_usage, "\nkey_compress = ", key_compress, "\navgmLevel = ", avgmLevel, "\navgbLevel = ", avgbLevel, "\navgDepth = ", avgDepth, "\nmaxmLevel = ", maxmLevel, "\nmaxbLevel = ", maxbLevel, "\nmaxDepth = ", maxDepth, "\ntotalKeysliceLen: ", totalKeysliceLen, "\ntotalKeySize: ", totalKeyLen, "\ntotalValueSize: ", leafValues, "\ntotalSpace: ", totalSpace, "\nstruct_overhead: ", struct_overhead
+print "\nkeyslice_array_usage = ", keyslice_array_usage, "\nkey_compress = ", key_compress, "\navgmLevel = ", avgmLevel, "\navgbLevel = ", avgbLevel, "\navgDepth = ", avgDepth, "\nmaxmLevel = ", maxmLevel, "\nmaxbLevel = ", maxbLevel, "\nmaxDepth = ", maxDepth, "\ntotalKeysliceLen: ", totalKeysliceLen, "\ntotalKeySize: ", totalKeyLen, "\ntotalValueSize: ", leafValues, "\ntotalSpace: ", totalSpace, "\nstruct_overhead: ", struct_overhead, "\ntotalNode = ", totalNode, "\nsuffixSize = ", suffixSize
 
 
