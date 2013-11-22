@@ -265,6 +265,14 @@ class leafvalue {
 	return reinterpret_cast<node_base<P>*>(u_.x);
     }
 
+   uintptr_t getX() {
+	return u_.x;
+   }
+
+   void setX(unsigned int* id) {
+	u_.x = reinterpret_cast<uintptr_t>(id);
+   }
+
     void prefetch(int keylenx) const {
 	if (keylenx < 128)
 	    prefetcher_type()(u_.v);
@@ -800,16 +808,16 @@ public:
   stringbag<uint32_t>* ksuf_;
 
   massnode (uint32_t nkeys)
-    : nkeys_(nkeys) {
+    :node_base<P>(false), nkeys_(nkeys) {
     keylenx_ = (uint8_t*)(this + sizeof(uint32_t));
     ikey0_ = (ikey_type*)(keylenx_ + nkeys_ * sizeof(uint8_t));
     lv_ = (leafvalue_type*)(ikey0_ + nkeys_ * sizeof(ikey_type));
-    ksuf = (stringbag<uint32_t>*)(lv_ + nkeys_ * sizeof(leafvalue_type));
+    ksuf_ = (stringbag<uint32_t>*)(lv_ + nkeys_ * sizeof(leafvalue_type));
   }
 
   static massnode<P>* make (int ksufsize, uint32_t nkeys, threadinfo& ti) {
     size_t sz = iceil(sizeof(massnode<P>) + sizeof(ikey_type) * nkeys + sizeof(uint8_t) * nkeys + sizeof(leafvalue_type) * nkeys + ksufsize, 64);
-    void* ptr = ti.pool_allocated (sz, memtag_masstree_leaf);
+    void* ptr = ti.pool_allocate(sz, memtag_masstree_leaf);
     massnode<P>* n = new(ptr) massnode<P>(nkeys);
     assert(n);
     return n;

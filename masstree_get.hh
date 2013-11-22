@@ -303,7 +303,12 @@ bool tcursor<P>::find_locked(threadinfo& ti)
     }
 }
 
+/*
+  hyw:
+	This is the cursor we use to build the 
+	static tree
 
+*/
 
 template<typename P>
 massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
@@ -318,7 +323,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   std::deque<Str> ksufList;
   int kp = 0;
   int keylenx = 0;
-  int massID = 1;
+  unsigned int massID = 1;
   int nkeys = 0;
   size_t ksufSize = 0;
   node_base<P>* root = const_cast <node_base<P>*> (root_);
@@ -347,7 +352,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     else
       has_ksuf_list.push_back(0);
   }
-  if (next = n_ -> safe_next()) {
+  if ((next = n_ -> safe_next())) {
     n_ = next;
     goto nextLeaf;
   }
@@ -355,18 +360,18 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   massnode<P>* newNode = massnode<P>::make(ksufSize, nkeys, ti);
   nodeList.push_back(newNode);
   for (int i = 0; i < nkeys; i++) {
-    newNode -> keylenx[i] = keylenList.front();
+    newNode -> keylenx_[i] = keylenList.front();
     keylenList.pop_front();
     newNode -> ikey0_[i] = keyList.front();
     keyList.pop_front();
     newNode -> lv_[i] = link_or_value_list.front();
     link_or_value_list.pop_front();
-    if (leaf<P>::keylenx_is_layer(newNode -> keylenx[i])) {
-      newNode -> lv_[i] = massID;
+    if (leaf<P>::keylenx_is_layer(newNode -> keylenx_[i])) {
+      newNode -> lv_[i].setX(&massID);
       massID++;
     }
     if (has_ksuf_list[i]) {
-      newNode -> ksuf -> assign(i, ksufList.front());
+      newNode -> ksuf_ -> assign(i, ksufList.front());
       ksufList.pop_front();
     }
   }
@@ -383,11 +388,12 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
 
     goto nextMass;
   }
-
-  for (int i = 0; i < nodeList.size(); i++) {
-    for (int j = 0; j < nodeList[i] -> nkeys_; j++) {
+  unsigned int id = 0;
+  for (unsigned int i = 0; i < nodeList.size(); i++) {
+    for (unsigned int j = 0; j < nodeList[i] -> nkeys_; j++) {
       if (leaf<P>::keylenx_is_layer(nodeList[i] -> keylenx_[j]))
-        nodeList[i] -> lv_[j] = nodeList[nodeList[i] -> lv_[j]];
+	id = *reinterpret_cast<unsigned int*>(nodeList[i]->lv_[j].getX());
+        (nodeList[i]) -> lv_[j] = nodeList[id];
     }
   }
 
