@@ -169,7 +169,8 @@ void kvtest_url_seed(C &client, int seed) // hyw
     client.notice("now counting keys\n");
     client.count_keys();
 
-
+    // This calculate the total space useage
+    
     int totalSize = client.ti_->numOfLines * 64 + (int)client.ti_->otherSize;
     client.notice("Total space used: %d", totalSize);
     client.notice("now getting\n");
