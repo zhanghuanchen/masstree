@@ -748,9 +748,11 @@ void leaf<P>::hard_assign_ksuf(int p, Str s, bool initializing,
     if (extrasize64_ >= 0)	// now the new ksuf_ installed, mark old dead
 	extrasize64_ = -extrasize64_ - 1;
 
-    if (oksuf)
+    if (oksuf) {
 	ti.deallocate_rcu(oksuf, oksuf->allocated_size(),
                           memtag_masstree_ksuffixes);
+	ti.otherSize -= oksuf->allocated_size();
+	}
 }
 
 template <typename P>
