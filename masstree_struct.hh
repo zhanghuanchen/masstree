@@ -269,8 +269,9 @@ class leafvalue {
 	return u_.x;
    }
 
-   void setX(unsigned int* id) {
-	u_.x = reinterpret_cast<uintptr_t>(id);
+   void setX(unsigned int id) {
+	//u_.x = reinterpret_cast<uintptr_t>(id);
+	u_.x = id;
    }
 
     void prefetch(int keylenx) const {

@@ -367,7 +367,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     newNode -> lv_[i] = link_or_value_list.front();
     link_or_value_list.pop_front();
     if (leaf<P>::keylenx_is_layer(newNode -> keylenx_[i])) {
-      newNode -> lv_[i].setX(&massID);
+      newNode -> lv_[i].setX(massID);
       massID++;
     }
     if (has_ksuf_list[i]) {
@@ -392,7 +392,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   for (unsigned int i = 0; i < nodeList.size(); i++) {
     for (unsigned int j = 0; j < nodeList[i] -> nkeys_; j++) {
       if (leaf<P>::keylenx_is_layer(nodeList[i] -> keylenx_[j]))
-	id = *reinterpret_cast<unsigned int*>(nodeList[i]->lv_[j].getX());
+	id = nodeList[i]->lv_[j].getX();
         (nodeList[i]) -> lv_[j] = nodeList[id];
     }
   }
