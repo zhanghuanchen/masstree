@@ -722,7 +722,7 @@ void leaf<P>::hard_assign_ksuf(int p, Str s, bool initializing,
     ti.allocDist[idx - 1] += 1;
     ti.otherSize += sz;
     
-    std::cout << sz << "\n";
+    //std::cout << sz << "\n";
 
     stringbag<uint32_t> *nksuf = new(ptr) stringbag<uint32_t>(width, sz);
     permuter_type perm(permutation_);

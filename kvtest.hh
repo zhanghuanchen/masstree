@@ -172,7 +172,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
     // This calculate the total space useage
     
     int totalSize = client.ti_->numOfLines * 64 + client.ti_->otherSize;
-    client.notice("Total space used: %d\n", client.ti_->otherSize);
+    client.notice("Total space used: %d\n", totalSize);
     for(int i = 0; i < 20; i ++) {
 	client.notice("cache line pool %d: %d\n", i+1, client.ti_->cacheLineDist[i]);
     }	
