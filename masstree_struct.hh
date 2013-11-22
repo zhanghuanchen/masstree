@@ -20,6 +20,9 @@
 #include "stringbag.hh"
 #include "mtcounters.hh"
 #include "timestamp.hh"
+#include <iostream>
+#include <cmath>
+
 namespace Masstree {
 
 template <typename P>
@@ -711,6 +714,16 @@ void leaf<P>::hard_assign_ksuf(int p, Str s, bool initializing,
 	sz *= 2;
 
     void *ptr = ti.allocate(sz, memtag_masstree_ksuffixes);
+    	
+    //hyw
+    double base = 2.0;
+    double arg = sz;
+    int idx =(int)(std::log(arg) / std::log(base));
+    ti.allocDist[idx - 1] += 1;
+    ti.otherSize += sz;
+    
+    std::cout << sz << "\n";
+
     stringbag<uint32_t> *nksuf = new(ptr) stringbag<uint32_t>(width, sz);
     permuter_type perm(permutation_);
     int n = initializing ? p : perm.size();

@@ -208,15 +208,18 @@ class threadinfo {
 	char padding1[CACHE_LINE_SIZE];
     };
 
+
   public:
     static threadinfo *make(int purpose, int index);
     // XXX destructor
     static threadinfo *allthreads;
     static pthread_key_t key;
+
     //hyw
-    int numOfLines = 0;
-    size_t otherSize = 0;
-    int cacheLineDist[20] = {0};
+    int numOfLines;
+    size_t otherSize;
+    int cacheLineDist[20];
+    int allocDist[20];    
 
     // timestamps
     kvtimestamp_t operation_timestamp() const {
@@ -310,7 +313,7 @@ class threadinfo {
 	void *p = malloc(sz + memdebug_size);
 
     //hyw
-    otherSize += sz;
+    //otherSize += sz;
 
 	p = memdebug::make(p, sz, tag << 8);
 	if (p)
@@ -319,6 +322,7 @@ class threadinfo {
     }
     void deallocate(void* p, size_t sz, memtag tag) {
 	// in C++ allocators, 'p' must be nonnull
+	//otherSize -= sz;
 	assert(p);
 	p = memdebug::check_free(p, sz, tag << 8);
 	free(p);
@@ -327,6 +331,7 @@ class threadinfo {
     void deallocate_rcu(void *p, size_t sz, memtag tag) {
 	assert(p);
 	memdebug::check_rcu(p, sz, tag << 8);
+	//otherSize -= sz;
 	record_rcu(p, tag << 8);
         mark(threadcounter(tc_alloc + (tag > memtag_value)), -sz);
     }
@@ -353,6 +358,7 @@ class threadinfo {
     void pool_deallocate(void* p, size_t sz, memtag tag) {
 	int nl = (sz + memdebug_size + CACHE_LINE_SIZE - 1) / CACHE_LINE_SIZE;
 	assert(p && nl <= pool_max_nlines);
+    	numOfLines += nl;
 	p = memdebug::check_free(p, sz, (tag << 8) + nl);
 	*reinterpret_cast<void **>(p) = pool_[nl - 1];
 	pool_[nl - 1] = p;
