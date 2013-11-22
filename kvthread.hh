@@ -213,8 +213,9 @@ class threadinfo {
     // XXX destructor
     static threadinfo *allthreads;
     static pthread_key_t key;
-    static int numOfLines = 0;
-    static size_t otherSize = 0;
+    //hyw
+    int numOfLines = 0;
+    size_t otherSize = 0;
 
     // timestamps
     kvtimestamp_t operation_timestamp() const {
