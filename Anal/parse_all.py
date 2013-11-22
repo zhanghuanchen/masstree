@@ -86,8 +86,8 @@ while (node_stack) :
 for n in node_list :
     n.displayNode()
 
-INTERNODE_FIXED_SIZE = 141
-BORDERNODE_FIXED_SIZE = 52
+INTERNODE_FIXED_SIZE = 261
+BORDERNODE_FIXED_SIZE = 172
 POINTER_SIZE = 8
 VALUE_SIZE = 8
 
@@ -125,6 +125,7 @@ for n in node_list :
                totalSpace += POINTER_SIZE
            else :
                leafValues += VALUE_SIZE
+               totalSpace += POINTER_SIZE
                totalSpace += VALUE_SIZE
     else :
         exit(1)
@@ -144,6 +145,7 @@ keyslice_array_usage = totalKeyslice / 15.0 / totalNode
 key_compress = totalKeysliceLen / 1.0 / totalKeyLen
 
 totalSpace += totalKeysliceLen
+totalSpace -= totalKeyslice * 8
 struct_overhead = (totalSpace - totalKeysliceLen - leafValues) / 1.0 / totalSpace
 
 print "\nkeyslice_array_usage = ", keyslice_array_usage, "\nkey_compress = ", key_compress, "\navgmLevel = ", avgmLevel, "\navgbLevel = ", avgbLevel, "\navgDepth = ", avgDepth, "\nmaxmLevel = ", maxmLevel, "\nmaxbLevel = ", maxbLevel, "\nmaxDepth = ", maxDepth, "\ntotalKeysliceLen: ", totalKeysliceLen, "\ntotalKeySize: ", totalKeyLen, "\ntotalValueSize: ", leafValues, "\ntotalSpace: ", totalSpace, "\nstruct_overhead: ", struct_overhead
