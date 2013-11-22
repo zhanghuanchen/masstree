@@ -68,6 +68,7 @@ class unlocked_tcursor {
 
     //hyw
     void keyCountsPerMass();
+    massnode<P>* buildStatic(threadinfo& ti);
 
     inline value_type value() const {
         return lv_.value();
