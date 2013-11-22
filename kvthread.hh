@@ -216,6 +216,7 @@ class threadinfo {
     //hyw
     int numOfLines = 0;
     size_t otherSize = 0;
+    int cacheLineDist[20] = {0};
 
     // timestamps
     kvtimestamp_t operation_timestamp() const {
@@ -336,6 +337,7 @@ class threadinfo {
 
     //hyw
     numOfLines += nl;
+    cacheLineDist[nl - 1] += 1;
 
 	if (unlikely(!pool_[nl - 1]))
 	    refill_pool(nl);
