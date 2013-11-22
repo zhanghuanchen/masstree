@@ -20,6 +20,7 @@
 #include <deque>
 #include <map>
 #include <iostream>
+#include <fstream>
 
 namespace Masstree {
 
@@ -66,6 +67,8 @@ inline int unlocked_tcursor<P>::lower_bound_linear() const
 
 template<typename P>
 void unlocked_tcursor<P>::keyCountsPerMass() {	
+    std::ofstream myfile;
+    myfile.open("code_output.txt");
 	std::deque <leafvalue<P> > q;
 	std::map<int, int>  myMap;
 	int kp, keylenx = 0;
@@ -73,18 +76,19 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
     int l2 = 0;
     int total_mass = 0;
     int total_keys = 0;
+    int max_mass_level = 0;
     int keysPerMass = 0;
 	node_base<P>* root = const_cast<node_base<P>*>(root_);
 	leaf<P> *next;
 
  nextMass:
-    std::cout<<"{";
+    //myfile<<"{";
     total_mass += 1;
  	n_ = root->leftmost();
  nextNeighbor:
     n_->prefetch();
  	perm_ = n_->permutation();
- 	std::cout<< perm_.size() << ", ";
+ 	//myfile<< perm_.size() << ", ";
     total_keys += perm_.size(); 
     keysPerMass += perm_.size();
  	for(int i = 0 ; i < perm_.size(); i++) {
@@ -101,11 +105,12 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
  	} 
 
  	if(q.size() != 0) {
-        std::cout<<"} ";
+        //myfile<<"} ";
  	    if (l2 == 0) {
+            max_mass_level += 1;
  		    l2 = l1;
  		    l1 = 0;
- 			std::cout<<"\n";
+ 			//myfile<<"\n";
  	    }
  		root = q.front().layer();
         q.pop_front();
@@ -121,15 +126,16 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
  	}
 
     if(myMap.find(keysPerMass) != myMap.end()){
-        myMap[keysPerMass] += 1;
-        } else {
-        myMap[keysPerMass] = 1;
+      myMap[keysPerMass] += 1;
+    } else {
+      myMap[keysPerMass] = 1;
     }
-    std::cout<<"}\ntotal mass nodes: " << total_mass << "\n total keys: "<< total_keys <<"\n avg: "<<(float)total_keys/total_mass<<"\n";
-    for(std::map<int, int>:: iterator it= myMap.begin(); it != myMap.end(); ++it)
-    	std::cout<< it->first << " => " << it->second <<"\n";
-}
 
+    myfile<<"}\ntotalMassN: " << total_mass << "\ntotalK: "<< total_keys <<"\navg: "<<(float)total_keys/total_mass<<"\nmaxMassLevel: "<<max_mass_level<<"\n";
+    //for(std::map<int, int>:: iterator it= myMap.begin(); it != myMap.end(); ++it)
+    	//myfile<< it->first <<" "<<it->second<<"\n";
+    myfile.close();
+}
 
 template <typename P>
 bool unlocked_tcursor<P>::find_unlocked(threadinfo& ti)
@@ -295,6 +301,95 @@ bool tcursor<P>::find_locked(threadinfo& ti)
 	    return kp_ >= 0;
         }
     }
+}
+
+
+
+template<typename P>
+massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
+  typedef typename P::ikey_type ikey_type;
+
+  std::deque<leafvalue<P>> q;
+  std::deque<uint8_t> keylenList;
+  std::deque<ikey_type> keyList;
+  std::deque<leafvalue<P>> link_or_value_list;
+  std::vector<int> has_ksuf_list;
+  std::vector<massnode<P>*> nodeList;
+  std::deque<Str> ksufList;
+  int kp = 0;
+  int keylenx = 0;
+  int massID = 1;
+  int nkeys = 0;
+  size_t ksufSize = 0;
+  node_base<P>* root = const_cast <node_base<P>*> (root_);
+  leaf<P> *next;
+
+ nextMass:
+  n_ = root -> leftmost();
+ nextLeaf:
+  n_ -> prefetch();
+  perm_ = n_ -> permutation();
+  nkeys += perm_.size();
+  ksufSize += n_ -> ksuf_size();
+  for (int i = 0; i < perm_.size(); i++) {
+    kp = perm_[i];
+    keyList.push_back(n_ -> ikey0_[kp]);
+    keylenList.push_back(n_ -> keylenx_[kp]);
+    link_or_value_list.push_back(n_ -> lv_[kp]);
+    keylenx = n_ -> keylenx_[kp];
+    if (n_ -> keylenx_is_layer(keylenx)) {
+      q.push_back(n_ -> lv_[kp]);
+    }
+    if (n_ -> has_ksuf(kp)) {
+      has_ksuf_list.push_back(1);
+      ksufList.push_back(n_ -> ksuf(kp));
+    }
+    else
+      has_ksuf_list.push_back(0);
+  }
+  if (next = n_ -> safe_next()) {
+    n_ = next;
+    goto nextLeaf;
+  }
+
+  massnode<P>* newNode = massnode<P>::make(ksufSize, nkeys, ti);
+  nodeList.push_back(newNode);
+  for (int i = 0; i < nkeys; i++) {
+    newNode -> keylenx[i] = keylenList.front();
+    keylenList.pop_front();
+    newNode -> ikey0_[i] = keyList.front();
+    keyList.pop_front();
+    newNode -> lv_[i] = link_or_value_list.front();
+    link_or_value_list.pop_front();
+    if (leaf<P>::keylenx_is_layer(newNode -> keylenx[i])) {
+      newNode -> lv_[i] = massID;
+      massID++;
+    }
+    if (has_ksuf_list[i]) {
+      newNode -> ksuf -> assign(i, ksufList.front());
+      ksufList.pop_front();
+    }
+  }
+
+  keylenList.clear();
+  keyList.clear();
+  link_or_value_list.clear();
+  has_ksuf_list.clear();
+  ksufList.clear();
+
+  if (q.size() != 0) {
+    root = q.front().layer();
+    q.pop_front();
+
+    goto nextMass;
+  }
+
+  for (int i = 0; i < nodeList.size(); i++) {
+    for (int j = 0; j < nodeList[i] -> nkeys_; j++) {
+      if (leaf<P>::keylenx_is_layer(nodeList[i] -> keylenx_[j]))
+        nodeList[i] -> lv_[j] = nodeList[nodeList[i] -> lv_[j]];
+    }
+  }
 }
 
 } // namespace Masstree

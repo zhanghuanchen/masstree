@@ -213,6 +213,10 @@ class threadinfo {
     // XXX destructor
     static threadinfo *allthreads;
     static pthread_key_t key;
+    //hyw
+    int numOfLines = 0;
+    size_t otherSize = 0;
+    int cacheLineDist[20] = {0};
 
     // timestamps
     kvtimestamp_t operation_timestamp() const {
@@ -304,6 +308,10 @@ class threadinfo {
     // memory allocation
     void* allocate(size_t sz, memtag tag) {
 	void *p = malloc(sz + memdebug_size);
+
+    //hyw
+    otherSize += sz;
+
 	p = memdebug::make(p, sz, tag << 8);
 	if (p)
             mark(threadcounter(tc_alloc + (tag > memtag_value)), sz);
@@ -326,6 +334,11 @@ class threadinfo {
     void* pool_allocate(size_t sz, memtag tag) {
 	int nl = (sz + memdebug_size + CACHE_LINE_SIZE - 1) / CACHE_LINE_SIZE;
 	assert(nl <= pool_max_nlines);
+
+    //hyw
+    numOfLines += nl;
+    cacheLineDist[nl - 1] += 1;
+
 	if (unlikely(!pool_[nl - 1]))
 	    refill_pool(nl);
 	void *p = pool_[nl - 1];

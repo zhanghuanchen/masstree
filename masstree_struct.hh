@@ -761,5 +761,133 @@ inline node_base<P>* basic_table<P>::fix_root() {
     return root;
 }
 
+
+
+
+
+
+
+
+// Huanchen's massnode class
+
+template <typename P>
+class massnode : public node_base<P> {
+public:
+  typedef typename P::ikey_type ikey_type;
+  typedef key<typename P::ikey_type> key_type;
+  typedef typename node_base<P>::leafvalue_type leafvalue_type;
+  typedef typename P::threadinfo_type threadinfo;
+
+  uint32_t nkeys_;
+  uint8_t* keylenx_;
+  ikey_type* ikey0_;
+  leafvalue_type* lv_;
+  stringbag<uint32_t>* ksuf_;
+
+  massnode (uint32_t nkeys)
+    : nkeys_(nkeys) {
+    keylenx_ = (uint8_t*)(this + sizeof(uint32_t));
+    ikey0_ = (ikey_type*)(keylenx_ + nkeys_ * sizeof(uint8_t));
+    lv_ = (leafvalue_type*)(ikey0_ + nkeys_ * sizeof(ikey_type));
+    ksuf = (stringbag<uint32_t>*)(lv_ + nkeys_ * sizeof(leafvalue_type));
+  }
+
+  static massnode<P>* make (int ksufsize, uint32_t nkeys, threadinfo& ti) {
+    size_t sz = iceil(sizeof(massnode<P>) + sizeof(ikey_type) * nkeys + sizeof(uint8_t) * nkeys + sizeof(leafvalue_type) * nkeys + ksufsize, 64);
+    void* ptr = ti.pool_allocated (sz, memtag_masstree_leaf);
+    massnode<P>* n = new(ptr) massnode<P>(nkeys);
+    assert(n);
+    return n;
+  }
+
+  size_t allocated_size() const {
+	//TODO: figure out how to calculate this number
+  	return 0;  
+  }
+
+  uint32_t size() const {
+    return nkeys_;
+  }
+
+  key_type get_key(int p) const {
+    int kl = keylenx_[p];
+    if (!keylenx_has_ksuf(kl))
+      return key_type(ikey0_[p], kl);
+    else
+      return key_type(ikey0_[p], ksuf(p));
+  }
+
+  ikey_type ikey(int p) const {
+    return ikey0_[p];
+  }
+
+  int ikeylen(int p) const {
+    return keylenx_[p];
+  }
+
+  Str ksuf(int p) const {
+    masstree_precondition(has_ksuf(p));
+    return ksuf_->get(p);
+  }
+
+  size_t ksuf_size() const {
+    return ksuf_ ? ksuf_->size() : 0;
+  }
+
+  bool has_ksuf(int p) const {
+    return keylenx_has_ksuf(keylenx_[p]);
+  }
+
+  // ksuf size = 1
+  static bool keylenx_has_ksuf(int keylenx) {
+    return keylenx == (int) sizeof(ikey_type) + 1;
+  }
+
+  bool ksuf_equals(int p, const key_type& ka) {
+    // Precondition: keylenx_[p] == ka.ikeylen() && ikey0_[p] == ka.ikey()
+    return ksuf_equals(p, ka, keylenx_[p]);
+  }
+  bool ksuf_equals(int p, const key_type& ka, int keylenx) {
+    // Precondition: keylenx_[p] == ka.ikeylen() && ikey0_[p] == ka.ikey()
+    return !keylenx_has_ksuf(keylenx)
+      || (ksuf_ && ksuf_->equals_sloppy(p, ka.suffix()));
+  }
+  int ksuf_compare(int p, const key_type& ka) {
+    if (!has_ksuf(p))
+      return 0;
+    else
+      return ksuf_->compare(p, ka.suffix());
+  }
+
+  void prefetch() const {
+    for (int i = 64; i < std::min((int)(sizeof(massnode<P>) + sizeof(ikey_type) * nkeys_ + sizeof(uint8_t) * nkeys_ + sizeof(leafvalue_type) * nkeys_), 4 * 64); i += 64)
+      ::prefetch((const char *) this + i);
+    if (ksuf) {
+      ::prefetch((const char *) ksuf_);
+      ::prefetch((const char *) ksuf_ + CACHE_LINE_SIZE);
+    }
+  }
+
+  void deallocate(threadinfo& ti) {
+    if (ksuf_)
+      ti.deallocate(ksuf_, ksuf_->allocated_size(),
+                    memtag_masstree_ksuffixes);
+    ti.pool_deallocate(this, allocated_size(), memtag_masstree_leaf);
+  }
+
+private:
+    template <typename PP> friend class tcursor;
+};
+
+
+
 } // namespace Masstree
 #endif
+
+
+
+
+
+
+
+
