@@ -167,9 +167,11 @@ void kvtest_url_seed(C &client, int seed) // hyw
     client.puts_done();
 
     client.notice("now counting keys\n");
-
     client.count_keys();
 
+
+    int totalSize = client.ti->numOfLines * 64 + (int)client.ti->otherSize;
+    client.notice("Total space used: %d", totalSize);
     client.notice("now getting\n");
     
    /* int32_t *a = (int32_t *) malloc(sizeof(int32_t) * n);
