@@ -216,10 +216,13 @@ class threadinfo {
     static pthread_key_t key;
 
     //hyw
-    int numOfLines;
-    size_t otherSize;
+    int numCacheLines;
+    size_t ksufAllocSize;
+    size_t deallocSize;
+    size_t totalAllocSize;
     int cacheLineDist[20];
-    int allocDist[20];    
+    int allocDist[20];
+    int ksufSize;
 
     // timestamps
     kvtimestamp_t operation_timestamp() const {
@@ -313,7 +316,7 @@ class threadinfo {
 	void *p = malloc(sz + memdebug_size);
 
     //hyw
-    //otherSize += sz;
+    totalAllocSize += sz;
 
 	p = memdebug::make(p, sz, tag << 8);
 	if (p)
@@ -322,7 +325,7 @@ class threadinfo {
     }
     void deallocate(void* p, size_t sz, memtag tag) {
 	// in C++ allocators, 'p' must be nonnull
-	//otherSize -= sz;
+	totalAllocSize -= sz;
 	assert(p);
 	p = memdebug::check_free(p, sz, tag << 8);
 	free(p);
@@ -331,7 +334,7 @@ class threadinfo {
     void deallocate_rcu(void *p, size_t sz, memtag tag) {
 	assert(p);
 	memdebug::check_rcu(p, sz, tag << 8);
-	//otherSize -= sz;
+	totalAllocSize -= sz;
 	record_rcu(p, tag << 8);
         mark(threadcounter(tc_alloc + (tag > memtag_value)), -sz);
     }
@@ -341,7 +344,7 @@ class threadinfo {
 	assert(nl <= pool_max_nlines);
 
     //hyw
-    numOfLines += nl;
+    numCacheLines += nl;
     cacheLineDist[nl - 1] += 1;
 
 	if (unlikely(!pool_[nl - 1]))
@@ -358,7 +361,8 @@ class threadinfo {
     void pool_deallocate(void* p, size_t sz, memtag tag) {
 	int nl = (sz + memdebug_size + CACHE_LINE_SIZE - 1) / CACHE_LINE_SIZE;
 	assert(p && nl <= pool_max_nlines);
-    	numOfLines += nl;
+    numCacheLines -= nl;
+	cacheLineDist[nl - 1] -= 1;
 	p = memdebug::check_free(p, sz, (tag << 8) + nl);
 	*reinterpret_cast<void **>(p) = pool_[nl - 1];
 	pool_[nl - 1] = p;
@@ -368,6 +372,8 @@ class threadinfo {
     void pool_deallocate_rcu(void* p, size_t sz, memtag tag) {
 	int nl = (sz + memdebug_size + CACHE_LINE_SIZE - 1) / CACHE_LINE_SIZE;
 	assert(p && nl <= pool_max_nlines);
+	numCacheLines -= nl;
+	cacheLineDist[nl - 1] -= 1;
 	memdebug::check_rcu(p, sz, (tag << 8) + nl);
 	record_rcu(p, (tag << 8) + nl);
         mark(threadcounter(tc_alloc + (tag > memtag_value)),

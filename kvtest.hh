@@ -152,12 +152,17 @@ void kvtest_url_seed(C &client, int seed) // hyw
     client.rand.reset(seed);
     double tp0 = client.now();
     unsigned n = 0;
+	int totalInsertedKeyLen = 0;
+	int totalValueSize = 0;
 
     //for (n = 0; !client.timeout(0) && n <= client.limit(); ++n) {
 	    //int32_t x = (int32_t) client.rand.next();
 	    //client.put(x, x + 1);
     while (infile >> ops >> url && n < client.limit()) {
+      //std::cout << ops << "\t" << url << "\n";
       client.put(url, n);
+	  totalInsertedKeyLen += url.size();
+	  totalValueSize += (int)sizeof(n);
       n++;
     }
    // }
@@ -171,8 +176,16 @@ void kvtest_url_seed(C &client, int seed) // hyw
 
     // This calculate the total space useage
     
-    int totalSize = client.ti_->numOfLines * 64 + client.ti_->otherSize;
+    int totalSize = client.ti_->numCacheLines * 64 + client.ti_->totalAllocSize;
     client.notice("Total space used: %d\n", totalSize);
+    client.notice("Total pool mem alloc size: %d\n", client.ti_->numCacheLines * 64);
+	client.notice("Total gen mem alloc size: %d\n", client.ti_->totalAllocSize);
+	client.notice("Allocated Suffix Stringbag size: %d\n", client.ti_->ksufAllocSize);
+	client.notice("Allocated Valuebag size: %d\n", client.ti_->totalAllocSize - client.ti_->ksufAllocSize);
+	client.notice("Total inserted key len: %d\n", totalInsertedKeyLen);
+	client.notice("Total value size: %d\n", totalValueSize);
+    client.notice("Total de-allocate space: %d\n", client.ti_->deallocSize);
+    client.notice("Total ksufSize: %d\n", client.ti_->ksufSize);
     for(int i = 0; i < 20; i ++) {
 	client.notice("cache line pool %d: %d\n", i+1, client.ti_->cacheLineDist[i]);
     }	
@@ -218,8 +231,8 @@ void kvtest_url_seed(C &client, int seed) // hyw
     client.report(result);
 
 
-    client.notice("\n-----------start to build static tree---------------\n");
-    client.build_static_tree();
+    //client.notice("\n-----------start to build static tree---------------\n");
+    //client.build_static_tree();
 
     //free(a);
 }

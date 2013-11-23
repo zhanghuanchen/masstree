@@ -76,15 +76,15 @@ for line in f_tree.readlines() :
             else :
                 node_stack.append (cur_node)
         else :
-            cur_node.displayNode()
+            #cur_node.displayNode()
             print "error"
             exit(1)
 
 while (node_stack) :
     node_list.append (node_stack.pop())
 
-for n in node_list :
-    n.displayNode()
+#for n in node_list :
+ #   n.displayNode()
 
 INTERNODE_FIXED_SIZE = 261
 BORDERNODE_FIXED_SIZE = 292

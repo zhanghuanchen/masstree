@@ -132,8 +132,11 @@ void unlocked_tcursor<P>::keyCountsPerMass() {
     }
 
     myfile<<"}\ntotalMassN: " << total_mass << "\ntotalK: "<< total_keys <<"\navg: "<<(float)total_keys/total_mass<<"\nmaxMassLevel: "<<max_mass_level<<"\n";
-    //for(std::map<int, int>:: iterator it= myMap.begin(); it != myMap.end(); ++it)
-    	//myfile<< it->first <<" "<<it->second<<"\n";
+    for(std::map<int, int>:: iterator it= myMap.begin(); it != myMap.end(); ++it)
+    	myfile<< it->first <<"\n";
+    myfile<< "---------------------------------------------------------------------------\n";
+    for(std::map<int, int>:: iterator it= myMap.begin(); it != myMap.end(); ++it)
+    	myfile<< it->second<<"\n";
     myfile.close();
 }
 

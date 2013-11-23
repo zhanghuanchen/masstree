@@ -701,8 +701,12 @@ leaf<P>* leaf<P>::advance_to_key(const key_type& ka, nodeversion_type& v,
 template <typename P>
 void leaf<P>::hard_assign_ksuf(int p, Str s, bool initializing,
 			       threadinfo& ti) {
-    if (ksuf_ && ksuf_->assign(p, s))
-	return;
+    if (ksuf_ && ksuf_->assign(p, s)) {
+		ti.ksufSize += s.len;
+		//std::cout << s << "\n" << s.len << "\n";
+		return;
+    }
+    ti.ksufSize += s.len;
 
     stringbag<uint16_t> *iksuf;
     stringbag<uint32_t> *oksuf;
@@ -719,8 +723,19 @@ void leaf<P>::hard_assign_ksuf(int p, Str s, bool initializing,
     else
 	csz = 0;
     size_t sz = iceil_log2(std::max(csz, size_t(4 * width)) * 2);
+    //size_t before = sz;
+	//std::cout << s << "\n" << s.len << "\n";
+	//std::cout<<"csz: "<<csz<<", ";
+    //std::cout<<"sz (before while): " << sz <<", Str len: "<< s.len << ", ";
     while (sz < csz + stringbag<uint32_t>::overhead(width) + s.len)
 	sz *= 2;
+    //size_t after = sz;
+    //std::cout<<"sz (after while): " << sz << ", " << "\n";
+
+    //if( before != after) {
+      //std::cout<<"csz: "<<csz<<", sz (before while): " << before <<", Str len: "<< s.len << ", sz (after while): " << after << "\n";
+    //}
+
 
     void *ptr = ti.allocate(sz, memtag_masstree_ksuffixes);
     	
@@ -729,7 +744,7 @@ void leaf<P>::hard_assign_ksuf(int p, Str s, bool initializing,
     double arg = sz;
     int idx =(int)(std::log(arg) / std::log(base));
     ti.allocDist[idx - 1] += 1;
-    ti.otherSize += sz;
+    ti.ksufAllocSize += sz;
     
     //std::cout << sz << "\n";
 
@@ -745,6 +760,7 @@ void leaf<P>::hard_assign_ksuf(int p, Str s, bool initializing,
     }
     bool ok = nksuf->assign(p, s);
     assert(ok); (void) ok;
+    //std::cout<< "real sufix size: " << nksuf->size()<< "\n";
     fence();
 
     if (nremoved_ > 0)		// removed ksufs are not copied to the new ksuf,
@@ -758,9 +774,14 @@ void leaf<P>::hard_assign_ksuf(int p, Str s, bool initializing,
 	extrasize64_ = -extrasize64_ - 1;
 
     if (oksuf) {
+	ti.ksufAllocSize -= oksuf->allocated_size();
+	arg = oksuf->allocated_size();
+    idx =(int)(std::log(arg) / std::log(base));
+    ti.allocDist[idx - 1] -= 1;
+    ti.deallocSize += oksuf->allocated_size(); 
+
 	ti.deallocate_rcu(oksuf, oksuf->allocated_size(),
                           memtag_masstree_ksuffixes);
-	ti.otherSize -= oksuf->allocated_size();
 	}
 }
 

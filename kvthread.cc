@@ -97,10 +97,13 @@ threadinfo *threadinfo::make(int purpose, int index)
     threadinfo *ti = (threadinfo *) malloc(8192);
     
     // hyw
-    ti->numOfLines = 0;
-    ti->otherSize = 0;
+    ti->numCacheLines = 0;
+    ti->ksufAllocSize = 0;
+    ti->deallocSize = 0;
+    ti->totalAllocSize = 0;
     memset(ti->cacheLineDist, 0, 20*sizeof(int));	
-    memset(ti->allocDist, 0, 20*sizeof(int));	
+    memset(ti->allocDist, 0, 20*sizeof(int));
+    ti->ksufSize = 0;
 
     memset(ti, 0, sizeof(*ti));
     ti->ti_next = allthreads;
