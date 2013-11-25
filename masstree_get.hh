@@ -400,6 +400,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     }
   }
 
+  std::cout << "buildStatic finish\n";
   return nodeList[0];
 }
 } // namespace Masstree

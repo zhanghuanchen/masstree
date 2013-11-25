@@ -231,8 +231,8 @@ void kvtest_url_seed(C &client, int seed) // hyw
     client.report(result);
 
 
-    //client.notice("\n-----------start to build static tree---------------\n");
-    //client.build_static_tree();
+    client.notice("\n-----------start to build static tree---------------\n");
+    client.build_static_tree();
 
     //free(a);
 }
