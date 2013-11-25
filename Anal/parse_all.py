@@ -27,7 +27,7 @@ f_tree = open (sys.argv[1])
 for line in f_tree.readlines() :
     tokens = line.split ()
     #print tokens
-    if (tokens[0] == "set") :
+    if (tokens[0] == "set" and tokens[1] == "title") :
         break
     if len (tokens) == 0 :
         continue
@@ -79,6 +79,8 @@ for line in f_tree.readlines() :
             #cur_node.displayNode()
             print "error"
             exit(1)
+
+print line
 
 while (node_stack) :
     node_list.append (node_stack.pop())
