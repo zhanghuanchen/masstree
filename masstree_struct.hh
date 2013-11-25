@@ -837,8 +837,8 @@ public:
     ksuf_ = (stringbag<uint32_t>*)(lv_ + nkeys_ * sizeof(leafvalue_type));
   }
 
-  static massnode<P>* make (int ksufsize, uint32_t nkeys, threadinfo& ti) {
-    size_t sz = iceil(sizeof(massnode<P>) + sizeof(ikey_type) * nkeys + sizeof(uint8_t) * nkeys + sizeof(leafvalue_type) * nkeys + ksufsize, 64);
+  static massnode<P>* make (uint32_t nkeys, threadinfo& ti) {
+    size_t sz = iceil(sizeof(massnode<P>) + sizeof(ikey_type) * nkeys + sizeof(uint8_t) * nkeys + sizeof(leafvalue_type) * nkeys, 64);
     void* ptr = ti.pool_allocate(sz, memtag_masstree_leaf);
     massnode<P>* n = new(ptr) massnode<P>(nkeys);
     assert(n);

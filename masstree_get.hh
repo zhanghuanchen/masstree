@@ -360,8 +360,10 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     goto nextLeaf;
   }
 
-  massnode<P>* newNode = massnode<P>::make(ksufSize, nkeys, ti);
+  massnode<P>* newNode = massnode<P>::make(nkeys, ti);
   nodeList.push_back(newNode);
+  void *ptr = ti.allocate(ksufSize, memtag_masstree_ksuffixes);
+  stringbag<uint32_t> *nksuf = new(ptr) stringbag<uint32_t>(nkeys, ksufSize)
   for (int i = 0; i < nkeys; i++) {
     newNode -> keylenx_[i] = keylenList.front();
     keylenList.pop_front();
@@ -374,7 +376,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
       massID++;
     }
     if (has_ksuf_list[i]) {
-      newNode -> ksuf_ -> assign(i, ksufList.front());
+      nksuf -> assign(i, ksufList.front());
       ksufList.pop_front();
     }
   }
