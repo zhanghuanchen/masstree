@@ -839,6 +839,12 @@ public:
 
   static massnode<P>* make (int ksufsize, uint32_t nkeys, threadinfo& ti) {
     size_t sz = iceil(sizeof(massnode<P>) + sizeof(ikey_type) * nkeys + sizeof(uint8_t) * nkeys + sizeof(leafvalue_type) * nkeys + ksufsize, 64);
+    std::cout << "massnode = " << sizeof(massnode<P>) << "\n";
+    std::cout << "ikey_type = " << sizeof(ikey_type) << "\n";
+    std::cout << "nkeys = " << nkeys << "\n";
+    std::cout << "leafvalue_type = " << sizeof(leafvalue_type) << "\n";
+    std::cout << "ksufsize = " << ksufsize << "\n";
+    std::cout << "size = " << sz << "\n";
     void* ptr = ti.pool_allocate(sz, memtag_masstree_leaf);
     massnode<P>* n = new(ptr) massnode<P>(nkeys);
     assert(n);
