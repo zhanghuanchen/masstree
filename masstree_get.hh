@@ -345,6 +345,8 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     keylenList.push_back(n_ -> keylenx_[kp]);
     link_or_value_list.push_back(n_ -> lv_[kp]);
     keylenx = n_ -> keylenx_[kp];
+    //std::cout << "keylenx_[" << kp << "] = " << n_ -> keylenx_[kp] << "\n";
+    //std::cout << "ikey0_[" << kp << "] = " << n_ -> ikey0_[kp] << "\n";
     if (n_ -> keylenx_is_layer(keylenx)) {
       q.push_back(n_ -> lv_[kp]);
     }
@@ -359,24 +361,40 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     n_ = next;
     goto nextLeaf;
   }
-
-  massnode<P>* newNode = massnode<P>::make(ksufSize, nkeys, ti);
-  nodeList.push_back(newNode);
+  
+  massnode<P>* newNode = massnode<P>::make(nkeys, ti);
+  std::cout << "nkeys after node creation = " << nkeys << "\n";
+  std::cout << "nodeList size = " << nodeList.size() << "\n";
+  //nodeList.push_back(newNode);
+  void *ptr = ti.allocate(ksufSize, memtag_masstree_ksuffixes);
+  newNode -> ksuf_ = new(ptr) stringbag<uint32_t>(nkeys, ksufSize);
+  //std::cout << "nkeys = " << nkeys << "\n";
   for (int i = 0; i < nkeys; i++) {
+    std::cout << "count = " << i << "\tnkeys = " << nkeys << "\n";
+    if (keylenList.empty())
+      std::cout << "keylenList Empty!\n";
     newNode -> keylenx_[i] = keylenList.front();
+    std::cout << "keylenx_[" << i << "] = " << keylenList.front() << "\n";
     keylenList.pop_front();
+    if (keyList.empty())
+      std::cout << "keyList Empty!\n";
     newNode -> ikey0_[i] = keyList.front();
+    std::cout << "ikey0_[" << i << "] = " << keyList.front() << "\n";
     keyList.pop_front();
+    if (link_or_value_list.empty())
+      std::cout << "link_or_value_list Empty!\n";
     newNode -> lv_[i] = link_or_value_list.front();
     link_or_value_list.pop_front();
     if (leaf<P>::keylenx_is_layer(newNode -> keylenx_[i])) {
       newNode -> lv_[i].setX(massID);
       massID++;
     }
+    /*
     if (has_ksuf_list[i]) {
       newNode -> ksuf_ -> assign(i, ksufList.front());
       ksufList.pop_front();
     }
+    */
   }
 
   keylenList.clear();
@@ -384,6 +402,8 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   link_or_value_list.clear();
   has_ksuf_list.clear();
   ksufList.clear();
+  nkeys = 0;
+  ksufSize = 0;
 
   if (q.size() != 0) {
     root = q.front().layer();
@@ -391,17 +411,20 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
 
     goto nextMass;
   }
-  unsigned int id = 0;
+  
+ /* unsigned int id = 0;
   for (unsigned int i = 0; i < nodeList.size(); i++) {
     for (unsigned int j = 0; j < nodeList[i] -> nkeys_; j++) {
       if (leaf<P>::keylenx_is_layer(nodeList[i] -> keylenx_[j]))
 	id = nodeList[i]->lv_[j].getX();
         (nodeList[i]) -> lv_[j] = nodeList[id];
     }
-  }
+  }*/
 
   std::cout << "buildStatic finish\n";
   return nodeList[0];
+  
+  //return NULL;
 }
 } // namespace Masstree
 #endif
