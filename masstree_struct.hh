@@ -900,16 +900,16 @@ public:
   }
 
   static bool keylenx_has_ksuf(int keylenx) {
-    //TODO
-    return 0;
+    return keylenx == (int) sizeof(ikey_type) + 1;
   }
 
   bool ksuf_equals(int p, const key_type& ka) {
    return ksuf_equals(p, ka, keylenx_[p]);
   }
+  
   bool ksuf_equals(int p, const key_type& ka, int keylenx) {
-    //TODO
-    return 0;
+    
+    return !keylenx_has_ksuf(keylenx) || equals_sloppy(p, ka);
   }
 
   bool equals_sloppy(int p, const key_type& ka) {
