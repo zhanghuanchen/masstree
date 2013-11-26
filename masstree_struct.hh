@@ -827,7 +827,8 @@ public:
   uint8_t* keylenx_;
   ikey_type* ikey0_;
   leafvalue_type* lv_;
-  stringbag<uint32_t>* ksuf_;
+  uint32_t* ksuf_pos_offset_;
+  char* ksuf_;
 
   massnode (uint32_t nkeys)
     :node_base<P>(false), nkeys_(nkeys) {
@@ -835,11 +836,12 @@ public:
 	//keylenx_ = (uint8_t*)content_[0];
     ikey0_ = (ikey_type*)((char*)keylenx_ + nkeys_ * sizeof(uint8_t));
     lv_ = (leafvalue_type*)((char*)ikey0_ + nkeys_ * sizeof(ikey_type));
-    ksuf_ = (stringbag<uint32_t>*)((char*)lv_ + nkeys_ * sizeof(leafvalue_type));
+    ksuf_pos_offset_ = (uint32_t*)((char*)lv_ + nkeys_ * sizeof(leafvalue_type));
+    ksuf_ = (char*)((char*)ksuf_pos_offset + nkeys_ * sizeof(uint32_t));
   }
 
-  static massnode<P>* make (uint32_t nkeys, threadinfo& ti) {
-    size_t sz = iceil(sizeof(massnode<P>) + sizeof(ikey_type) * nkeys + sizeof(uint8_t) * nkeys + sizeof(leafvalue_type) * nkeys, 64);
+  static massnode<P>* make (size_t ksufSize, uint32_t nkeys, threadinfo& ti) {
+    size_t sz = sizeof(massnode<P>) + sizeof(ikey_type) * nkeys + sizeof(uint8_t) * nkeys + sizeof(leafvalue_type) * nkeys + sizeof(uint32_t) * nkeys + ksufSize;
     //std::cout << "massnode = " << sizeof(massnode<P>) << "\n";
     //std::cout << "ikey_type = " << sizeof(ikey_type) << "\n";
     std::cout << "nkeys = " << nkeys << "\t";
