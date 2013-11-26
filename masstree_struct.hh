@@ -878,7 +878,7 @@ public:
     return keylenx_[p];
   }
 
-  Str* ksuf(int p) const {
+  Str ksuf(int p) const {
     if (ksuf_pos_offset_[p] == 0)
       return NULL;
     return lcdf::Str((char*)(ksuf_ + ksuf_pos_offset_[p]), (int)(ksuf_pos_offset_[p+1] - ksuf_pos_offset_[p]));
