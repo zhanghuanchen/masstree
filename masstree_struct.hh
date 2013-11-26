@@ -861,7 +861,7 @@ public:
   uint32_t size() const {
     return nkeys_;
   }
-
+  
   key_type get_key(int p) const {
     int kl = keylenx_[p];
     if (!keylenx_has_ksuf(kl))
@@ -869,6 +869,7 @@ public:
     else
       return key_type(ikey0_[p], ksuf(p));
   }
+  
 
   ikey_type ikey(int p) const {
     return ikey0_[p];
@@ -878,10 +879,16 @@ public:
     return keylenx_[p];
   }
 
+  char* ksufPos(int p) const {
+    return (char*)(ksuf_ + ksuf_pos_offset_[p]);
+  }
+
+  uint32_t ksufLen(int p) const {
+    return ksuf_pos_offset_[p+1] - ksuf_pos_offset_[p];
+  }
+
   Str ksuf(int p) const {
-    if (ksuf_pos_offset_[p] == 0)
-      return NULL;
-    return lcdf::Str((char*)(ksuf_ + ksuf_pos_offset_[p]), (int)(ksuf_pos_offset_[p+1] - ksuf_pos_offset_[p]));
+    return Str(ksufPos(p), ksufLen(p));
   }
 
   size_t ksuf_size() const {
