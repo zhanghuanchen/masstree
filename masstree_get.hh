@@ -461,7 +461,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     keylenList.push_back(n_ -> keylenx_[kp]);
     link_or_value_list.push_back(n_ -> lv_[kp]);
     keylenx = n_ -> keylenx_[kp];
-    //std::cout << "keylenx_[" << kp << "] = " << int(n_ -> keylenx_[kp]) << "\n";
+    std::cout << "keylenx_[" << kp << "] = " << int(n_ -> keylenx_[kp]) << "\n";
     //std::cout << "ikey0_[" << kp << "] = " << n_ -> ikey0_[kp] << "\n";
     if (n_ -> keylenx_is_layer(keylenx)) {
       q.push_back(n_ -> lv_[kp]);
