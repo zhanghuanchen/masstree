@@ -186,6 +186,51 @@ bool unlocked_tcursor<P>::find_unlocked(threadinfo& ti)
         return ksuf_match;
 }
 
+bool scursor<P>::find(threadinfo& ti)
+{
+    bool ksuf_match = false;
+    int kp, keylenx = 0;
+    node_base<P>* root = const_cast<node_base<P>*>(root_);
+
+ retry:
+    n_ = root->reach_leaf(ka_, v_, ti);
+
+ forward:
+    if (v_.deleted())
+	goto retry;
+
+    n_->prefetch();
+    perm_ = n_->permutation();
+    if (leaf<P>::bound_type::is_binary)
+        kp = lower_bound_binary();
+    else
+        kp = lower_bound_linear();
+    if (kp >= 0) {
+	keylenx = n_->keylenx_[kp];
+	fence();		// see note in check_leaf_insert()
+	lv_ = n_->lv_[kp];
+	lv_.prefetch(keylenx);
+	ksuf_match = n_->ksuf_equals(kp, ka_, keylenx);
+    }
+    if (n_->has_changed(v_)) {
+	ti.mark(threadcounter(tc_stable_leaf_insert + n_->simple_has_split(v_)));
+	n_ = n_->advance_to_key(ka_, v_, ti);
+	goto forward;
+    }
+
+    if (kp < 0)
+	return false;
+    else if (n_->keylenx_is_layer(keylenx)) {
+	if (likely(n_->keylenx_is_stable_layer(keylenx))) {
+	    ka_.shift();
+	    root = lv_.layer();
+	    goto retry;
+	} else
+	    goto forward;
+    } else
+        return ksuf_match;
+}
+
 template <typename P>
 inline bool basic_table<P>::get(Str key, value_type &value,
                                 threadinfo& ti) const
