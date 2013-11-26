@@ -93,6 +93,73 @@ class unlocked_tcursor {
     inline int lower_bound_linear() const;
 };
 
+
+template <typename P>
+class scursor {
+  public:
+    typedef typename P::value_type value_type;
+    typedef key<typename P::ikey_type> key_type;
+    typedef typename P::threadinfo_type threadinfo;
+
+    //hyw
+    inline scursor(const basic_table<P>& table)
+        : lv_(leafvalue<P>::make_empty()),   root_(table.root()) {
+
+        }  
+
+    inline scursor(const basic_table<P>& table, Str str)
+        : ka_(str), lv_(leafvalue<P>::make_empty()),
+          root_(table.root()) {
+    }
+    inline scursor(basic_table<P>& table, Str str)
+        : ka_(str), lv_(leafvalue<P>::make_empty()),
+          root_(table.fix_root()) {
+    }
+    inline scursor(const basic_table<P>& table,
+                            const char* s, int len)
+        : ka_(s, len), lv_(leafvalue<P>::make_empty()),
+          root_(table.root()) {
+    }
+    inline scursor(basic_table<P>& table,
+                            const char* s, int len)
+        : ka_(s, len), lv_(leafvalue<P>::make_empty()),
+          root_(table.fix_root()) {
+    }
+    inline scursor(const basic_table<P>& table,
+                            const unsigned char* s, int len)
+        : ka_(reinterpret_cast<const char*>(s), len),
+          lv_(leafvalue<P>::make_empty()), root_(table.root()) {
+    }
+    inline scursor(basic_table<P>& table,
+                            const unsigned char* s, int len)
+        : ka_(reinterpret_cast<const char*>(s), len),
+          lv_(leafvalue<P>::make_empty()), root_(table.fix_root()) {
+    }
+
+    bool find (threadinfo& ti);
+
+    //hyw
+    void keyCountsPerMass();
+    massnode<P>* buildStatic(threadinfo& ti);
+
+    inline value_type value() const {
+        return lv_.value();
+    }
+    inline massnode<P>* node() const {
+        return n_;
+    }
+
+  private:
+    massnode<P>* n_;
+    key_type ka_;
+    leafvalue<P> lv_;
+    const node_base<P>* root_;
+
+    inline int lower_bound_binary() const;
+    inline int lower_bound_linear() const;
+};
+
+
 template <typename P>
 class tcursor {
   public:
