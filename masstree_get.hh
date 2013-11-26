@@ -454,8 +454,13 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   /*  
   for (int i = 0; i < nkeys; i++) {
     //if (has_ksuf_list[i])
+<<<<<<< HEAD
+    //std::cout << "ksuf_[" << i << "] = " << std::string(newNode -> ksuf_ + newNode -> ksuf_pos_offset_[i], newNode -> ksuf_pos_offset_[i+1] - newNode -> ksuf_pos_offset_[i]) << "\n";
+    std::cout << "ksuf_[" << i << "] = " << newNode->ksuf(i) << "\n";
+=======
     //std::cout << "ksuf_[" << i << "] = " << std::string(newNode -> ksufPos(i), newNode -> ksufLen(i)) << "\n";
     std::cout << "ksuf_[" << i << "] = " << std::string(newNode -> ksuf(i).s, newNode -> ksuf(i).len) << "\n";
+>>>>>>> 11c0d9c0eb1e51ee3733f51691c8970a73ce28c8
   }
   */
 
