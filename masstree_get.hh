@@ -346,7 +346,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     keylenList.push_back(n_ -> keylenx_[kp]);
     link_or_value_list.push_back(n_ -> lv_[kp]);
     keylenx = n_ -> keylenx_[kp];
-    std::cout << "keylenx_[" << kp << "] = " << int(n_ -> keylenx_[kp]) << "\n";
+    //std::cout << "keylenx_[" << kp << "] = " << int(n_ -> keylenx_[kp]) << "\n";
     //std::cout << "ikey0_[" << kp << "] = " << n_ -> ikey0_[kp] << "\n";
     if (n_ -> keylenx_is_layer(keylenx)) {
       q.push_back(n_ -> lv_[kp]);
@@ -365,12 +365,13 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     goto nextLeaf;
   }
 
-  massnode<P>* newNode = massnode<P>::make(nkeys, ti);
+  massnode<P>* newNode = massnode<P>::make(ksufSize, nkeys, ti);
   //std::cout << "nkeys after node creation = " << nkeys << "\n";
   //std::cout << "nodeList size = " << nodeList.size() << "\n";
   nodeList.push_back(newNode);
   //std::cout << "nkeys = " << nkeys << "\n";
   char* curpos = newNode -> ksuf_;
+  char* startpos = newNode -> ksuf_;
   for (int i = 0; i < nkeys; i++) {
     //std::cout << "count = " << i << "\tnkeys = " << nkeys << "\n";
     if (keylenList.empty())
@@ -393,22 +394,31 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     }
 
     if (has_ksuf_list[i]) {
-      newNode -> ksuf_pos_offset_[i] = ksufList.front().len;
+      newNode -> ksuf_pos_offset_[i] = (uint32_t)(curpos - startpos);
+      //std::cout << "offset[" << i << "] = " << newNode -> ksuf_pos_offset_[i] << "\n";
       memcpy(curpos, ksufList.front().s, ksufList.front().len);
       curpos += ksufList.front().len;
       ksufList.pop_front();
+      //std::cout << "ksuf_[" << i << "] = " << std::string(newNode -> ksuf_ + newNode -> ksuf_pos_offset_[i], newNode -> ksuf_pos_offset_[i+1] - newNode -> ksuf_pos_offset_[i]) << "\n";
     }
     else
-      newNode -> ksuf_pos_offset_[i] = 0;
-
+      newNode -> ksuf_pos_offset_[i] = (uint32_t)(curpos - startpos);
   }
+
+  newNode -> ksuf_pos_offset_[nkeys] = (uint32_t)(curpos - startpos);
+  std::cout << "ksuf_[0] = " << std::string(newNode -> ksuf_ + newNode -> ksuf_pos_offset_[0], newNode -> ksuf_pos_offset_[1] - newNode -> ksuf_pos_offset_[0]) << "\n";
+  //std::cout << "ksuf_[0] = " << std::string((newNode -> ksuf(0)).s, (newNode -> ksuf(0)).len) << "\n";
+  /*
+  for (int i = 0; i < nkeys; i++) {
+    if (has_ksuf_list[i])
+      std::cout << "ksuf_[" << i << "] = " << std::string(newNode -> ksuf(i).s, newNode -> ksuf(i).len) << "\n";
+  }
+  */
 
   //for (int i = 0; i < link_or_value_list.size(); i++) {
   //std::cout << "link_or_value_list_[" << i << "] = " << link_or_value_list[i] << "\n";
   //}
-  std::cout << "ksuf allocated size = " << newNode -> ksuf_ -> allocated_size() << "\n";
-  std::cout << "ksuf size = " << newNode -> ksuf_ -> size() << "\n";
-
+  
   keylenList.clear();
   keyList.clear();
   link_or_value_list.clear();

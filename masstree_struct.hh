@@ -824,6 +824,7 @@ public:
   typedef typename P::threadinfo_type threadinfo;
 
   uint32_t nkeys_;
+  uint32_t size_;
   uint8_t* keylenx_;
   ikey_type* ikey0_;
   leafvalue_type* lv_;
@@ -837,11 +838,11 @@ public:
     ikey0_ = (ikey_type*)((char*)keylenx_ + nkeys_ * sizeof(uint8_t));
     lv_ = (leafvalue_type*)((char*)ikey0_ + nkeys_ * sizeof(ikey_type));
     ksuf_pos_offset_ = (uint32_t*)((char*)lv_ + nkeys_ * sizeof(leafvalue_type));
-    ksuf_ = (char*)((char*)ksuf_pos_offset + nkeys_ * sizeof(uint32_t));
+    ksuf_ = (char*)((char*)ksuf_pos_offset_ + (nkeys_ + 1) * sizeof(uint32_t));
   }
 
   static massnode<P>* make (size_t ksufSize, uint32_t nkeys, threadinfo& ti) {
-    size_t sz = sizeof(massnode<P>) + sizeof(ikey_type) * nkeys + sizeof(uint8_t) * nkeys + sizeof(leafvalue_type) * nkeys + sizeof(uint32_t) * nkeys + ksufSize;
+    size_t sz = sizeof(massnode<P>) + sizeof(ikey_type) * nkeys + sizeof(uint8_t) * nkeys + sizeof(leafvalue_type) * (nkeys + 1) + sizeof(uint32_t) * nkeys + ksufSize;
     //std::cout << "massnode = " << sizeof(massnode<P>) << "\n";
     //std::cout << "ikey_type = " << sizeof(ikey_type) << "\n";
     std::cout << "nkeys = " << nkeys << "\t";
@@ -854,8 +855,7 @@ public:
   }
 
   size_t allocated_size() const {
-	//TODO: figure out how to calculate this number
-  	return 0;  
+    return size_;
   }
 
   uint32_t size() const {
@@ -879,41 +879,40 @@ public:
   }
 
   Str ksuf(int p) const {
-    masstree_precondition(has_ksuf(p));
-    return ksuf_->get(p);
+    if (ksuf_pos_offset_[p] == 0)
+      return NULL;
+    return lcdf::Str(ksuf_ + ksuf_pos_offset_[p], ksuf_pos_offset_[p+1] - ksuf_pos_offset_[p]);
   }
 
   size_t ksuf_size() const {
-    return ksuf_ ? ksuf_->size() : 0;
+    return (size_t)ksuf_pos_offset_[nkeys_];
   }
 
   bool has_ksuf(int p) const {
-    return keylenx_has_ksuf(keylenx_[p]);
+    return ksuf_pos_offset_[p] != 0;
   }
 
-  // ksuf size = 1
   static bool keylenx_has_ksuf(int keylenx) {
-    return keylenx == (int) sizeof(ikey_type) + 1;
+    //TODO
+    return 0;
   }
 
   bool ksuf_equals(int p, const key_type& ka) {
-    // Precondition: keylenx_[p] == ka.ikeylen() && ikey0_[p] == ka.ikey()
-    return ksuf_equals(p, ka, keylenx_[p]);
+    //TODO
+    return 0;
   }
   bool ksuf_equals(int p, const key_type& ka, int keylenx) {
-    // Precondition: keylenx_[p] == ka.ikeylen() && ikey0_[p] == ka.ikey()
-    return !keylenx_has_ksuf(keylenx)
-      || (ksuf_ && ksuf_->equals_sloppy(p, ka.suffix()));
+    //TODO
+    return 0;
   }
   int ksuf_compare(int p, const key_type& ka) {
-    if (!has_ksuf(p))
-      return 0;
-    else
-      return ksuf_->compare(p, ka.suffix());
+    //TODO
+    return 0;
   }
 
   void prefetch() const {
-    for (int i = 64; i < std::min((int)(sizeof(massnode<P>) + sizeof(ikey_type) * nkeys_ + sizeof(uint8_t) * nkeys_ + sizeof(leafvalue_type) * nkeys_), 4 * 64); i += 64)
+    //TODO
+    for (int i = 64; i < std::min((int)size_, 4 * 64); i += 64)
       ::prefetch((const char *) this + i);
     if (ksuf) {
       ::prefetch((const char *) ksuf_);
@@ -922,10 +921,7 @@ public:
   }
 
   void deallocate(threadinfo& ti) {
-    if (ksuf_)
-      ti.deallocate(ksuf_, ksuf_->allocated_size(),
-                    memtag_masstree_ksuffixes);
-    ti.pool_deallocate(this, allocated_size(), memtag_masstree_leaf);
+    //TODO
   }
 
 private:
