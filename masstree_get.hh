@@ -384,10 +384,12 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     newNode -> ikey0_[i] = keyList.front();
     //std::cout << "ikey0_[" << i << "] = " << keyList.front() << "\n";
     keyList.pop_front();
+
     if (link_or_value_list.empty())
       std::cout << "link_or_value_list Empty!\n";
     newNode -> lv_[i] = link_or_value_list.front();
     link_or_value_list.pop_front();
+
     if (leaf<P>::keylenx_is_layer(newNode -> keylenx_[i])) {
       newNode -> lv_[i].setX(massID);
       massID++;
@@ -406,14 +408,15 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   }
 
   newNode -> ksuf_pos_offset_[nkeys] = (uint32_t)(curpos - startpos);
-  std::cout << "ksuf_[0] = " << std::string(newNode -> ksuf_ + newNode -> ksuf_pos_offset_[0], newNode -> ksuf_pos_offset_[1] - newNode -> ksuf_pos_offset_[0]) << "\n";
+  //std::cout << "ksuf_[0] = " << std::string(newNode -> ksuf_ + newNode -> ksuf_pos_offset_[0], newNode -> ksuf_pos_offset_[1] - newNode -> ksuf_pos_offset_[0]) << "\n";
   //std::cout << "ksuf_[0] = " << std::string((newNode -> ksuf(0)).s, (newNode -> ksuf(0)).len) << "\n";
-  /*
+  
   for (int i = 0; i < nkeys; i++) {
-    if (has_ksuf_list[i])
-      std::cout << "ksuf_[" << i << "] = " << std::string(newNode -> ksuf(i).s, newNode -> ksuf(i).len) << "\n";
+    //if (has_ksuf_list[i])
+    std::cout << "ksuf_[" << i << "] = " << std::string(newNode -> ksuf_ + newNode -> ksuf_pos_offset_[i], newNode -> ksuf_pos_offset_[i+1] - newNode -> ksuf_pos_offset_[i]) << "\n";
+    //std::cout << "ksuf_[" << i << "] = " << std::string(newNode -> ksuf(i).s, newNode -> ksuf(i).len) << "\n";
   }
-  */
+  
 
   //for (int i = 0; i < link_or_value_list.size(); i++) {
   //std::cout << "link_or_value_list_[" << i << "] = " << link_or_value_list[i] << "\n";
