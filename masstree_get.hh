@@ -60,6 +60,31 @@ inline int unlocked_tcursor<P>::lower_bound_linear() const
 }
 
 /*
+  hyw:
+     binary search for scursor in a massnode
+*/
+template <typename P>
+inline int unlocked_tcursor<P>::lower_bound_binary() const
+{
+    int l = 0, r = numKey_;
+    while (l < r) {
+        int m = (l + r) >> 1;
+        int cmp = key_compare(ka_, *n_, m);
+        if (cmp < 0)
+            r = m;
+        else if (cmp == 0)
+            return mp;
+        else
+            l = m + 1;
+    }
+    return -1;
+}
+
+
+
+
+
+/*
 	hyw:
 	This method is a sample to get number of keys
 	in each masstree node
@@ -494,9 +519,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   
 
   std::cout << "buildStatic finish\n";
-  //return nodeList[0];
-  
-  return NULL;
+  return nodeList[0];
 }
 
 } // namespace Masstree

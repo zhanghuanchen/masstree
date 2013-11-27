@@ -870,7 +870,6 @@ public:
       return key_type(ikey0_[p], ksuf(p));
   }
   
-
   ikey_type ikey(int p) const {
     return ikey0_[p];
   }
