@@ -261,7 +261,7 @@ class leafvalue {
 	return u_.v;
     }
 
-    node_base<P>* layer() const {
+    node_base<P>* () const {
 	return reinterpret_cast<node_base<P>*>(u_.x);
     }
 
@@ -889,6 +889,15 @@ public:
 
   bool has_ksuf(int p) const {
     return ksuf_pos_offset_[p] != 0;
+  }
+  static bool keylenx_is_layer(int keylenx) {
+    return keylenx > 63;
+  }
+  static bool keylenx_is_unstable_layer(int keylenx) {
+    return keylenx & 64;
+  }
+  static bool keylenx_is_stable_layer(int keylenx) {
+    return keylenx > 127;   // see also leafvalue
   }
 
   static bool keylenx_has_ksuf(int keylenx) {

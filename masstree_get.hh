@@ -328,7 +328,7 @@ nextNode:
       return false;
     } else if (n_->keylenx_is_layer(keylenx)) {
           ka_.shift();
-          n_ = lv_.layer();
+          n_ = static_cast<massnode*>(lv_.layer());
           goto nextNode;
     } 
     else
