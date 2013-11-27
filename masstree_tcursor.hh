@@ -152,11 +152,11 @@ class scursor {
     }
 
   private:
-    massnode<P>* n_;
     key_type ka_;
     leafvalue<P> lv_;
-    uint32_t numKey_;
-    const node_base<P>* root_;
+    uint32_t numKeys_;
+    massnode<P>* n_;
+    const massnode<P>* root_;
 
     inline int lower_bound_binary() const;
     inline int lower_bound_linear() const;

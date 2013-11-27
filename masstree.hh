@@ -59,6 +59,8 @@ class basic_table {
     typedef typename P::threadinfo_type threadinfo;
     typedef unlocked_tcursor<P> unlocked_cursor_type;
     typedef tcursor<P> cursor_type;
+    //hyw
+    typedef scursor<P> static_cursor_type;
 
     inline basic_table();
 

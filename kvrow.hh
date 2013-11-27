@@ -147,6 +147,18 @@ void query<R>::run_buildStatic(T& table, threadinfo& ti) {
     lp.buildStatic(ti);
 }
 
+/*
+    hyw:
+    This is a static tree find tcursor's wrapper
+*/
+template <typename R> template <typename T>
+void query<R>::run_get1_static(T& table, Str key, int col, Str& value, threadinfo& ti) {
+    typename T::static_cursor_type lp(table, key);
+    bool found = lp.find(ti);
+    if(found)
+        value = lp.value()->col(col);
+    return found;
+}
 
 template <typename R> template <typename T>
 void query<R>::run_get(T& table, Json& req, threadinfo& ti) {
