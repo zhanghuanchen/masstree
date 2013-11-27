@@ -48,6 +48,7 @@ template <typename P> class key;
 template <typename P> class basic_table;
 template <typename P> class unlocked_tcursor;
 template <typename P> class tcursor;
+template <typename P> class scursor;
 
 template <typename P>
 class basic_table {
