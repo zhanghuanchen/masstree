@@ -870,7 +870,6 @@ public:
       return key_type(ikey0_[p], ksuf(p));
   }
   
-
   ikey_type ikey(int p) const {
     return ikey0_[p];
   }
@@ -900,18 +899,24 @@ public:
   }
 
   static bool keylenx_has_ksuf(int keylenx) {
-    //TODO
-    return 0;
+    return keylenx == (int) sizeof(ikey_type) + 1;
   }
 
   bool ksuf_equals(int p, const key_type& ka) {
-    //TODO
-    return 0;
+   return ksuf_equals(p, ka, keylenx_[p]);
   }
+  
   bool ksuf_equals(int p, const key_type& ka, int keylenx) {
-    //TODO
-    return 0;
+    
+    return !keylenx_has_ksuf(keylenx) || equals_sloppy(p, ka);
   }
+
+  bool equals_sloppy(int p, const key_type& ka) {
+    Str thisKsuf = ksuf(p);
+    if(thisKsuf.len != ka.len) return false;
+    return string_slice<uintptr_t>::equals_sloppy(thisKsuf, ka.s, ka.len);
+  }
+
   int ksuf_compare(int p, const key_type& ka) {
     //TODO
     return 0;

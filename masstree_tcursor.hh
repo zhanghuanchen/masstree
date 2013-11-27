@@ -94,6 +94,12 @@ class unlocked_tcursor {
 };
 
 
+/*
+    hyw:
+        This is the cursor that we use to 
+        taverse/lookup static tree
+*/
+
 template <typename P>
 class scursor {
   public:
@@ -101,7 +107,6 @@ class scursor {
     typedef key<typename P::ikey_type> key_type;
     typedef typename P::threadinfo_type threadinfo;
 
-    //hyw
     inline scursor(const basic_table<P>& table)
         : lv_(leafvalue<P>::make_empty()),   root_(table.root()) {
 
@@ -138,9 +143,6 @@ class scursor {
 
     bool find (threadinfo& ti);
 
-    //hyw
-    void keyCountsPerMass();
-    massnode<P>* buildStatic(threadinfo& ti);
 
     inline value_type value() const {
         return lv_.value();
@@ -153,6 +155,7 @@ class scursor {
     massnode<P>* n_;
     key_type ka_;
     leafvalue<P> lv_;
+    uint32_t numKey_;
     const node_base<P>* root_;
 
     inline int lower_bound_binary() const;

@@ -227,6 +227,17 @@ template <typename I> constexpr int key<I>::ikey_size;
 
 } // namespace Masstree
 
+/*
+    key_compare for massnode
+*/
+template <typename P>
+inline int key_compare(const Masstree::key<typename P::ikey_type>& a,
+               const Masstree::massnode<P>& b, int bp)
+{
+    return a.compare(b.ikey(bp), b.keylenx_[bp]);
+}
+
+
 template <typename P>
 inline int key_compare(typename P::ikey_type a,
 		       const Masstree::internode<P>& b, int bp)
