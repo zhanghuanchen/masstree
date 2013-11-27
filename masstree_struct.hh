@@ -806,13 +806,6 @@ inline node_base<P>* basic_table<P>::fix_root() {
     return root;
 }
 
-
-
-
-
-
-
-
 // Huanchen's massnode class
 
 template <typename P>

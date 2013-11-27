@@ -73,7 +73,9 @@ class query {
     //hyw
     template<typename T>
     void run_buildStatic(T& table, threadinfo& ti);
-
+    //hyw
+    template<typename T>
+    void run_get1_static(T& table, Str key, int col, Str& value, threadinfo& ti);
 
     const loginfo::query_times& query_times() const {
         return qtimes_;

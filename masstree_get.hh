@@ -64,9 +64,9 @@ inline int unlocked_tcursor<P>::lower_bound_linear() const
      binary search for scursor in a massnode
 */
 template <typename P>
-inline int unlocked_tcursor<P>::lower_bound_binary() const
+inline int scursor<P>::lower_bound_binary() const
 {
-    int l = 0, r = numKey_;
+    int l = 0, r = numKeys_;
     while (l < r) {
         int m = (l + r) >> 1;
         int cmp = key_compare(ka_, *n_, m);
@@ -305,6 +305,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     hyw:
       static massnode find 
 */
+template <typename P>
 bool scursor<P>::find(threadinfo& ti)
 {
     bool ksuf_match = false;
