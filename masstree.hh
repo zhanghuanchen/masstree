@@ -94,6 +94,7 @@ class basic_table {
 
     friend class unlocked_tcursor<P>;
     friend class tcursor<P>;
+    friend class scursor<P>;
 };
 
 } // namespace Masstree
