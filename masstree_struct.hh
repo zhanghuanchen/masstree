@@ -907,7 +907,7 @@ public:
   bool equals_sloppy(int p, const key_type& ka) {
     Str thisKsuf = ksuf(p);
     if(thisKsuf.len != ka.suffix().len) return false;
-    return string_slice<uintptr_t>::equals_sloppy(thisKsuf, ka.suffix().s, ka.suffix().len);
+    return string_slice<uintptr_t>::equals_sloppy(thisKsuf.s, ka.suffix().s, ka.suffix().len);
   }
 
   int ksuf_compare(int p, const key_type& ka) {
@@ -919,7 +919,7 @@ public:
     //TODO
     for (int i = 64; i < std::min((int)size_, 4 * 64); i += 64)
       ::prefetch((const char *) this + i);
-    if (ksuf) {
+    if (ksuf_) {
       ::prefetch((const char *) ksuf_);
       ::prefetch((const char *) ksuf_ + CACHE_LINE_SIZE);
     }
