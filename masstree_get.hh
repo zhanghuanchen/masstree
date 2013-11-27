@@ -329,7 +329,8 @@ nextNode:
           ka_.shift();
           n_ = lv_.layer();
           goto nextNode;
-    } else
+    } 
+    else
       return ksuf_match;
 }
 
