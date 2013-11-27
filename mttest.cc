@@ -331,7 +331,7 @@ void kvtest_client<T>::build_static_tree() {
 }
 //hyw
 template <typename T>
-bool static_get(const Str &key, Str &value) {
+bool kvtest_client<T>::static_get(const Str &key, Str &value) {
     return q_[0].run_get1_static(table_->table(), key, 0, value, *ti_);
 }
 

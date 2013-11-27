@@ -906,8 +906,8 @@ public:
 
   bool equals_sloppy(int p, const key_type& ka) {
     Str thisKsuf = ksuf(p);
-    if(thisKsuf.len != ka.len) return false;
-    return string_slice<uintptr_t>::equals_sloppy(thisKsuf, ka.s, ka.len);
+    if(thisKsuf.len != ka.suffix().len) return false;
+    return string_slice<uintptr_t>::equals_sloppy(thisKsuf, ka.suffix().s, ka.suffix().len);
   }
 
   int ksuf_compare(int p, const key_type& ka) {

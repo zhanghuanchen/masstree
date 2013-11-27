@@ -218,11 +218,12 @@ void kvtest_url_seed(C &client, int seed) // hyw
     }
 #else
     std::ifstream infile2("hyw_url_init.dat");
-    unsigned n2 = 0
+    unsigned n2 = 0;
     while (infile2 >> ops >> url && n2 < client.limit()) {
         Str value;
         client.static_get(Str(url), value);
         client.notice(value);
+        n2 ++;
     }
     infile2.close();
 #endif
