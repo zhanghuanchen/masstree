@@ -193,7 +193,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
     for(int i = 0; i < 20; i ++) {
 	client.notice("allocate size %d: %d\n", i + 1, client.ti_->allocDist[i]);
     }
-
+    infile.close();
     client.notice("now getting\n");
     
    /* int32_t *a = (int32_t *) malloc(sizeof(int32_t) * n);
@@ -217,9 +217,14 @@ void kvtest_url_seed(C &client, int seed) // hyw
       client.many_get_check(BATCH, key, expected);
     }
 #else
-    for (g = 0; g < n && !client.timeout(1); ++g)
-      ;
-     //client.get_check(urls[g], 0.0);
+    std::ifstream infile2("hyw_url_init.dat");
+    unsigned n2 = 0
+    while (infile2 >> ops >> url && n2 < client.limit()) {
+        Str value;
+        client.static_get(Str(url), value);
+        client.notice(value);
+    }
+    infile2.close();
 #endif
     client.wait_all();
     double tg1 = client.now();
@@ -229,7 +234,6 @@ void kvtest_url_seed(C &client, int seed) // hyw
     kvtest_set_time(result, "gets", g, tg1 - tg0);
     kvtest_set_time(result, "ops", n + g, (tp1 - tp0) + (tg1 - tg0));
     client.report(result);
-
 
     client.notice("\n-----------start to build static tree---------------\n");
     client.build_static_tree();

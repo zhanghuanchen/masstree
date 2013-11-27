@@ -215,6 +215,8 @@ struct kvtest_client {
     // This is a client operation wrapper of the key counts
     void count_keys();
     void build_static_tree();
+    bool static_get(const Str &key, Str &value);
+
 
     void put(const Str &key, const Str &value);
     void put(const char *key, const char *value) {
@@ -327,6 +329,12 @@ template <typename T>
 void kvtest_client<T>::build_static_tree() {
     (void) q_[0].run_buildStatic(table_->table(), *ti_);
 }
+//hyw
+template <typename T>
+bool static_get(const Str &key, Str &value) {
+    return q_[0].run_get1_static(table_->table(), key, 0, value, *ti_);
+}
+
 
 template <typename T>
 void kvtest_client<T>::get(long ikey) {

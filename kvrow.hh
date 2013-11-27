@@ -75,7 +75,7 @@ class query {
     void run_buildStatic(T& table, threadinfo& ti);
     //hyw
     template<typename T>
-    void run_get1_static(T& table, Str key, int col, Str& value, threadinfo& ti);
+    bool run_get1_static(T& table, Str key, int col, Str& value, threadinfo& ti);
 
     const loginfo::query_times& query_times() const {
         return qtimes_;
@@ -154,7 +154,7 @@ void query<R>::run_buildStatic(T& table, threadinfo& ti) {
     This is a static tree find tcursor's wrapper
 */
 template <typename R> template <typename T>
-void query<R>::run_get1_static(T& table, Str key, int col, Str& value, threadinfo& ti) {
+bool query<R>::run_get1_static(T& table, Str key, int col, Str& value, threadinfo& ti) {
     typename T::static_cursor_type lp(table, key);
     bool found = lp.find(ti);
     if(found)
