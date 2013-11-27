@@ -325,12 +325,13 @@ nextNode:
     }
     if (kp < 0) {
       return false;
-    } else if (n_->keylenx_is_layer(keylenx) {
+    } else if (n_->keylenx_is_layer(keylenx)) {
           ka_.shift();
           n_ = lv_.layer();
           goto nextNode;
-    } else
-      return ksuf_match;
+    } else { 
+        return ksuf_match;
+    }
 }
 
 template <typename P>
