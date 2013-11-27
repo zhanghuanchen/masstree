@@ -329,9 +329,9 @@ nextNode:
           ka_.shift();
           n_ = lv_.layer();
           goto nextNode;
-    } else { 
-        return ksuf_match;
-    }
+    } 
+    else
+      return ksuf_match;
 }
 
 template <typename P>

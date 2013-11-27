@@ -285,6 +285,5 @@ tcursor<P>::next_full_version_value(int state) const {
     else
         return result;
 }
-
 } // namespace Masstree
 #endif

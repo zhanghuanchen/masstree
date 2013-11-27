@@ -48,6 +48,7 @@ template <typename P> class key;
 template <typename P> class basic_table;
 template <typename P> class unlocked_tcursor;
 template <typename P> class tcursor;
+template <typename P> class scursor;
 
 template <typename P>
 class basic_table {
@@ -93,6 +94,7 @@ class basic_table {
 
     friend class unlocked_tcursor<P>;
     friend class tcursor<P>;
+    friend class scursor<P>;
 };
 
 } // namespace Masstree
