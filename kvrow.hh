@@ -146,7 +146,7 @@ void query<R>::run_countKeys(T& table) {
 template <typename R> template <typename T>
 void query<R>::run_buildStatic(T& table, threadinfo& ti) {
     typename T::unlocked_cursor_type lp(table);
-    lp.buildStatic(ti);
+    table.setRoot ( lp.buildStatic(ti) );
 }
 
 /*

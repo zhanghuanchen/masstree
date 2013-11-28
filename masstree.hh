@@ -73,6 +73,8 @@ class basic_table {
 
     inline node_type* root() const;
     inline node_type* fix_root();
+    //hyw
+    inline void setRoot(node_type* newRoot);
 
     bool get(Str key, value_type& value, threadinfo& ti) const;
 
