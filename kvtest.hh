@@ -194,6 +194,10 @@ void kvtest_url_seed(C &client, int seed) // hyw
 	client.notice("allocate size %d: %d\n", i + 1, client.ti_->allocDist[i]);
     }
     infile.close();
+
+    client.notice("\n-----------start to build static tree---------------\n");
+    client.build_static_tree();
+    
     client.notice("now getting\n");
     
    /* int32_t *a = (int32_t *) malloc(sizeof(int32_t) * n);
@@ -205,7 +209,6 @@ void kvtest_url_seed(C &client, int seed) // hyw
 	std::swap(a[i], a[client.rand.next() % n]);*/
 
     double tg0 = client.now();
-    unsigned g; 
 #if 0
 #define BATCH 8
     for(g = 0; g+BATCH < n && !client.timeout(1); g += BATCH){
@@ -218,12 +221,16 @@ void kvtest_url_seed(C &client, int seed) // hyw
     }
 #else
     std::ifstream infile2("hyw_url_init.dat");
-    unsigned n2 = 0;
-    while (infile2 >> ops >> url && n2 < client.limit()) {
+    unsigned g = 0;
+    bool found;
+    while (infile2 >> ops >> url && g < client.limit()) {
         Str value;
-        client.static_get(Str(url), value);
-        client.notice(value);
-        n2 ++;
+        found = client.static_get(Str(url), value);
+        if( found )
+            client.notice(value.s);
+        else
+            client.notice("Not found %s", url.c_str());
+        g++;
     }
     infile2.close();
 #endif
@@ -236,8 +243,6 @@ void kvtest_url_seed(C &client, int seed) // hyw
     kvtest_set_time(result, "ops", n + g, (tp1 - tp0) + (tg1 - tg0));
     client.report(result);
 
-    client.notice("\n-----------start to build static tree---------------\n");
-    client.build_static_tree();
 
     //free(a);
 }

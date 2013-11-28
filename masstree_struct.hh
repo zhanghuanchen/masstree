@@ -261,7 +261,7 @@ class leafvalue {
 	return u_.v;
     }
 
-    node_base<P>* () const {
+    node_base<P>* layer() const {
 	return reinterpret_cast<node_base<P>*>(u_.x);
     }
 

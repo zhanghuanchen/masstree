@@ -141,8 +141,7 @@ class scursor {
           lv_(leafvalue<P>::make_empty()), root_(table.fix_root()) {
     }
 
-    bool find (threadinfo& ti);
-
+    bool find();
 
     inline value_type value() const {
         return lv_.value();
@@ -156,7 +155,7 @@ class scursor {
     leafvalue<P> lv_;
     uint32_t numKeys_;
     massnode<P>* n_;
-    const massnode<P>* root_;
+    node_base<P>* root_;
 
     inline int lower_bound_binary() const;
     inline int lower_bound_linear() const;

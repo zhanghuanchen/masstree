@@ -306,11 +306,11 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
       static massnode find 
 */
 template <typename P>
-bool scursor<P>::find(threadinfo& ti)
+bool scursor<P>::find()
 {
     bool ksuf_match = false;
     int kp, keylenx = 0;
-    n_ = const_cast<massnode<P>*>(root_);
+    n_ = static_cast<massnode<P>*>(root_);
 
 nextNode:
     n_->prefetch();
@@ -328,7 +328,7 @@ nextNode:
       return false;
     } else if (n_->keylenx_is_layer(keylenx)) {
           ka_.shift();
-          n_ = static_cast<massnode*>(lv_.layer());
+          n_ = static_cast<massnode<P>*>(lv_.layer());
           goto nextNode;
     } 
     else
