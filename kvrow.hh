@@ -139,7 +139,6 @@ void query<R>::run_countKeys(T& table) {
     lp.keyCountsPerMass();
 }
 
-
 /*
     hyw:
     This is a build static tree cursor's wrapper
@@ -147,7 +146,7 @@ void query<R>::run_countKeys(T& table) {
 template <typename R> template <typename T>
 void query<R>::run_buildStatic(T& table, threadinfo& ti) {
     typename T::unlocked_cursor_type lp(table);
-    lp.buildStatic(ti);
+    //lp.buildStatic(ti);
     table.set_static_Root( lp.buildStatic(ti) );
 }
 
