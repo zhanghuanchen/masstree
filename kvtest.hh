@@ -171,6 +171,12 @@ void kvtest_url_seed(C &client, int seed) // hyw
 
     client.puts_done();
 
+  //  Str v;
+  //  bool f;
+  //  f = client.get_sync(Str("uk.co.ancestry.www/search/db.aspx?dbid=4360"), v);
+  //  if(f)
+  //      std::cout<< v << " **********\n";
+
     client.notice("now counting keys\n");
     client.count_keys();
 
@@ -228,7 +234,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
         found = client.static_get(Str(url), value);
         if( found )
             client.notice("found %.*s", value.len, value.s);
-            //client.notice("haha");
+            //std::cout<<"Get " << value << "\n";
         else
             client.notice("Not found %s", url.c_str());
         g++;

@@ -996,7 +996,7 @@ static void run_one_test_body(int trial, const char *treetype, const char *test)
 	    test_thread_map[i].func(main_ti); // initialize table
 	    runtest(tcpthreads, test_thread_map[i].func);
         // hyw
-        tree_stats = true;
+        //tree_stats = true;
             if (tree_stats)
                 test_thread_map[i].func(0); // print tree_stats
 	    break;
