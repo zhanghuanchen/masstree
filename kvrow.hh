@@ -20,6 +20,7 @@
 #include "log.hh"
 #include "json.hh"
 #include <algorithm>
+#include <iostream>
 
 #if MASSTREE_ROW_TYPE_ARRAY
 # include "value_array.hh"
@@ -146,7 +147,8 @@ void query<R>::run_countKeys(T& table) {
 template <typename R> template <typename T>
 void query<R>::run_buildStatic(T& table, threadinfo& ti) {
     typename T::unlocked_cursor_type lp(table);
-    table.setRoot ( lp.buildStatic(ti) );
+    lp.buildStatic(ti);
+    //table.setRoot ( lp.buildStatic(ti) );
 }
 
 /*
@@ -156,10 +158,12 @@ void query<R>::run_buildStatic(T& table, threadinfo& ti) {
 template <typename R> template <typename T>
 bool query<R>::run_get1_static(T& table, Str key, int col, Str& value) {
     typename T::static_cursor_type lp(table, key);
-    bool found = lp.find();
-    if(found)
-        value = lp.value()->col(col);
-    return found;
+    //bool found = lp.find();
+    //if(found)
+    //    value = lp.value()->col(col);
+    //return found;
+    std::cout << key << "\n";
+    return false;
 }
 
 template <typename R> template <typename T>

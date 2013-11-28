@@ -224,10 +224,11 @@ void kvtest_url_seed(C &client, int seed) // hyw
     unsigned g = 0;
     bool found;
     while (infile2 >> ops >> url && g < client.limit()) {
-        Str value;
-        found = client.static_get(Str(url), value);
+        Str value("123");
+        found = client.static_get(value, value);
         if( found )
-            client.notice(value.s);
+            //client.notice(value.s);
+            client.notice("haha");
         else
             client.notice("Not found %s", url.c_str());
         g++;

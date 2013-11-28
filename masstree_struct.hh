@@ -787,8 +787,8 @@ void leaf<P>::hard_assign_ksuf(int p, Str s, bool initializing,
 
 //hyw
 template <typename P>
-inline basic_table<P>::setRoot(node_base<P> newRoot) {
-    root_ = newRoot;
+inline void basic_table<P>::setRoot(node_type* nRoot) {
+    root_ = nRoot;
 }
 
 template <typename P>
@@ -952,11 +952,4 @@ private:
 
 } // namespace Masstree
 #endif
-
-
-
-
-
-
-
 

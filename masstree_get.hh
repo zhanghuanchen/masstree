@@ -315,6 +315,7 @@ bool scursor<P>::find()
 nextNode:
     n_->prefetch();
     numKeys_ = n_->nkeys_;
+    std::cout << "number of keys "<< numKeys_ << "\n";
     kp = lower_bound_binary();
     if (kp >= 0) {
       keylenx = n_->keylenx_[kp];
