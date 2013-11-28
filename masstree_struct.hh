@@ -788,7 +788,7 @@ void leaf<P>::hard_assign_ksuf(int p, Str s, bool initializing,
 //hyw
 template <typename P>
 inline void basic_table<P>::set_static_Root(node_type* nRoot) {
-    root_ = nRoot;
+    static_root_ = nRoot;
 }
 
 //hyw
