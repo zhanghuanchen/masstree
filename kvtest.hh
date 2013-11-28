@@ -227,7 +227,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
         Str value;
         found = client.static_get(Str(url), value);
         if( found )
-            client.notice("found %s", value.s);
+            client.notice("found %.*s", value.len, value.s);
             //client.notice("haha");
         else
             client.notice("Not found %s", url.c_str());
