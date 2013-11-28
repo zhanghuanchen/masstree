@@ -72,9 +72,10 @@ class basic_table {
     void destroy(threadinfo& ti);
 
     inline node_type* root() const;
+    inline node_type* static_root() const;
     inline node_type* fix_root();
     //hyw
-    inline void setRoot(node_type* newRoot);
+    inline void set_static_Root(node_type* newRoot);
 
     bool get(Str key, value_type& value, threadinfo& ti) const;
 
@@ -92,6 +93,7 @@ class basic_table {
 
   private:
     node_type* root_;
+    node_type* static_root_;
 
     template <typename H, typename F>
     int scan(H helper, Str firstkey, bool matchfirst,

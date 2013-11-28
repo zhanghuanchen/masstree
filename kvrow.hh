@@ -148,7 +148,7 @@ template <typename R> template <typename T>
 void query<R>::run_buildStatic(T& table, threadinfo& ti) {
     typename T::unlocked_cursor_type lp(table);
     lp.buildStatic(ti);
-    //table.setRoot ( lp.buildStatic(ti) );
+    table.set_static_Root( lp.buildStatic(ti) );
 }
 
 /*
@@ -158,12 +158,12 @@ void query<R>::run_buildStatic(T& table, threadinfo& ti) {
 template <typename R> template <typename T>
 bool query<R>::run_get1_static(T& table, Str key, int col, Str& value) {
     typename T::static_cursor_type lp(table, key);
-    //bool found = lp.find();
-    //if(found)
-    //    value = lp.value()->col(col);
-    //return found;
-    std::cout << key << "\n";
-    return false;
+    bool found = lp.find();
+    if(found)
+        value = lp.value()->col(col);
+    return found;
+    //std::cout << key << "\n";
+    //return false;
 }
 
 template <typename R> template <typename T>

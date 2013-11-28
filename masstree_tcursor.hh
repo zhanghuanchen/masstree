@@ -112,18 +112,13 @@ class scursor {
 
         }  
 
-    inline scursor(const massnode<P>& root, Str str)
-        : ka_(str), lv_(leafvalue<P>::make_empty()),
-          root_(root) {
-    }
-
     inline scursor(const basic_table<P>& table, Str str)
         : ka_(str), lv_(leafvalue<P>::make_empty()),
-          root_(table.root()) {
+          root_(table.static_root()) {
     }
     inline scursor(basic_table<P>& table, Str str)
         : ka_(str), lv_(leafvalue<P>::make_empty()),
-          root_(table.fix_root()) {
+          root_(table.static_root()) {
     }
     inline scursor(const basic_table<P>& table,
                             const char* s, int len)
