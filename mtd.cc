@@ -984,7 +984,7 @@ int onego(query<row_type>& q, Json& request, Str request_str, threadinfo& ti) {
     } else if (command == Cmd_Scan) {
         q.run_scan(tree->table(), request, ti);
       
-    } else if (command == Cmd_Cmd_buildStatic) {
+    } else if (command == Cmd_buildStatic) {
          //hyw 
         q.run_buildStatic(tree->table(), ti);
 
