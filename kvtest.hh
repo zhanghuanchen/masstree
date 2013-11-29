@@ -300,8 +300,6 @@ void kvtest_initializeURL_seed(C &client, int seed) // hyw
     while (infile >> ops >> url && n < client.limit()) {
       //std::cout << ops << "\t" << url << "\n";
       client.put(url, n);
-      totalInsertedKeyLen += url.size();
-      totalValueSize += (int)sizeof(n);
       n++;
     }
     client.wait_all();
