@@ -95,7 +95,8 @@ inline void child::check_flush() {
     while (seq1_ - seq0_ >= window)
         checkasync(this, 1);
 }
-
+//hyw
+void build_static_tree(struct child *);
 void aget(struct child *, const Str &key, const Str &wanted, get_async_cb fn);
 void aget(struct child *c, long ikey, long iwanted, get_async_cb fn);
 void aget_col(struct child *c, const Str& key, int col, const Str& wanted,
