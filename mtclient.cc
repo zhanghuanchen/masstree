@@ -376,6 +376,8 @@ struct kvtest_client {
 #define TESTRUNNER_SIGNATURE kvtest_client& client
 #include "testrunner.hh"
 
+//hyw
+MAKE_TESTRUNNER(init_urls, kvtest_initialize_url(client));
 MAKE_TESTRUNNER(rw1, kvtest_rw1(client));
 MAKE_TESTRUNNER(rw2, kvtest_rw2(client));
 MAKE_TESTRUNNER(rw3, kvtest_rw3(client));

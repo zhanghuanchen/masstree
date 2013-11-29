@@ -284,6 +284,40 @@ void kvtest_url(C &client) // hyw
     //kvtest_hugeUrl_seed(client, kvtest_first_seed + client.id() % 48);
 }
 
+/*
+    hyw:
+    This test is used to initialize URL workloads into the server
+    through the real client.
+*/
+template <typename C>
+void kvtest_initializeURL_seed(C &client, int seed) // hyw
+{
+    std::ifstream infile("hyw_url_init.dat");
+    std::string ops;
+    std::string url;
+    double tp0 = client.now();
+    unsigned n = 0;
+    while (infile >> ops >> url && n < client.limit()) {
+      //std::cout << ops << "\t" << url << "\n";
+      client.put(url, n);
+      totalInsertedKeyLen += url.size();
+      totalValueSize += (int)sizeof(n);
+      n++;
+    }
+    client.wait_all();
+    double tp1 = client.now();
+    client.puts_done();
+     client.notice("Finish inserting %d urls\n", n);
+    Json result = Json();
+    kvtest_set_time(result, "puts", n, tp1 - tp0);
+    client.report(result);
+}
+template <typename C>
+void kvtest_initialize_url(C &client) // hyw
+{
+    kvtest_initializeURL_seed(client, kvtest_first_seed + client.id() % 48);
+}
+
 // do a bunch of inserts to distinct keys, then check that they all showed up.
 // sometimes overwrites, but only w/ same value.
 // different clients might use same key sometimes.
