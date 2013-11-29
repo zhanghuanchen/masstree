@@ -154,6 +154,20 @@ class KVConn {
         (void) receive();
     }
 
+    /*
+        hyw:
+            This is command for build the static tree
+    */
+    void buildStaticTree(){
+        fprintf(stderr, "asking for a build the static tree\n");
+        j_.resize(2);
+        // TODO: probably in the future, we need to add seq # or child #
+        j_[0] = 0;
+        j_[1] = Cmd_buildStatic;
+        send();
+    }
+
+
     void flush() {
         kvflush(out_);
     }

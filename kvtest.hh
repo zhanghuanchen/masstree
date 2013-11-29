@@ -316,6 +316,17 @@ void kvtest_initialize_url(C &client) // hyw
     kvtest_initializeURL_seed(client, kvtest_first_seed + client.id() % 48);
 }
 
+/*
+    hyw:
+    This test is used to transfer the dynamic tree into the static tree
+*/
+template <typename C>
+void kvtest_buildStaticTree(C &client) // hyw
+{
+    client.buildStaticTree();
+    client.notice("Finish building static tree");
+}
+
 // do a bunch of inserts to distinct keys, then check that they all showed up.
 // sometimes overwrites, but only w/ same value.
 // different clients might use same key sometimes.

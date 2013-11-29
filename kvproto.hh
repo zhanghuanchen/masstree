@@ -26,7 +26,8 @@ enum {
     Cmd_Remove = 10,
     Cmd_Checkpoint = 12,
     Cmd_Handshake = 14,
-    Cmd_Max
+    Cmd_Max,
+    Cmd_buildStatic = 100
 };
 
 enum result_t {

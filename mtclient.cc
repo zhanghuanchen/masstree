@@ -200,6 +200,11 @@ struct kvtest_client {
 	return ::now();
     }
 
+    //hyw
+    void buildStaticTree() {
+        build_static_tree(c_);
+    }
+
     void get(long ikey, Str *value) {
 	quick_istr key(ikey);
 	aget(c_, key.string(),
@@ -378,6 +383,9 @@ struct kvtest_client {
 
 //hyw
 MAKE_TESTRUNNER(init_urls, kvtest_initialize_url(client));
+//hyw
+MAKE_TESTRUNNER(build_static_tree, kvtest_buildStaticTree(client));
+
 MAKE_TESTRUNNER(rw1, kvtest_rw1(client));
 MAKE_TESTRUNNER(rw2, kvtest_rw2(client));
 MAKE_TESTRUNNER(rw3, kvtest_rw3(client));
@@ -990,7 +998,16 @@ put(struct child *c, const Str &key, const Str &val)
     ++c->nsent_;
     return 0;
 }
-
+/*
+    hyw:
+    This is the implementation of client
+    build static tree command
+*/
+void build_static_tree(struct child *c) {
+    c->conn->buildStaticTree();
+    // assume this operation is sync for right now
+    const Json& result = c->conn->receive();
+}
 void
 aput(struct child *c, const Str &key, const Str &val,
      put_async_cb fn, const Str &wanted)
