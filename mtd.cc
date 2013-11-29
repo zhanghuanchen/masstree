@@ -983,6 +983,11 @@ int onego(query<row_type>& q, Json& request, Str request_str, threadinfo& ti) {
         request.resize(3);
     } else if (command == Cmd_Scan) {
         q.run_scan(tree->table(), request, ti);
+      
+    } else if (command == Cmd_Cmd_buildStatic) {
+         //hyw 
+        q.run_buildStatic(tree->table(), ti);
+
     } else {
         request[1] = -1;
         request.resize(2);

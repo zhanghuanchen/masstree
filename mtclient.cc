@@ -1007,7 +1007,7 @@ put(struct child *c, const Str &key, const Str &val)
 void build_static_tree(struct child *c) {
     c->conn->buildStaticTree();
     // assume this operation is sync for right now
-    const Json& result = c->conn->receive();
+    //const Json& result = c->conn->receive();
 }
 void
 aput(struct child *c, const Str &key, const Str &val,
