@@ -152,17 +152,19 @@ void kvtest_url_seed(C &client, int seed) // hyw
     client.rand.reset(seed);
     double tp0 = client.now();
     unsigned n = 0;
-	int totalInsertedKeyLen = 0;
-	int totalValueSize = 0;
+    int count = 0;
+    int totalInsertedKeyLen = 0;
+    int totalValueSize = 0;
 
     //for (n = 0; !client.timeout(0) && n <= client.limit(); ++n) {
 	    //int32_t x = (int32_t) client.rand.next();
 	    //client.put(x, x + 1);
-    while (infile >> ops >> url && n < client.limit()) {
+    while (infile >> ops >> url && count < client.limit()) {
       client.put(url, n);
 	  totalInsertedKeyLen += url.size();
 	  totalValueSize += (int)sizeof(n);
       n += 2;
+      count++;
     }
    // }
     client.wait_all();
