@@ -856,7 +856,7 @@ public:
     std::cout << "nkeys = " << nkeys << "\t";
     std::cout << "size = " << sz << "\n";
     void* ptr = ti.allocate(sz, memtag_masstree_leaf);
-    ti.totalAllocSize += sz;
+    //ti.totalAllocSize += sz;
     ti.ksufSize += ksufSize;
     ti.totalNumkeys += nkeys;
     ti.totalMassnode += 1;
