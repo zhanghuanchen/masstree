@@ -188,6 +188,8 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   node_base<P>* root = const_cast <node_base<P>*> (root_);
   leaf<P> *next;
 
+  ti.totalAllocSize = 0;
+
  nextMass:
   n_ = root -> leftmost();
  nextLeaf:
@@ -310,17 +312,18 @@ bool scursor<P>::find()
 {
     bool ksuf_match = false;
     int kp, keylenx = 0;
+    int count = 1;
     n_ = static_cast<massnode<P>*>(root_);
 
 nextNode:
     n_->prefetch();
     numKeys_ = n_->nkeys_;
-    std::cout << "number of keys "<< numKeys_ << "\n";
+    std::cout << "\t" << count << ". # keys " << numKeys_ << "\n";
     kp = lower_bound_binary();
     if (kp >= 0) {
       keylenx = n_->keylenx_[kp];
       // TODO: I am not sure if we still need this fence since we are static
-      fence();  
+      // fence();
       lv_ = n_->lv_[kp];
       lv_.prefetch(keylenx);
       ksuf_match = n_->ksuf_equals(kp, ka_, keylenx);

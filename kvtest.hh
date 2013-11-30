@@ -159,7 +159,6 @@ void kvtest_url_seed(C &client, int seed) // hyw
 	    //int32_t x = (int32_t) client.rand.next();
 	    //client.put(x, x + 1);
     while (infile >> ops >> url && n < client.limit()) {
-      //std::cout << ops << "\t" << url << "\n";
       client.put(url, n);
 	  totalInsertedKeyLen += url.size();
 	  totalValueSize += (int)sizeof(n);
@@ -181,7 +180,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
     client.count_keys();
 
     // This calculate the total space useage
-    
+
     int totalSize = client.ti_->numCacheLines * 64 + client.ti_->totalAllocSize;
     client.notice("Total space used: %d\n", totalSize);
     client.notice("Total pool mem alloc size: %d\n", client.ti_->numCacheLines * 64);
@@ -191,21 +190,23 @@ void kvtest_url_seed(C &client, int seed) // hyw
 	client.notice("Total inserted key len: %d\n", totalInsertedKeyLen);
 	client.notice("Total value size: %d\n", totalValueSize);
     client.notice("Total de-allocate space: %d\n", client.ti_->deallocSize);
-    client.notice("Total ksufSize: %d\n", client.ti_->ksufSize);
+    //client.notice("Total ksufSize: %d\n", client.ti_->ksufSize);
     for(int i = 0; i < 20; i ++) {
-	client.notice("cache line pool %d: %d\n", i+1, client.ti_->cacheLineDist[i]);
-    }	
+	client.notice("pool alloc (%d cachelines): %d\n", i+1, client.ti_->cacheLineDist[i]);
+    }
 
     for(int i = 0; i < 20; i ++) {
-	client.notice("allocate size %d: %d\n", i + 1, client.ti_->allocDist[i]);
+	client.notice("gen alloc (size 2^%d): %d\n", i + 1, client.ti_->allocDist[i]);
     }
     infile.close();
 
-    client.notice("\n-----------start to build static tree---------------\n");
+    client.notice("\n-----------starts to build static tree---------------\n");
     client.build_static_tree();
-    
-    client.notice("now getting\n");
-    
+
+    client.notice("Total space used: %d\n", client.ti_->totalAllocSize);
+
+    client.notice("\nnow getting\n");
+
    /* int32_t *a = (int32_t *) malloc(sizeof(int32_t) * n);
     assert(a);
     client.rand.reset(seed);
