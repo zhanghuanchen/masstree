@@ -854,6 +854,7 @@ public:
     ti.totalAllocSize += sz;
     ti.ksufSize += ksufSize;
     ti.totalNumkeys += nkeys;
+    ti.totalMassnode += 1;
     massnode<P>* n = new(ptr) massnode<P>(nkeys);
     assert(n);
     return n;

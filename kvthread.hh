@@ -224,6 +224,7 @@ class threadinfo {
     int allocDist[20];
     int ksufSize;
     int totalNumkeys;
+    int totalMassnode;
 
     // timestamps
     kvtimestamp_t operation_timestamp() const {

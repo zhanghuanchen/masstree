@@ -208,6 +208,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
     client.notice("Total space used: %d\n", client.ti_->totalAllocSize);
     client.notice("Total ksufSize: %d\n", client.ti_->ksufSize);
     client.notice("Total numkeys: %d\n", client.ti_->totalNumkeys);
+    client.notice("Total # massnodes: %d\n", client.ti_->totalMassnode);
 
     client.notice("\nnow getting\n");
 

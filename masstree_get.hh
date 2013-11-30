@@ -191,6 +191,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   ti.totalAllocSize = 0;
   ti.ksufSize = 0;
   ti.totalNumkeys = 0;
+  ti.totalMassnode = 0;
 
  nextMass:
   n_ = root -> leftmost();
@@ -204,7 +205,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     keyList.push_back(n_ -> ikey0_[kp]);
     keylenList.push_back(n_ -> keylenx_[kp]);
     link_or_value_list.push_back(n_ -> lv_[kp]);
-    keylenx = n_ -> keylenx_[kp];
+    //keylenx = n_ -> keylenx_[kp];
     //std::cout << "keylenx_[" << kp << "] = " << int(n_ -> keylenx_[kp]) << "\n";
     //std::cout << "ikey0_[" << kp << "] = " << n_ -> ikey0_[kp] << "\n";
     if (n_ -> keylenx_is_layer(keylenx)) {
@@ -213,6 +214,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
 
     if (n_ -> has_ksuf(kp)) {
       has_ksuf_list.push_back(1);
+      ksufSize += n_ -> ksuf(kp).len;
       ksufList.push_back(n_ -> ksuf(kp));
     }
     else
