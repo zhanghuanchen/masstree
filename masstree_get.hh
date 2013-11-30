@@ -231,42 +231,42 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   //std::cout << "nodeList size = " << nodeList.size() << "\n";
   nodeList.push_back(newNode);
   //std::cout << "nkeys = " << nkeys << "\n";
-  char* curpos = newNode -> ksuf_;
-  char* startpos = newNode -> ksuf_;
+  char* curpos = newNode -> get_ksuf();
+  char* startpos = newNode -> get_ksuf();
   for (int i = 0; i < nkeys; i++) {
     //std::cout << "count = " << i << "\tnkeys = " << nkeys << "\n";
     if (keylenList.empty())
       std::cout << "keylenList Empty!\n";
-    newNode -> keylenx_[i] = keylenList.front();
+    newNode -> get_keylenx()[i] = keylenList.front();
     //std::cout << "keylenx_[" << i << "] = " << keylenList.front() << "\n";
     keylenList.pop_front();
     if (keyList.empty())
       std::cout << "keyList Empty!\n";
-    newNode -> ikey0_[i] = keyList.front();
+    newNode -> get_ikey0()[i] = keyList.front();
     //std::cout << "ikey0_[" << i << "] = " << keyList.front() << "\n";
     keyList.pop_front();
 
     if (link_or_value_list.empty())
       std::cout << "link_or_value_list Empty!\n";
-    newNode -> lv_[i] = link_or_value_list.front();
+    newNode -> get_lv()[i] = link_or_value_list.front();
     link_or_value_list.pop_front();
 
-    if (leaf<P>::keylenx_is_layer(newNode -> keylenx_[i])) {
-      newNode -> lv_[i].setX(massID);
+    if (leaf<P>::keylenx_is_layer(newNode -> get_keylenx()[i])) {
+      newNode -> get_lv()[i].setX(massID);
       massID++;
     }
 
     if (has_ksuf_list[i]) {
-      newNode -> ksuf_pos_offset_[i] = (uint32_t)(curpos - startpos);
+      newNode -> get_ksuf_pos_offset()[i] = (uint32_t)(curpos - startpos);
       memcpy(curpos, ksufList.front().s, ksufList.front().len);
       curpos += ksufList.front().len;
       ksufList.pop_front();
     }
     else
-      newNode -> ksuf_pos_offset_[i] = (uint32_t)(curpos - startpos);
+      newNode -> get_ksuf_pos_offset()[i] = (uint32_t)(curpos - startpos);
   }
 
-  newNode -> ksuf_pos_offset_[nkeys] = (uint32_t)(curpos - startpos);
+  newNode -> get_ksuf_pos_offset()[nkeys] = (uint32_t)(curpos - startpos);
   /*  
   for (int i = 0; i < nkeys; i++) {
     //if (has_ksuf_list[i])
@@ -326,10 +326,10 @@ nextNode:
     count++;
     kp = lower_bound_binary();
     if (kp >= 0) {
-      keylenx = n_->keylenx_[kp];
+      keylenx = n_ -> get_keylenx()[kp];
       // TODO: I am not sure if we still need this fence since we are static
       // fence();
-      lv_ = n_->lv_[kp];
+      lv_ = n_ -> get_lv()[kp];
       lv_.prefetch(keylenx);
       ksuf_match = n_->ksuf_equals(kp, ka_, keylenx);
     }
