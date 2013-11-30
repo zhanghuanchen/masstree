@@ -298,7 +298,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     for (unsigned int j = 0; j < nodeList[i] -> nkeys_; j++) {
       if (leaf<P>::keylenx_is_layer(nodeList[i] -> keylenx_[j])) {
         id = nodeList[i] -> lv_[j].getX();
-        (nodeList[i]) -> lv_()[j] = nodeList[id];
+        (nodeList[i]) -> lv_[j] = nodeList[id];
       }
     }
   }
@@ -326,10 +326,10 @@ nextNode:
     count++;
     kp = lower_bound_binary();
     if (kp >= 0) {
-      keylenx = n_ -> get_keylenx()[kp];
+      keylenx = n_ -> keylenx_[kp];
       // TODO: I am not sure if we still need this fence since we are static
       // fence();
-      lv_ = n_ -> get_lv()[kp];
+      lv_ = n_ -> lv_[kp];
       lv_.prefetch(keylenx);
       ksuf_match = n_->ksuf_equals(kp, ka_, keylenx);
     }
