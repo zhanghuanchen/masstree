@@ -319,6 +319,7 @@ nextNode:
     n_->prefetch();
     numKeys_ = n_->nkeys_;
     std::cout << "\t" << count << ". # keys " << numKeys_ << "\n";
+    count++;
     kp = lower_bound_binary();
     if (kp >= 0) {
       keylenx = n_->keylenx_[kp];

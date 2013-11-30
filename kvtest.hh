@@ -162,7 +162,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
       client.put(url, n);
 	  totalInsertedKeyLen += url.size();
 	  totalValueSize += (int)sizeof(n);
-      n++;
+      n += 2;
     }
    // }
     client.wait_all();
@@ -234,10 +234,11 @@ void kvtest_url_seed(C &client, int seed) // hyw
         Str value;
         found = client.static_get(Str(url), value);
         if( found )
-            client.notice("found %.*s", value.len, value.s);
-            //std::cout<<"Get " << value << "\n";
+	  //client.notice("found %.*s", value.len, value.s);
+	  std::cout << "found " << value << "\n";
         else
-            client.notice("Not found %s", url.c_str());
+	  //client.notice("Not found %s", url.c_str());
+	  std::cout << "did NOT find " << url.c_str() << "\n";
         g++;
     }
     infile2.close();
