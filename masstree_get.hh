@@ -248,11 +248,11 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
 
     if (link_or_value_list.empty())
       std::cout << "link_or_value_list Empty!\n";
-    newNode -> lv_[i] = link_or_value_list.front();
+    newNode -> get_lv()[i] = link_or_value_list.front();
     link_or_value_list.pop_front();
 
     if (leaf<P>::keylenx_is_layer(newNode -> keylenx_[i])) {
-      newNode -> lv_[i].setX(massID);
+      newNode -> get_lv()[i].setX(massID);
       massID++;
     }
 
@@ -297,8 +297,8 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   for (unsigned int i = 0; i < nodeList.size(); i++) {
     for (unsigned int j = 0; j < nodeList[i] -> nkeys_; j++) {
       if (leaf<P>::keylenx_is_layer(nodeList[i] -> keylenx_[j])) {
-        id = nodeList[i] -> lv_[j].getX();
-        (nodeList[i]) -> lv_[j] = nodeList[id];
+        id = nodeList[i] -> get_lv()[j].getX();
+        (nodeList[i]) -> get_lv()[j] = nodeList[id];
       }
     }
   }
@@ -329,7 +329,7 @@ nextNode:
       keylenx = n_ -> keylenx_[kp];
       // TODO: I am not sure if we still need this fence since we are static
       // fence();
-      lv_ = n_ -> lv_[kp];
+      lv_ = n_ -> get_lv()[kp];
       lv_.prefetch(keylenx);
       ksuf_match = n_->ksuf_equals(kp, ka_, keylenx);
     }
