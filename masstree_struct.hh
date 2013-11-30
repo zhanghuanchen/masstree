@@ -894,27 +894,27 @@ public:
   }
   
   key_type get_key(int p) const {
-    int kl = keylenx_[p];
+    int kl = get_keylenx()[p];
     if (!keylenx_has_ksuf(kl))
-      return key_type(ikey0_[p], kl);
+      return key_type(get_ikey0()[p], kl);
     else
-      return key_type(ikey0_[p], ksuf(p));
+      return key_type(get_ikey0()[p], ksuf(p));
   }
   
   ikey_type ikey(int p) const {
-    return ikey0_[p];
+    return get_ikey0()[p];
   }
 
   int ikeylen(int p) const {
-    return keylenx_[p];
+    return get_keylenx()[p];
   }
 
   char* ksufPos(int p) const {
-    return (char*)(ksuf_ + ksuf_pos_offset_[p]);
+    return (char*)(get_ksuf() + get_ksuf_pos_offset()[p]);
   }
 
   uint32_t ksufLen(int p) const {
-    return ksuf_pos_offset_[p+1] - ksuf_pos_offset_[p];
+    return get_ksuf_pos_offset()[p+1] - get_ksuf_pos_offset()[p];
   }
 
   Str ksuf(int p) const {
@@ -922,11 +922,11 @@ public:
   }
 
   size_t ksuf_size() const {
-    return (size_t)ksuf_pos_offset_[nkeys_];
+    return (size_t)get_ksuf_pos_offset()[nkeys_];
   }
 
   bool has_ksuf(int p) const {
-    return ksuf_pos_offset_[p] != 0;
+    return get_ksuf_pos_offset()[p] != 0;
   }
   static bool keylenx_is_layer(int keylenx) {
     return keylenx > 63;
@@ -943,11 +943,10 @@ public:
   }
 
   bool ksuf_equals(int p, const key_type& ka) {
-   return ksuf_equals(p, ka, keylenx_[p]);
+   return ksuf_equals(p, ka, get_keylenx()[p]);
   }
   
   bool ksuf_equals(int p, const key_type& ka, int keylenx) {
-    
     return !keylenx_has_ksuf(keylenx) || equals_sloppy(p, ka);
   }
 
@@ -966,9 +965,9 @@ public:
     //TODO
     for (int i = 64; i < std::min((int)size_, 4 * 64); i += 64)
       ::prefetch((const char *) this + i);
-    if (ksuf_) {
-      ::prefetch((const char *) ksuf_);
-      ::prefetch((const char *) ksuf_ + CACHE_LINE_SIZE);
+    if (get_ksuf()) {
+      ::prefetch((const char *) get_ksuf());
+      ::prefetch((const char *) get_ksuf() + CACHE_LINE_SIZE);
     }
   }
 
