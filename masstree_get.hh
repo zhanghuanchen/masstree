@@ -179,7 +179,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   std::vector<int> has_ksuf_list;
   std::vector<massnode<P>*> nodeList;
   std::deque<Str> ksufList;
-  
+
   int kp = 0;
   int keylenx = 0;
   unsigned int massID = 1;
@@ -189,6 +189,8 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   leaf<P> *next;
 
   ti.totalAllocSize = 0;
+  ti.ksufSize = 0;
+  ti.totalNumkeys = 0;
 
  nextMass:
   n_ = root -> leftmost();

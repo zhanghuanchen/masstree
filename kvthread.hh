@@ -223,6 +223,7 @@ class threadinfo {
     int cacheLineDist[20];
     int allocDist[20];
     int ksufSize;
+    int totalNumkeys;
 
     // timestamps
     kvtimestamp_t operation_timestamp() const {
