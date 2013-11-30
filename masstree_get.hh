@@ -296,9 +296,9 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   unsigned int id = 0;
   for (unsigned int i = 0; i < nodeList.size(); i++) {
     for (unsigned int j = 0; j < nodeList[i] -> nkeys_; j++) {
-      if (leaf<P>::keylenx_is_layer(nodeList[i] -> keylenx_[j])) {
-        id = nodeList[i]->lv_[j].getX();
-        (nodeList[i]) -> lv_[j] = nodeList[id];
+      if (leaf<P>::keylenx_is_layer(nodeList[i] -> get_keylenx()[j])) {
+        id = nodeList[i] -> get_lv()[j].getX();
+        (nodeList[i]) -> get_lv()[j] = nodeList[id];
       }
     }
   }
