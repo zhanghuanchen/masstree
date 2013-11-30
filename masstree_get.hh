@@ -199,13 +199,13 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   n_ -> prefetch();
   perm_ = n_ -> permutation();
   nkeys += perm_.size();
-  ksufSize += n_ -> ksuf_size();
+  //ksufSize += n_ -> ksuf_size();
   for (int i = 0; i < perm_.size(); i++) {
     kp = perm_[i];
     keyList.push_back(n_ -> ikey0_[kp]);
     keylenList.push_back(n_ -> keylenx_[kp]);
     link_or_value_list.push_back(n_ -> lv_[kp]);
-    //keylenx = n_ -> keylenx_[kp];
+    keylenx = n_ -> keylenx_[kp];
     //std::cout << "keylenx_[" << kp << "] = " << int(n_ -> keylenx_[kp]) << "\n";
     //std::cout << "ikey0_[" << kp << "] = " << n_ -> ikey0_[kp] << "\n";
     if (n_ -> keylenx_is_layer(keylenx)) {
