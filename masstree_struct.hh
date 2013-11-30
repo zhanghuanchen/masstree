@@ -865,23 +865,23 @@ public:
     return n;
   }
 
-  uint8_t* get_keylenx() {
+  static uint8_t* get_keylenx() {
     return (uint8_t*)((char*)this + sizeof(massnode<P>));
   }
 
-  ikey_type* get_ikey0() {
+  static ikey_type* get_ikey0() {
     return (ikey_type*)((char*)this + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t));
   }
 
-  leafvalue_type* get_lv() {
+  static leafvalue_type* get_lv() {
     return (leafvalue_type*)((char*)this + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t) + nkeys_ * sizeof(ikey_type));
   }
 
-  uint32_t* get_ksuf_pos_offset() {
+  static uint32_t* get_ksuf_pos_offset() {
     return (uint32_t*)((char*)this + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t) + nkeys_ * sizeof(ikey_type) + nkeys_ * sizeof(leafvalue_type));
   }
 
-  char* get_ksuf() {
+  static char* get_ksuf() {
     return (char*)((char*)this + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t) + nkeys_ * sizeof(ikey_type) + nkeys_ * sizeof(leafvalue_type) + (nkeys_ + 1) * sizeof(uint32_t));
   }
 
