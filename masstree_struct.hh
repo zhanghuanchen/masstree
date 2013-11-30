@@ -829,7 +829,7 @@ public:
   typedef typename P::threadinfo_type threadinfo;
 
   uint32_t nkeys_;
-  //uint32_t size_;
+  uint32_t size_;
   uint8_t* keylenx_;
   ikey_type* ikey0_;
   //leafvalue_type* lv_;
@@ -837,7 +837,7 @@ public:
   //char* ksuf_;
 
   massnode (uint32_t nkeys, uint32_t size)
-    :node_base<P>(false), nkeys_(nkeys) {
+    :node_base<P>(false), nkeys_(nkeys), size_(size) {
     keylenx_ = (uint8_t*)((char*)this + sizeof(massnode<P>));
 	//keylenx_ = (uint8_t*)content_[0];
     //ikey0_ = (ikey_type*)((char*)keylenx_ + nkeys_ * sizeof(uint8_t));
@@ -886,7 +886,7 @@ public:
   }
 
   size_t allocated_size() const {
-    return 4*64;
+    return size_;
   }
 
   uint32_t size() const {
@@ -963,7 +963,7 @@ public:
 
   void prefetch() {
     //TODO
-    for (int i = 64; i < std::min((int)allocated_size(), 4 * 64); i += 64)
+    for (int i = 64; i < std::min((int)size_, 4 * 64); i += 64)
       ::prefetch((const char *) this + i);
     if (get_ksuf()) {
       ::prefetch((const char *) get_ksuf());
