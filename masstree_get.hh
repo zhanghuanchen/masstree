@@ -237,22 +237,22 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     //std::cout << "count = " << i << "\tnkeys = " << nkeys << "\n";
     if (keylenList.empty())
       std::cout << "keylenList Empty!\n";
-    newNode -> get_keylenx()[i] = keylenList.front();
+    newNode -> keylenx_[i] = keylenList.front();
     //std::cout << "keylenx_[" << i << "] = " << keylenList.front() << "\n";
     keylenList.pop_front();
     if (keyList.empty())
       std::cout << "keyList Empty!\n";
-    newNode -> get_ikey0()[i] = keyList.front();
+    newNode -> ikey0_[i] = keyList.front();
     //std::cout << "ikey0_[" << i << "] = " << keyList.front() << "\n";
     keyList.pop_front();
 
     if (link_or_value_list.empty())
       std::cout << "link_or_value_list Empty!\n";
-    newNode -> get_lv()[i] = link_or_value_list.front();
+    newNode -> lv_[i] = link_or_value_list.front();
     link_or_value_list.pop_front();
 
-    if (leaf<P>::keylenx_is_layer(newNode -> get_keylenx()[i])) {
-      newNode -> get_lv()[i].setX(massID);
+    if (leaf<P>::keylenx_is_layer(newNode -> keylenx_[i])) {
+      newNode -> lv_[i].setX(massID);
       massID++;
     }
 
@@ -296,9 +296,9 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   unsigned int id = 0;
   for (unsigned int i = 0; i < nodeList.size(); i++) {
     for (unsigned int j = 0; j < nodeList[i] -> nkeys_; j++) {
-      if (leaf<P>::keylenx_is_layer(nodeList[i] -> get_keylenx()[j])) {
-        id = nodeList[i] -> get_lv()[j].getX();
-        (nodeList[i]) -> get_lv()[j] = nodeList[id];
+      if (leaf<P>::keylenx_is_layer(nodeList[i] -> keylenx_[j])) {
+        id = nodeList[i] -> lv_[j].getX();
+        (nodeList[i]) -> lv_()[j] = nodeList[id];
       }
     }
   }
