@@ -830,7 +830,6 @@ public:
 
   uint32_t nkeys_;
   uint32_t size_;
-  massnode<P>* this_;
   //uint8_t* keylenx_;
   //ikey_type* ikey0_;
   //leafvalue_type* lv_;
@@ -839,7 +838,6 @@ public:
 
   massnode (uint32_t nkeys, uint32_t size)
     :node_base<P>(false), nkeys_(nkeys), size_(size) {
-    this_ = this;
     //keylenx_ = (uint8_t*)((char*)this + sizeof(massnode<P>));
 	//keylenx_ = (uint8_t*)content_[0];
     //ikey0_ = (ikey_type*)((char*)keylenx_ + nkeys_ * sizeof(uint8_t));
@@ -867,24 +865,28 @@ public:
     return n;
   }
 
+  massnode<P>* get_this() {
+    return this;
+  }
+
   static uint8_t* get_keylenx() {
-    return (uint8_t*)((char*)this_ + sizeof(massnode<P>));
+    return (uint8_t*)((char*)get_this() + sizeof(massnode<P>));
   }
 
   static ikey_type* get_ikey0() {
-    return (ikey_type*)((char*)this_ + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t));
+    return (ikey_type*)((char*)get_this() + sizeof(massnode<P>) + size() * sizeof(uint8_t));
   }
 
   static leafvalue_type* get_lv() {
-    return (leafvalue_type*)((char*)this_ + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t) + nkeys_ * sizeof(ikey_type));
+    return (leafvalue_type*)((char*)get_this() + sizeof(massnode<P>) + size() * sizeof(uint8_t) + size() * sizeof(ikey_type));
   }
 
   static uint32_t* get_ksuf_pos_offset() {
-    return (uint32_t*)((char*)this_ + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t) + nkeys_ * sizeof(ikey_type) + nkeys_ * sizeof(leafvalue_type));
+    return (uint32_t*)((char*)get_this() + sizeof(massnode<P>) + size() * sizeof(uint8_t) + size() * sizeof(ikey_type) + size() * sizeof(leafvalue_type));
   }
 
   static char* get_ksuf() {
-    return (char*)((char*)this_ + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t) + nkeys_ * sizeof(ikey_type) + nkeys_ * sizeof(leafvalue_type) + (nkeys_ + 1) * sizeof(uint32_t));
+    return (char*)((char*)get_this() + sizeof(massnode<P>) + size() * sizeof(uint8_t) + size() * sizeof(ikey_type) + size() * sizeof(leafvalue_type) + (size() + 1) * sizeof(uint32_t));
   }
 
   size_t allocated_size() const {
