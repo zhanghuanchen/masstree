@@ -865,28 +865,24 @@ public:
     return n;
   }
 
-  massnode<P>* get_this() {
-    return this;
+  uint8_t* get_keylenx() {
+    return (uint8_t*)((char*)this + sizeof(massnode<P>));
   }
 
-  static uint8_t* get_keylenx() {
-    return (uint8_t*)((char*)get_this() + sizeof(massnode<P>));
+  ikey_type* get_ikey0() {
+    return (ikey_type*)((char*)this + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t));
   }
 
-  static ikey_type* get_ikey0() {
-    return (ikey_type*)((char*)get_this() + sizeof(massnode<P>) + size() * sizeof(uint8_t));
+  leafvalue_type* get_lv() {
+    return (leafvalue_type*)((char*)this + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t) + nkeys_ * sizeof(ikey_type));
   }
 
-  static leafvalue_type* get_lv() {
-    return (leafvalue_type*)((char*)get_this() + sizeof(massnode<P>) + size() * sizeof(uint8_t) + size() * sizeof(ikey_type));
+  uint32_t* get_ksuf_pos_offset() {
+    return (uint32_t*)((char*)this + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t) + nkeys_ * sizeof(ikey_type) + nkeys_ * sizeof(leafvalue_type));
   }
 
-  static uint32_t* get_ksuf_pos_offset() {
-    return (uint32_t*)((char*)get_this() + sizeof(massnode<P>) + size() * sizeof(uint8_t) + size() * sizeof(ikey_type) + size() * sizeof(leafvalue_type));
-  }
-
-  static char* get_ksuf() {
-    return (char*)((char*)get_this() + sizeof(massnode<P>) + size() * sizeof(uint8_t) + size() * sizeof(ikey_type) + size() * sizeof(leafvalue_type) + (size() + 1) * sizeof(uint32_t));
+  char* get_ksuf() {
+    return (char*)((char*)this + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t) + nkeys_ * sizeof(ikey_type) + nkeys_ * sizeof(leafvalue_type) + (nkeys_ + 1) * sizeof(uint32_t));
   }
 
   size_t allocated_size() const {
@@ -897,7 +893,7 @@ public:
     return nkeys_;
   }
   
-  key_type get_key(int p) const {
+  key_type get_key(int p) {
     int kl = get_keylenx()[p];
     if (!keylenx_has_ksuf(kl))
       return key_type(get_ikey0()[p], kl);
@@ -905,31 +901,31 @@ public:
       return key_type(get_ikey0()[p], ksuf(p));
   }
   
-  ikey_type ikey(int p) const {
+  ikey_type ikey(int p) {
     return get_ikey0()[p];
   }
 
-  int ikeylen(int p) const {
+  int ikeylen(int p) {
     return get_keylenx()[p];
   }
 
-  char* ksufPos(int p) const {
+  char* ksufPos(int p) {
     return (char*)(get_ksuf() + get_ksuf_pos_offset()[p]);
   }
 
-  uint32_t ksufLen(int p) const {
+  uint32_t ksufLen(int p) {
     return get_ksuf_pos_offset()[p+1] - get_ksuf_pos_offset()[p];
   }
 
-  Str ksuf(int p) const {
+  Str ksuf(int p) {
     return Str(ksufPos(p), ksufLen(p));
   }
 
-  size_t ksuf_size() const {
+  size_t ksuf_size() {
     return (size_t)get_ksuf_pos_offset()[nkeys_];
   }
 
-  bool has_ksuf(int p) const {
+  bool has_ksuf(int p) {
     return get_ksuf_pos_offset()[p] != 0;
   }
   static bool keylenx_is_layer(int keylenx) {
@@ -965,7 +961,7 @@ public:
     return 0;
   }
 
-  void prefetch() const {
+  void prefetch() {
     //TODO
     for (int i = 64; i < std::min((int)size_, 4 * 64); i += 64)
       ::prefetch((const char *) this + i);
