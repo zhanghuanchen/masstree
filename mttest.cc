@@ -518,6 +518,8 @@ static pthread_cond_t subtest_cond;
 #include "testrunner.hh"
 
 MAKE_TESTRUNNER(url, kvtest_url(client)); // hyw
+MAKE_TESTRUNNER(originGet, kvtest_dynamic_get(client));
+
 MAKE_TESTRUNNER(rw1, kvtest_rw1(client));
 // MAKE_TESTRUNNER(palma, kvtest_palma(client));
 // MAKE_TESTRUNNER(palmb, kvtest_palmb(client));

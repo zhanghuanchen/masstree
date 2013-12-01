@@ -143,6 +143,46 @@ void kvtest_rw1(C &client)
     kvtest_rw1_seed(client, kvtest_first_seed + client.id() % 48);
 }
 
+/*
+    hyw:
+        used for single threaded get
+*/
+void kvtest_dynamic_get(C &client)
+{
+    std::ifstream infile_init("hyw_url_init.dat");
+    std::string ops;
+    std::string url;
+    unsigned n = 0;
+    while (infile_init >> ops >> url && n < client.limit()) {
+      client.put(url, n);
+      n += 1;
+    }
+    infile_init.close();
+    std::ifstream infile_wload("hyw_url_wload.dat");
+    unsigned g = 0;
+    bool found;
+    double tp0 = client.now();
+    while (infile_wload >> ops && g < client.limit()) {
+      if (ops == "SCAN")
+        infile_wload >> url >> range;
+      else
+        infile_wload >> url;
+      Str value;
+      found = client.static_get(Str(url), value);
+      if (!found)
+        client.notice("Not found %s", url.c_str());
+      g++;
+    }
+    double tp1 = client.now();
+
+    Json result = Json();
+    kvtest_set_time(result, "gets", g, tg1 - tg0);
+    client.report(result);
+    infile_wload.close();
+}
+
+
+
 template <typename C>
 void kvtest_url_seed(C &client, int seed) // hyw
 {
