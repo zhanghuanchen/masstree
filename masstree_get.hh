@@ -335,13 +335,88 @@ nextNode:
     }
     if (kp < 0) {
       return false;
-    } else if (n_->keylenx_is_layer(keylenx)) {
-          ka_.shift();
-          n_ = static_cast<massnode<P>*>(lv_.layer());
-          goto nextNode;
+    }
+    else if (n_->keylenx_is_layer(keylenx)) {
+      ka_.shift();
+      n_ = static_cast<massnode<P>*>(lv_.layer());
+      goto nextNode;
     } 
     else
       return ksuf_match;
+}
+
+/*
+    hyw:
+      static massnode find 
+*/
+template <typename P>
+bool scursor<P>::scan()
+{
+    bool ksuf_match = false;
+    int kp, keylenx = 0;
+    int count = 1;
+    n_ = static_cast<massnode<P>*>(root_);
+
+ nextNode:
+    nodeTrace_.push(n_);
+    posTrace_.push(kp);
+    n_->prefetch();
+    numKeys_ = n_->nkeys_;
+    std::cout << "\t" << count << ". # keys " << numKeys_ << "\n";
+    count++;
+    kp = lower_bound_binary();
+    if (kp >= 0) {
+      keylenx = n_ -> get_keylenx()[kp];
+      // TODO: I am not sure if we still need this fence since we are static
+      // fence();
+      lv_ = n_ -> get_lv()[kp];
+      lv_.prefetch(keylenx);
+      ksuf_match = n_->ksuf_equals(kp, ka_, keylenx);
+    }
+    if (kp < 0) {
+      return false;
+    }
+    else if (n_->keylenx_is_layer(keylenx)) {
+      ka_.shift();
+      n_ = static_cast<massnode<P>*>(lv_.layer());
+      goto nextNode;
+    }
+
+    if (!ksuf_match)
+      return false;
+
+    pos_ = kp;
+    count = 0;
+ nextKey:
+    for (int i = pos_; i < numKeys_; i++) {
+      if (n_ -> keylenx_is_layer(n_ -> get_keylenx()[i])) {
+        nodeTrace_.push(n_);
+        posTrace_.push(i);
+        lv_ = n_ -> get_lv()[kp];
+        n_ = static_cast<massnode<P>*>(lv_);
+        pos_ = 0;
+        goto nextKey;
+      }
+      else {
+        //keyList_.push_back(curNode -> get_ikey0()[i]);
+        valueList_.push_back(curNode -> get_lv()[i]);
+        count++;
+        if (count >= range)
+          goto finish;
+      }
+    }
+    if (nodeTrace.empty()) {
+      std::cout << "Error, nodeTrace empty!\n";
+      return false;
+    }
+    else {
+      n_ = static_cast<massnode<P>*>(nodeTrace.pop());
+      pos_ = posTrace.pop() + 1;
+      goto nextKey;
+    }
+
+ finish:
+    return true;
 }
 
 template <typename P>

@@ -237,18 +237,31 @@ void kvtest_url_seed(C &client, int seed) // hyw
     unsigned g = 0;
     bool found;
     while (infile_wload >> ops && g < client.limit()) {
-      if (ops == "SCAN")
+      if (ops == "SCAN") {
         infile_wload >> url >> range;
-      else
+        std::vector<P> values;
+        int range_int = atoi(range.c_str());
+        found = client.static_scan(Str(url), range_int, values);
+        if (found) {
+          std::cout << "found " << url.c_str() << "\t" << range << "\n";
+          for (int j = 0; j < range_int; i++) {
+            std::cout << values[j] << "\n";
+          }
+        }
+        else
+          std::cout << "did NOT find " << url.c_str() << "\t" << range << "\n";
+      }
+      else {
         infile_wload >> url;
-      Str value;
-      found = client.static_get(Str(url), value);
-      if (found)
-        //client.notice("found %.*s", value.len, value.s);
-        std::cout << "found " << value << "\n";
-      else
-        //client.notice("Not found %s", url.c_str());
-        std::cout << "did NOT find " << url.c_str() << "\n";
+        Str value;
+        found = client.static_get(Str(url), value);
+        if (found)
+          //client.notice("found %.*s", value.len, value.s);
+          std::cout << "found " << value << "\n";
+        else
+          //client.notice("Not found %s", url.c_str());
+          std::cout << "did NOT find " << url.c_str() << "\n";
+      }
       g++;
     }
     /*

@@ -142,6 +142,7 @@ class scursor {
     }
 
     bool find();
+    bool scan();
 
     inline value_type value() const {
         return lv_.value();
@@ -150,12 +151,22 @@ class scursor {
         return n_;
     }
 
+    inline value_type value (int pos) {
+      return valueList_[pos];
+    }
+
   private:
     key_type ka_;
     leafvalue<P> lv_;
     uint32_t numKeys_;
     massnode<P>* n_;
     node_base<P>* root_;
+    int pos_;
+    int range_;
+    std::stack<massnode<P>*> nodeTrace_;
+    std::stack<int> posTrace_;
+  //std::vector<ikey_type> keyList_;
+    std::vector<leafvalue<P>> valueList_;
 
     inline int lower_bound_binary() const;
     inline int lower_bound_linear() const;
