@@ -156,6 +156,10 @@ class scursor {
       return valueList_[pos];
     }
 
+    inline void set_range (int range) {
+      range_ = range;
+    }
+
   private:
     key_type ka_;
     leafvalue<P> lv_;

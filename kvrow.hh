@@ -369,7 +369,7 @@ void query<R>::run_rscan(T& table, Json& request, threadinfo& ti) {
 template <typename R> template <typename T>
 bool query<R>::run_scan_static(T& table, Str key, int col, int range, std::vector<Str>& values) {
   typename T::static_cursor_type lp(table, key);
-  lp.range_ = range;
+  lp.set_range(range);
   bool found = lp.scan();
   if(found)
     for (int i = 0; i < range; i++) {
