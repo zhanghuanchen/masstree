@@ -390,7 +390,7 @@ bool scursor<P>::scan()
  nextKey:
     for (int i = pos_; i < numKeys_; i++) {
       keylenx = n_ -> get_keylenx()[i];
-      if (n_ -> keylenx_is_layer(keylenx) {
+      if (n_ -> keylenx_is_layer(keylenx)) {
         nodeTrace_.push(n_);
         posTrace_.push(i);
         lv_ = n_ -> get_lv()[kp];
