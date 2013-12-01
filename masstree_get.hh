@@ -389,12 +389,14 @@ bool scursor<P>::scan()
     count = 0;
  nextKey:
     for (int i = pos_; i < numKeys_; i++) {
-      if (n_ -> keylenx_is_layer(n_ -> get_keylenx()[i])) {
+      keylenx = n_ -> get_keylenx()[i]);
+      if (n_ -> keylenx_is_layer(keylenx) {
         nodeTrace_.push(n_);
         posTrace_.push(i);
         lv_ = n_ -> get_lv()[kp];
         n_ = static_cast<massnode<P>*>(lv_.layer());
         pos_ = 0;
+        numKeys_ = n -> nkeys_;
         goto nextKey;
       }
       else {
@@ -412,6 +414,7 @@ bool scursor<P>::scan()
     else {
       n_ = static_cast<massnode<P>*>(nodeTrace_.top());
       pos_ = posTrace_.top() + 1;
+      numKeys_ = n -> nkeys_;
       nodeTrace_.pop();
       goto nextKey;
     }
