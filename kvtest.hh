@@ -149,6 +149,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
     std::ifstream infile_init("hyw_url_init.dat");
     std::string ops;
     std::string url;
+    std::string range;
     client.rand.reset(seed);
     double tp0 = client.now();
     unsigned n = 0;
@@ -237,11 +238,11 @@ void kvtest_url_seed(C &client, int seed) // hyw
     bool found;
     while (infile_wload >> ops && g < client.limit()) {
       if (ops == "SCAN")
-        infile_wload >> url_key >> range;
+        infile_wload >> url >> range;
       else
-        infile_wload >> url_key;
+        infile_wload >> url;
       Str value;
-      found = client.static_get(Str(url_key), value);
+      found = client.static_get(Str(url), value);
       if (found)
         //client.notice("found %.*s", value.len, value.s);
         std::cout << "found " << value << "\n";
