@@ -831,7 +831,7 @@ public:
   uint32_t nkeys_;
   uint32_t size_;
   uint8_t* keylenx_;
-  ikey_type* ikey0_;
+  //ikey_type* ikey0_;
   //leafvalue_type* lv_;
   //uint32_t* ksuf_pos_offset_;
   //char* ksuf_;
