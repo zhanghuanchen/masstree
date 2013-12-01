@@ -399,19 +399,19 @@ bool scursor<P>::scan()
       }
       else {
         //keyList_.push_back(curNode -> get_ikey0()[i]);
-        valueList_.push_back(curNode -> get_lv()[i]);
+        valueList_.push_back(n_ -> get_lv()[i]);
         count++;
-        if (count >= range)
+        if (count >= range_)
           goto finish;
       }
     }
-    if (nodeTrace.empty()) {
+    if (nodeTrace_.empty()) {
       std::cout << "Error, nodeTrace empty!\n";
       return false;
     }
     else {
       n_ = static_cast<massnode<P>*>(nodeTrace.pop());
-      pos_ = posTrace.pop() + 1;
+      pos_ = posTrace_.pop() + 1;
       goto nextKey;
     }
 

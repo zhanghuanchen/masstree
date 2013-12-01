@@ -34,7 +34,7 @@ class unlocked_tcursor {
     inline unlocked_tcursor(const basic_table<P>& table)
         : lv_(leafvalue<P>::make_empty()),   root_(table.root()) {
 
-        }  
+        }
 
     inline unlocked_tcursor(const basic_table<P>& table, Str str)
         : ka_(str), lv_(leafvalue<P>::make_empty()),
