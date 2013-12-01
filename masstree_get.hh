@@ -237,7 +237,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     //std::cout << "count = " << i << "\tnkeys = " << nkeys << "\n";
     if (keylenList.empty())
       std::cout << "keylenList Empty!\n";
-    newNode -> keylenx_[i] = keylenList.front();
+    newNode -> get_keylenx()[i] = keylenList.front();
     //std::cout << "keylenx_[" << i << "] = " << keylenList.front() << "\n";
     keylenList.pop_front();
     if (keyList.empty())
@@ -251,7 +251,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     newNode -> get_lv()[i] = link_or_value_list.front();
     link_or_value_list.pop_front();
 
-    if (leaf<P>::keylenx_is_layer(newNode -> keylenx_[i])) {
+    if (leaf<P>::keylenx_is_layer(newNode -> get_keylenx()[i])) {
       newNode -> get_lv()[i].setX(massID);
       massID++;
     }
@@ -296,7 +296,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   unsigned int id = 0;
   for (unsigned int i = 0; i < nodeList.size(); i++) {
     for (unsigned int j = 0; j < nodeList[i] -> nkeys_; j++) {
-      if (leaf<P>::keylenx_is_layer(nodeList[i] -> keylenx_[j])) {
+      if (leaf<P>::keylenx_is_layer(nodeList[i] -> get_keylenx()[j])) {
         id = nodeList[i] -> get_lv()[j].getX();
         (nodeList[i]) -> get_lv()[j] = nodeList[id];
       }
@@ -326,7 +326,7 @@ nextNode:
     count++;
     kp = lower_bound_binary();
     if (kp >= 0) {
-      keylenx = n_ -> keylenx_[kp];
+      keylenx = n_ -> get_keylenx()[kp];
       // TODO: I am not sure if we still need this fence since we are static
       // fence();
       lv_ = n_ -> get_lv()[kp];
