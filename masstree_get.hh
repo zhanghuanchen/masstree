@@ -410,8 +410,9 @@ bool scursor<P>::scan()
       return false;
     }
     else {
-      n_ = static_cast<massnode<P>*>(nodeTrace.pop());
-      pos_ = posTrace_.pop() + 1;
+      n_ = static_cast<massnode<P>*>(nodeTrace.top());
+      pos_ = posTrace_.top() + 1;
+      nodeTrace.pop()
       goto nextKey;
     }
 
