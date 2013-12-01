@@ -146,7 +146,7 @@ void kvtest_rw1(C &client)
 template <typename C>
 void kvtest_url_seed(C &client, int seed) // hyw
 {
-    std::ifstream infile("hyw_url_init.dat");
+    std::ifstream infile_init("hyw_url_init.dat");
     std::string ops;
     std::string url;
     client.rand.reset(seed);
@@ -159,7 +159,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
     //for (n = 0; !client.timeout(0) && n <= client.limit(); ++n) {
 	    //int32_t x = (int32_t) client.rand.next();
 	    //client.put(x, x + 1);
-    while (infile >> ops >> url && count < client.limit()) {
+    while (infile_init >> ops >> url && count < client.limit()) {
       client.put(url, n);
 	  totalInsertedKeyLen += url.size();
 	  totalValueSize += (int)sizeof(n);
@@ -200,7 +200,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
     for(int i = 0; i < 20; i ++) {
 	client.notice("gen alloc (size 2^%d): %d\n", i + 1, client.ti_->allocDist[i]);
     }
-    infile.close();
+    infile_init.close();
 
     client.notice("\n\n-----------starts to build static tree---------------\n\n");
     client.build_static_tree();
@@ -232,10 +232,26 @@ void kvtest_url_seed(C &client, int seed) // hyw
       client.many_get_check(BATCH, key, expected);
     }
 #else
-    std::ifstream infile2("hyw_url_init.dat");
+    std::ifstream infile_wload("hyw_url_wload.dat");
     unsigned g = 0;
     bool found;
-    while (infile2 >> ops >> url && g < client.limit()) {
+    while (infile_wload >> ops && g < client.limit()) {
+      if (ops == "SCAN")
+        infile_wload >> url_key >> range;
+      else
+        infile_wload >> url_key;
+      Str value;
+      found = client.static_get(Str(url_key), value);
+      if (found)
+        //client.notice("found %.*s", value.len, value.s);
+        std::cout << "found " << value << "\n";
+      else
+        //client.notice("Not found %s", url.c_str());
+        std::cout << "did NOT find " << url.c_str() << "\n";
+      g++;
+    }
+    /*
+    while (infile_wload >> ops >> url && g < client.limit()) {
         Str value;
         found = client.static_get(Str(url), value);
         if( found )
@@ -246,7 +262,8 @@ void kvtest_url_seed(C &client, int seed) // hyw
 	  std::cout << "did NOT find " << url.c_str() << "\n";
         g++;
     }
-    infile2.close();
+    */
+    infile_wload.close();
 #endif
     client.wait_all();
     double tg1 = client.now();
