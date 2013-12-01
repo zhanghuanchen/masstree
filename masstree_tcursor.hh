@@ -17,6 +17,7 @@
 #define MASSTREE_TCURSOR_HH 1
 #include "masstree_key.hh"
 #include "masstree_struct.hh"
+#include <stack>
 namespace Masstree {
 template <typename P> struct gc_layer_rcu_callback;
 

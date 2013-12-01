@@ -244,7 +244,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
         found = client.static_scan(Str(url), range_int, values);
         if (found) {
           std::cout << "found " << url.c_str() << "\t" << range << "\n";
-          for (int j = 0; j < range_int; i++) {
+          for (int j = 0; j < range_int; j++) {
             std::cout << values[j] << "\n";
           }
         }
