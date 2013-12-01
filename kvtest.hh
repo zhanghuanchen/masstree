@@ -239,7 +239,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
     while (infile_wload >> ops && g < client.limit()) {
       if (ops == "SCAN") {
         infile_wload >> url >> range;
-        std::vector<P> values;
+        std::vector<Str> values;
         int range_int = atoi(range.c_str());
         found = client.static_scan(Str(url), range_int, values);
         if (found) {
