@@ -153,7 +153,7 @@ class scursor {
     }
 
     inline value_type value (int pos) {
-      return valueList_[pos];
+      return valueList_[pos].value();
     }
 
     inline void set_range (int range) {
