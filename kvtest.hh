@@ -162,7 +162,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
       client.put(url, n);
 	  totalInsertedKeyLen += url.size();
 	  totalValueSize += (int)sizeof(n);
-      n += 2;
+      n += 1;
     }
    // }
     client.wait_all();
