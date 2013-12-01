@@ -830,7 +830,7 @@ public:
 
   uint32_t nkeys_;
   uint32_t size_;
-  uint8_t* keylenx_;
+  //uint8_t* keylenx_;
   ikey_type* ikey0_;
   //leafvalue_type* lv_;
   //uint32_t* ksuf_pos_offset_;
@@ -838,7 +838,7 @@ public:
 
   massnode (uint32_t nkeys, uint32_t size)
     :node_base<P>(false), nkeys_(nkeys), size_(size) {
-    keylenx_ = (uint8_t*)((char*)this + sizeof(massnode<P>));
+    //keylenx_ = (uint8_t*)((char*)this + sizeof(massnode<P>));
 	//keylenx_ = (uint8_t*)content_[0];
     ikey0_ = (ikey_type*)((char*)keylenx_ + nkeys_ * sizeof(uint8_t));
     //lv_ = (leafvalue_type*)((char*)ikey0_ + nkeys_ * sizeof(ikey_type));
@@ -893,8 +893,8 @@ public:
     return nkeys_;
   }
 
-  key_type get_key(int p) const {
-    int kl = keylenx_[p];
+  key_type get_key(int p) {
+    int kl = get_keylenx()[p];
     if (!keylenx_has_ksuf(kl))
       return key_type(ikey0_[p], kl);
     else
@@ -905,8 +905,8 @@ public:
     return ikey0_[p];
   }
 
-  int ikeylen(int p) const {
-    return keylenx_[p];
+  int ikeylen(int p) {
+    return get_keylenx()[p];
   }
 
   char* ksufPos(int p) {
