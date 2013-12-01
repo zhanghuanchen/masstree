@@ -242,7 +242,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
     keylenList.pop_front();
     if (keyList.empty())
       std::cout << "keyList Empty!\n";
-    newNode -> ikey0_[i] = keyList.front();
+    newNode -> get_ikey0()[i] = keyList.front();
     //std::cout << "ikey0_[" << i << "] = " << keyList.front() << "\n";
     keyList.pop_front();
 
