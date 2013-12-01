@@ -396,7 +396,12 @@ bool scursor<P>::scan()
         lv_ = n_ -> get_lv()[kp];
         n_ = static_cast<massnode<P>*>(lv_.layer());
         pos_ = 0;
-        numKeys_ = n_ -> nkeys_;
+        if (n_)
+          numKeys_ = n_ -> nkeys_;
+        else {
+          std::cout << "Error, node empty!!!\n";
+          return false;
+        }
         goto nextKey;
       }
       else {
