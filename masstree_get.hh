@@ -393,7 +393,7 @@ bool scursor<P>::scan()
       if (n_ -> keylenx_is_layer(keylenx)) {
         nodeTrace_.push(n_);
         posTrace_.push(i);
-        lv_ = n_ -> get_lv()[kp];
+        lv_ = n_ -> get_lv()[i];
         n_ = static_cast<massnode<P>*>(lv_.layer());
         pos_ = 0;
         if (n_)
