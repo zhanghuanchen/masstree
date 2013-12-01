@@ -396,7 +396,7 @@ bool scursor<P>::scan()
         lv_ = n_ -> get_lv()[kp];
         n_ = static_cast<massnode<P>*>(lv_.layer());
         pos_ = 0;
-        numKeys_ = n -> nkeys_;
+        numKeys_ = n_ -> nkeys_;
         goto nextKey;
       }
       else {
@@ -414,7 +414,7 @@ bool scursor<P>::scan()
     else {
       n_ = static_cast<massnode<P>*>(nodeTrace_.top());
       pos_ = posTrace_.top() + 1;
-      numKeys_ = n -> nkeys_;
+      numKeys_ = n_ -> nkeys_;
       nodeTrace_.pop();
       goto nextKey;
     }
