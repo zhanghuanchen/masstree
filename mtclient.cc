@@ -386,6 +386,10 @@ struct kvtest_client {
 MAKE_TESTRUNNER(init_urls, kvtest_initialize_url(client));
 //hyw
 MAKE_TESTRUNNER(build_static_tree, kvtest_buildStaticTree(client));
+//hyw
+MAKE_TESTRUNNER(originGet, kvtest_dynamic_get(client));
+//hyw
+MAKE_TESTRUNNER(myGet, kvtest_static_get(client));
 
 MAKE_TESTRUNNER(rw1, kvtest_rw1(client));
 MAKE_TESTRUNNER(rw2, kvtest_rw2(client));
