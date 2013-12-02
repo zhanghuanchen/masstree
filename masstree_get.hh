@@ -357,9 +357,10 @@ bool scursor<P>::scan()
     int count = 1;
     n_ = static_cast<massnode<P>*>(root_);
 
+    if (!nodeTrace_.empty())
+      return false;
+
  nextNode:
-    nodeTrace_.push(n_);
-    posTrace_.push(kp);
     n_->prefetch();
     numKeys_ = n_->nkeys_;
     std::cout << "\t" << count << ". # keys " << numKeys_ << "\n";
@@ -378,6 +379,8 @@ bool scursor<P>::scan()
     }
     else if (n_->keylenx_is_layer(keylenx)) {
       ka_.shift();
+      nodeTrace_.push(n_);
+      posTrace_.push(kp);
       n_ = static_cast<massnode<P>*>(lv_.layer());
       goto nextNode;
     }
