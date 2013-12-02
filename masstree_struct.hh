@@ -849,7 +849,7 @@ public:
 
   static massnode<P>* make (size_t ksufSize, uint32_t nkeys, threadinfo& ti) {
     size_t sz = sizeof(massnode<P>) + sizeof(ikey_type) * nkeys + sizeof(uint8_t) * nkeys + sizeof(leafvalue_type) * (nkeys + 1) + sizeof(uint32_t) * nkeys + ksufSize;
-    //std::cout << "massnode = " << sizeof(massnode<P>) << "\t";
+    std::cout << "massnode = " << sizeof(massnode<P>) << "\t";
     //std::cout << "ikey_type = " << sizeof(ikey_type) << "\t";
     //std::cout << "uint8_t = " << sizeof(uint8_t) << "\t";
     //std::cout << "leafvalue_type = " << sizeof(leafvalue_type) << "\t";
