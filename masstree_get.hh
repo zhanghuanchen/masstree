@@ -388,7 +388,7 @@ bool scursor<P>::scan()
     pos_ = kp;
     count = 0;
  nextKey:
-    std::cout << "\t\t" << ". # keys " << numKeys_ << "\n";
+    //std::cout << "\t\t" << ". # keys " << numKeys_ << "\n";
     for (int i = pos_; i < numKeys_; i++) {
       keylenx = n_ -> get_keylenx()[i];
       if (n_ -> keylenx_is_layer(keylenx)) {
@@ -408,7 +408,7 @@ bool scursor<P>::scan()
       else {
         //keyList_.push_back(curNode -> get_ikey0()[i]);
         valueList_.push_back(n_ -> get_lv()[i]);
-        std::cout << n_ -> get_ikey0()[i] << "\n";
+        //std::cout << n_ -> get_ikey0()[i] << "\n";
         count++;
         if (count >= range_)
           goto finish;
