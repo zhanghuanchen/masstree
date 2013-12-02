@@ -63,6 +63,8 @@
 #include "msgpack.hh"
 #include <algorithm>
 #include <deque>
+#include <iostream>
+
 using lcdf::StringAccum;
 
 enum { CKState_Quit, CKState_Uninit, CKState_Ready, CKState_Go };
@@ -986,6 +988,7 @@ int onego(query<row_type>& q, Json& request, Str request_str, threadinfo& ti) {
       
     } else if (command == Cmd_buildStatic) {
          //hyw 
+        std::cout << "Start to build the static tree" << "\n";
         q.run_buildStatic(tree->table(), ti);
 
     } else {

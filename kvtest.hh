@@ -147,40 +147,69 @@ void kvtest_rw1(C &client)
     hyw:
         used for single threaded get
 */
+template <typename C>
 void kvtest_dynamic_get(C &client)
 {
     std::ifstream infile_init("hyw_url_init.dat");
     std::string ops;
     std::string url;
+    std::string range;
     unsigned n = 0;
     while (infile_init >> ops >> url && n < client.limit()) {
       client.put(url, n);
       n += 1;
     }
     infile_init.close();
-    std::ifstream infile_wload("hyw_url_wload.dat");
+    std::ifstream infile_init2("hyw_url_init.dat");
+    unsigned g = 0;
+    client.notice("start getting !");
+    double tp0 = client.now();
+    while (infile_init2 >> ops >> url && g < client.limit()) {
+	    client.get_check(Str(url), g);
+        g++;
+    }
+    double tp1 = client.now();
+    Json result = Json();
+    kvtest_set_time(result, "gets", g, tp1 - tp0);
+    client.report(result);
+    infile_init2.close();
+}
+
+template <typename C>
+void kvtest_static_get(C &client)
+{
+    std::ifstream infile_init("hyw_url_init.dat");
+    std::string ops;
+    std::string url;
+    std::string range;
+    unsigned n = 0;
+    while (infile_init >> ops >> url && n < client.limit()) {
+      client.put(url, n);
+      n += 1;
+    }
+    infile_init.close();
+
+    client.notice("\n\n-----------starts to build static tree---------------\n\n");
+    client.build_static_tree();
+    
+    std::ifstream infile_init2("hyw_url_init.dat");
     unsigned g = 0;
     bool found;
+    client.notice("start getting !");
     double tp0 = client.now();
-    while (infile_wload >> ops && g < client.limit()) {
-      if (ops == "SCAN")
-        infile_wload >> url >> range;
-      else
-        infile_wload >> url;
+    while (infile_init2 >> ops >> url && g < client.limit()) {
       Str value;
       found = client.static_get(Str(url), value);
-      if (!found)
+      if(!found)
         client.notice("Not found %s", url.c_str());
       g++;
     }
     double tp1 = client.now();
-
     Json result = Json();
-    kvtest_set_time(result, "gets", g, tg1 - tg0);
+    kvtest_set_time(result, "gets", g, tp1 - tp0);
     client.report(result);
-    infile_wload.close();
+    infile_init2.close();
 }
-
 
 
 template <typename C>
@@ -389,7 +418,7 @@ template <typename C>
 void kvtest_buildStaticTree(C &client) // hyw
 {
     client.buildStaticTree();
-    client.notice("Finish building static tree");
+    client.notice("Finish building static tree\n");
 }
 
 // do a bunch of inserts to distinct keys, then check that they all showed up.
