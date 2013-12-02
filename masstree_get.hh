@@ -423,6 +423,7 @@ bool scursor<P>::scan()
       pos_ = posTrace_.top() + 1;
       numKeys_ = n_ -> nkeys_;
       nodeTrace_.pop();
+      posTrace_.pop();
       goto nextKey;
     }
 
