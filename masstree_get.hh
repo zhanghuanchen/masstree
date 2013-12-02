@@ -388,6 +388,7 @@ bool scursor<P>::scan()
     pos_ = kp;
     count = 0;
  nextKey:
+    std::cout << "\t\t" << ". # keys " << numKeys_ << "\n";
     for (int i = pos_; i < numKeys_; i++) {
       keylenx = n_ -> get_keylenx()[i];
       if (n_ -> keylenx_is_layer(keylenx)) {
