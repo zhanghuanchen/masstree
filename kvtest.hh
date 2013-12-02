@@ -419,6 +419,9 @@ void kvtest_buildStaticTree(C &client) // hyw
 {
     client.buildStaticTree();
     client.notice("Finish building static tree\n");
+    Json result = Json();
+    kvtest_set_time(result, "puts", 1, 1);
+    client.report(result);
 }
 
 // do a bunch of inserts to distinct keys, then check that they all showed up.
