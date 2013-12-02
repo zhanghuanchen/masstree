@@ -988,7 +988,7 @@ int onego(query<row_type>& q, Json& request, Str request_str, threadinfo& ti) {
       
     } else if (command == Cmd_buildStatic) {
          //hyw 
-        std::cout << "Start to build the static tree" << "\n";
+        fprintf(stderr, "Start to build the static tree\n");
         q.run_buildStatic(tree->table(), ti);
 
     } else {
