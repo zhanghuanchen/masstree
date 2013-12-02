@@ -64,7 +64,7 @@ struct async {
 	put_async_cb put_fn;
 	remove_async_cb remove_fn;
     };
-    char key[16]; // just first 16 bytes
+    char key[2048]; // just first 16 bytes
     char wanted[16]; // just first 16 bytes
     int wantedlen;
     int acked;

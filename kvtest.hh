@@ -418,7 +418,7 @@ template <typename C>
 void kvtest_buildStaticTree(C &client) // hyw
 {
     client.buildStaticTree();
-    client.notice("Finish building static tree");
+    client.notice("Finish building static tree\n");
 }
 
 // do a bunch of inserts to distinct keys, then check that they all showed up.
