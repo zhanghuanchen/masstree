@@ -205,6 +205,8 @@ struct kvtest_client {
     void buildStaticTree() {
         build_static_tree(c_);
     }
+    
+    bool static_get(const Str &key, Str &value);
 
     void get(long ikey, Str *value) {
 	quick_istr key(ikey);
@@ -387,9 +389,9 @@ MAKE_TESTRUNNER(init_urls, kvtest_initialize_url(client));
 //hyw
 MAKE_TESTRUNNER(build_static_tree, kvtest_buildStaticTree(client));
 //hyw
-MAKE_TESTRUNNER(originGet, kvtest_dynamic_get(client));
+MAKE_TESTRUNNER(originGet, kvtest_dynamic_client_get(client));
 //hyw
-MAKE_TESTRUNNER(myGet, kvtest_static_get(client));
+MAKE_TESTRUNNER(myGet, kvtest_static_client_get(client));
 
 MAKE_TESTRUNNER(rw1, kvtest_rw1(client));
 MAKE_TESTRUNNER(rw2, kvtest_rw2(client));
