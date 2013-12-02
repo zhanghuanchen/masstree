@@ -205,8 +205,10 @@ struct kvtest_client {
     void buildStaticTree() {
         build_static_tree(c_);
     }
-    
-    bool static_get(const Str &key, Str &value);
+   //hyw TODO: add the actual code here 
+    bool static_get(const Str &key, Str &value){
+        return false;
+    }
 
     void get(long ikey, Str *value) {
 	quick_istr key(ikey);

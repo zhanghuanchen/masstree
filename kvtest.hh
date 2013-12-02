@@ -190,8 +190,8 @@ void kvtest_dynamic_client_get(C &client)
     client.notice("start getting !");
     double tp0 = client.now();
     while (infile_init2 >> ops >> url && g < client.limit()) {
-        Str value;
-        client.get(Str(url), value);
+        int value;
+        client.get(Str(url), &value);
         g++;
     }
     double tp1 = client.now();
