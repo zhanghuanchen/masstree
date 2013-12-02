@@ -408,6 +408,7 @@ bool scursor<P>::scan()
       else {
         //keyList_.push_back(curNode -> get_ikey0()[i]);
         valueList_.push_back(n_ -> get_lv()[i]);
+        std::cout << (n_ -> get_lv()[i]).value() << "\n";
         count++;
         if (count >= range_)
           goto finish;
