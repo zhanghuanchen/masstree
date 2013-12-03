@@ -216,6 +216,7 @@ struct kvtest_client {
     void count_keys();
     void build_static_tree();
     bool static_get(const Str &key, Str &value);
+    bool static_scan(const Str &key, int range, std::vector<Str> &values);
 
 
     void put(const Str &key, const Str &value);
@@ -334,6 +335,13 @@ template <typename T>
 bool kvtest_client<T>::static_get(const Str &key, Str &value) {
     return q_[0].run_get1_static(table_->table(), key, 0, value);
 }
+
+
+template <typename T>
+bool kvtest_client<T>::static_scan(const Str &key, int range, std::vector<Str> &values) {
+  return q_[0].run_scan_static(table_->table(), key, 0, range, values);
+}
+
 
 
 template <typename T>

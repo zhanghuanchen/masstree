@@ -830,33 +830,60 @@ public:
 
   uint32_t nkeys_;
   uint32_t size_;
-  uint8_t* keylenx_;
-  ikey_type* ikey0_;
-  leafvalue_type* lv_;
-  uint32_t* ksuf_pos_offset_;
-  char* ksuf_;
+  //uint8_t* keylenx_;
+  //ikey_type* ikey0_;
+  //leafvalue_type* lv_;
+  //uint32_t* ksuf_pos_offset_;
+  //char* ksuf_;
 
-  massnode (uint32_t nkeys)
-    :node_base<P>(false), nkeys_(nkeys) {
-    keylenx_ = (uint8_t*)((char*)this + sizeof(massnode<P>));
+  massnode (uint32_t nkeys, uint32_t size)
+    :node_base<P>(false), nkeys_(nkeys), size_(size) {
+    //keylenx_ = (uint8_t*)((char*)this + sizeof(massnode<P>));
 	//keylenx_ = (uint8_t*)content_[0];
-    ikey0_ = (ikey_type*)((char*)keylenx_ + nkeys_ * sizeof(uint8_t));
-    lv_ = (leafvalue_type*)((char*)ikey0_ + nkeys_ * sizeof(ikey_type));
-    ksuf_pos_offset_ = (uint32_t*)((char*)lv_ + nkeys_ * sizeof(leafvalue_type));
-    ksuf_ = (char*)((char*)ksuf_pos_offset_ + (nkeys_ + 1) * sizeof(uint32_t));
+    //ikey0_ = (ikey_type*)((char*)this + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t));
+    //ikey0_ = (ikey_type*)((char*)keylenx_ + nkeys_ * sizeof(uint8_t));
+    //lv_ = (leafvalue_type*)((char*)ikey0_ + nkeys_ * sizeof(ikey_type));
+    //ksuf_pos_offset_ = (uint32_t*)((char*)lv_ + nkeys_ * sizeof(leafvalue_type));
+    //ksuf_ = (char*)((char*)ksuf_pos_offset_ + (nkeys_ + 1) * sizeof(uint32_t));
   }
 
   static massnode<P>* make (size_t ksufSize, uint32_t nkeys, threadinfo& ti) {
     size_t sz = sizeof(massnode<P>) + sizeof(ikey_type) * nkeys + sizeof(uint8_t) * nkeys + sizeof(leafvalue_type) * (nkeys + 1) + sizeof(uint32_t) * nkeys + ksufSize;
+    //std::cout << "massnode = " << sizeof(massnode<P>) << "\t";
+    //std::cout << "ikey_type = " << sizeof(ikey_type) << "\t";
+    //std::cout << "uint8_t = " << sizeof(uint8_t) << "\t";
+    //std::cout << "leafvalue_type = " << sizeof(leafvalue_type) << "\t";
+    //std::cout << "uint32_t = " << sizeof(uint32_t) << "\t";
     std::cout << "nkeys = " << nkeys << "\t";
     std::cout << "size = " << sz << "\n";
     void* ptr = ti.allocate(sz, memtag_masstree_leaf);
-    ti.totalAllocSize += sz;
+    //ti.totalAllocSize += sz;
     ti.ksufSize += ksufSize;
     ti.totalNumkeys += nkeys;
-    massnode<P>* n = new(ptr) massnode<P>(nkeys);
+    ti.totalMassnode += 1;
+    massnode<P>* n = new(ptr) massnode<P>(nkeys, sz);
     assert(n);
     return n;
+  }
+
+  uint8_t* get_keylenx() {
+    return (uint8_t*)((char*)this + sizeof(massnode<P>));
+  }
+
+  ikey_type* get_ikey0() {
+    return (ikey_type*)((char*)this + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t));
+  }
+
+  leafvalue_type* get_lv() {
+    return (leafvalue_type*)((char*)this + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t) + nkeys_ * sizeof(ikey_type));
+  }
+
+  uint32_t* get_ksuf_pos_offset() {
+    return (uint32_t*)((char*)this + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t) + nkeys_ * sizeof(ikey_type) + nkeys_ * sizeof(leafvalue_type));
+  }
+
+  char* get_ksuf() {
+    return (char*)((char*)this + sizeof(massnode<P>) + nkeys_ * sizeof(uint8_t) + nkeys_ * sizeof(ikey_type) + nkeys_ * sizeof(leafvalue_type) + (nkeys_ + 1) * sizeof(uint32_t));
   }
 
   size_t allocated_size() const {
@@ -866,41 +893,41 @@ public:
   uint32_t size() const {
     return nkeys_;
   }
-  
-  key_type get_key(int p) const {
-    int kl = keylenx_[p];
+
+  key_type get_key(int p) {
+    int kl = get_keylenx()[p];
     if (!keylenx_has_ksuf(kl))
-      return key_type(ikey0_[p], kl);
+      return key_type(get_ikey0()[p], kl);
     else
-      return key_type(ikey0_[p], ksuf(p));
-  }
-  
-  ikey_type ikey(int p) const {
-    return ikey0_[p];
+      return key_type(get_ikey0()[p], ksuf(p));
   }
 
-  int ikeylen(int p) const {
-    return keylenx_[p];
+  ikey_type ikey(int p) {
+    return get_ikey0()[p];
   }
 
-  char* ksufPos(int p) const {
-    return (char*)(ksuf_ + ksuf_pos_offset_[p]);
+  int ikeylen(int p) {
+    return get_keylenx()[p];
   }
 
-  uint32_t ksufLen(int p) const {
-    return ksuf_pos_offset_[p+1] - ksuf_pos_offset_[p];
+  char* ksufPos(int p) {
+    return (char*)(get_ksuf() + get_ksuf_pos_offset()[p]);
   }
 
-  Str ksuf(int p) const {
+  uint32_t ksufLen(int p) {
+    return get_ksuf_pos_offset()[p+1] - get_ksuf_pos_offset()[p];
+  }
+
+  Str ksuf(int p) {
     return Str(ksufPos(p), ksufLen(p));
   }
 
-  size_t ksuf_size() const {
-    return (size_t)ksuf_pos_offset_[nkeys_];
+  size_t ksuf_size() {
+    return (size_t)get_ksuf_pos_offset()[nkeys_];
   }
 
-  bool has_ksuf(int p) const {
-    return ksuf_pos_offset_[p] != 0;
+  bool has_ksuf(int p) {
+    return get_ksuf_pos_offset()[p] != 0;
   }
   static bool keylenx_is_layer(int keylenx) {
     return keylenx > 63;
@@ -917,11 +944,10 @@ public:
   }
 
   bool ksuf_equals(int p, const key_type& ka) {
-   return ksuf_equals(p, ka, keylenx_[p]);
+   return ksuf_equals(p, ka, get_keylenx()[p]);
   }
   
   bool ksuf_equals(int p, const key_type& ka, int keylenx) {
-    
     return !keylenx_has_ksuf(keylenx) || equals_sloppy(p, ka);
   }
 
@@ -936,13 +962,13 @@ public:
     return 0;
   }
 
-  void prefetch() const {
+  void prefetch() {
     //TODO
     for (int i = 64; i < std::min((int)size_, 4 * 64); i += 64)
       ::prefetch((const char *) this + i);
-    if (ksuf_) {
-      ::prefetch((const char *) ksuf_);
-      ::prefetch((const char *) ksuf_ + CACHE_LINE_SIZE);
+    if (get_ksuf()) {
+      ::prefetch((const char *) get_ksuf());
+      ::prefetch((const char *) get_ksuf() + CACHE_LINE_SIZE);
     }
   }
 

@@ -78,6 +78,10 @@ class query {
     template<typename T>
     bool run_get1_static(T& table, Str key, int col, Str& value);
 
+    //hyw
+    template <typename T>
+    bool run_scan_static(T& table, Str key, int col, int range, std::vector<Str>& values);
+
     const loginfo::query_times& query_times() const {
         return qtimes_;
     }
@@ -359,6 +363,19 @@ void query<R>::run_rscan(T& table, Json& request, threadinfo& ti) {
         f_.push_back(request[i].as_i());
     query_json_scanner<R> scanf(*this, request);
     table.rscan(key, true, scanf, ti);
+}
+
+
+template <typename R> template <typename T>
+bool query<R>::run_scan_static(T& table, Str key, int col, int range, std::vector<Str>& values) {
+  typename T::static_cursor_type lp(table, key);
+  lp.set_range(range);
+  bool found = lp.scan();
+  if(found)
+    for (int i = 0; i < range; i++) {
+      values.push_back(lp.value(i)->col(col));
+    }
+  return found;
 }
 
 #endif

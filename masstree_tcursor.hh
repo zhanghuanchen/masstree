@@ -17,6 +17,7 @@
 #define MASSTREE_TCURSOR_HH 1
 #include "masstree_key.hh"
 #include "masstree_struct.hh"
+#include <stack>
 namespace Masstree {
 template <typename P> struct gc_layer_rcu_callback;
 
@@ -33,7 +34,7 @@ class unlocked_tcursor {
     inline unlocked_tcursor(const basic_table<P>& table)
         : lv_(leafvalue<P>::make_empty()),   root_(table.root()) {
 
-        }  
+        }
 
     inline unlocked_tcursor(const basic_table<P>& table, Str str)
         : ka_(str), lv_(leafvalue<P>::make_empty()),
@@ -142,6 +143,7 @@ class scursor {
     }
 
     bool find();
+    bool scan();
 
     inline value_type value() const {
         return lv_.value();
@@ -150,12 +152,26 @@ class scursor {
         return n_;
     }
 
+    inline value_type value (int pos) {
+      return valueList_[pos].value();
+    }
+
+    inline void set_range (int range) {
+      range_ = range;
+    }
+
   private:
     key_type ka_;
     leafvalue<P> lv_;
     uint32_t numKeys_;
     massnode<P>* n_;
     node_base<P>* root_;
+    int pos_;
+    int range_;
+    std::stack<massnode<P>*> nodeTrace_;
+    std::stack<int> posTrace_;
+  //std::vector<ikey_type> keyList_;
+    std::vector<leafvalue<P>> valueList_;
 
     inline int lower_bound_binary() const;
     inline int lower_bound_linear() const;

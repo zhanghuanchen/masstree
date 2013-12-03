@@ -191,6 +191,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   ti.totalAllocSize = 0;
   ti.ksufSize = 0;
   ti.totalNumkeys = 0;
+  ti.totalMassnode = 0;
 
  nextMass:
   n_ = root -> leftmost();
@@ -198,7 +199,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   n_ -> prefetch();
   perm_ = n_ -> permutation();
   nkeys += perm_.size();
-  ksufSize += n_ -> ksuf_size();
+  //ksufSize += n_ -> ksuf_size();
   for (int i = 0; i < perm_.size(); i++) {
     kp = perm_[i];
     keyList.push_back(n_ -> ikey0_[kp]);
@@ -213,6 +214,7 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
 
     if (n_ -> has_ksuf(kp)) {
       has_ksuf_list.push_back(1);
+      ksufSize += n_ -> ksuf(kp).len;
       ksufList.push_back(n_ -> ksuf(kp));
     }
     else
@@ -229,42 +231,42 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   //std::cout << "nodeList size = " << nodeList.size() << "\n";
   nodeList.push_back(newNode);
   //std::cout << "nkeys = " << nkeys << "\n";
-  char* curpos = newNode -> ksuf_;
-  char* startpos = newNode -> ksuf_;
+  char* curpos = newNode -> get_ksuf();
+  char* startpos = newNode -> get_ksuf();
   for (int i = 0; i < nkeys; i++) {
     //std::cout << "count = " << i << "\tnkeys = " << nkeys << "\n";
     if (keylenList.empty())
       std::cout << "keylenList Empty!\n";
-    newNode -> keylenx_[i] = keylenList.front();
+    newNode -> get_keylenx()[i] = keylenList.front();
     //std::cout << "keylenx_[" << i << "] = " << keylenList.front() << "\n";
     keylenList.pop_front();
     if (keyList.empty())
       std::cout << "keyList Empty!\n";
-    newNode -> ikey0_[i] = keyList.front();
+    newNode -> get_ikey0()[i] = keyList.front();
     //std::cout << "ikey0_[" << i << "] = " << keyList.front() << "\n";
     keyList.pop_front();
 
     if (link_or_value_list.empty())
       std::cout << "link_or_value_list Empty!\n";
-    newNode -> lv_[i] = link_or_value_list.front();
+    newNode -> get_lv()[i] = link_or_value_list.front();
     link_or_value_list.pop_front();
 
-    if (leaf<P>::keylenx_is_layer(newNode -> keylenx_[i])) {
-      newNode -> lv_[i].setX(massID);
+    if (leaf<P>::keylenx_is_layer(newNode -> get_keylenx()[i])) {
+      newNode -> get_lv()[i].setX(massID);
       massID++;
     }
 
     if (has_ksuf_list[i]) {
-      newNode -> ksuf_pos_offset_[i] = (uint32_t)(curpos - startpos);
+      newNode -> get_ksuf_pos_offset()[i] = (uint32_t)(curpos - startpos);
       memcpy(curpos, ksufList.front().s, ksufList.front().len);
       curpos += ksufList.front().len;
       ksufList.pop_front();
     }
     else
-      newNode -> ksuf_pos_offset_[i] = (uint32_t)(curpos - startpos);
+      newNode -> get_ksuf_pos_offset()[i] = (uint32_t)(curpos - startpos);
   }
 
-  newNode -> ksuf_pos_offset_[nkeys] = (uint32_t)(curpos - startpos);
+  newNode -> get_ksuf_pos_offset()[nkeys] = (uint32_t)(curpos - startpos);
   /*  
   for (int i = 0; i < nkeys; i++) {
     //if (has_ksuf_list[i])
@@ -294,9 +296,9 @@ massnode<P>* unlocked_tcursor<P>::buildStatic(threadinfo& ti) {
   unsigned int id = 0;
   for (unsigned int i = 0; i < nodeList.size(); i++) {
     for (unsigned int j = 0; j < nodeList[i] -> nkeys_; j++) {
-      if (leaf<P>::keylenx_is_layer(nodeList[i] -> keylenx_[j])) {
-        id = nodeList[i]->lv_[j].getX();
-        (nodeList[i]) -> lv_[j] = nodeList[id];
+      if (leaf<P>::keylenx_is_layer(nodeList[i] -> get_keylenx()[j])) {
+        id = nodeList[i] -> get_lv()[j].getX();
+        (nodeList[i]) -> get_lv()[j] = nodeList[id];
       }
     }
   }
@@ -324,22 +326,112 @@ nextNode:
     count++;
     kp = lower_bound_binary();
     if (kp >= 0) {
-      keylenx = n_->keylenx_[kp];
+      keylenx = n_ -> get_keylenx()[kp];
       // TODO: I am not sure if we still need this fence since we are static
       // fence();
-      lv_ = n_->lv_[kp];
+      lv_ = n_ -> get_lv()[kp];
       lv_.prefetch(keylenx);
       ksuf_match = n_->ksuf_equals(kp, ka_, keylenx);
     }
     if (kp < 0) {
       return false;
-    } else if (n_->keylenx_is_layer(keylenx)) {
-          ka_.shift();
-          n_ = static_cast<massnode<P>*>(lv_.layer());
-          goto nextNode;
+    }
+    else if (n_->keylenx_is_layer(keylenx)) {
+      ka_.shift();
+      n_ = static_cast<massnode<P>*>(lv_.layer());
+      goto nextNode;
     } 
     else
       return ksuf_match;
+}
+
+/*
+    hyw:
+      static massnode find 
+*/
+template <typename P>
+bool scursor<P>::scan()
+{
+    bool ksuf_match = false;
+    int kp, keylenx = 0;
+    int count = 1;
+    n_ = static_cast<massnode<P>*>(root_);
+
+    if (!nodeTrace_.empty())
+      return false;
+
+ nextNode:
+    n_->prefetch();
+    numKeys_ = n_->nkeys_;
+    std::cout << "\t" << count << ". # keys " << numKeys_ << "\n";
+    count++;
+    kp = lower_bound_binary();
+    if (kp >= 0) {
+      keylenx = n_ -> get_keylenx()[kp];
+      // TODO: I am not sure if we still need this fence since we are static
+      // fence();
+      lv_ = n_ -> get_lv()[kp];
+      lv_.prefetch(keylenx);
+      ksuf_match = n_->ksuf_equals(kp, ka_, keylenx);
+    }
+    if (kp < 0) {
+      return false;
+    }
+    else if (n_->keylenx_is_layer(keylenx)) {
+      ka_.shift();
+      nodeTrace_.push(n_);
+      posTrace_.push(kp);
+      n_ = static_cast<massnode<P>*>(lv_.layer());
+      goto nextNode;
+    }
+
+    if (!ksuf_match)
+      return false;
+
+    pos_ = kp;
+    count = 0;
+ nextKey:
+    //std::cout << "\t\t" << ". # keys " << numKeys_ << "\n";
+    for (int i = pos_; i < numKeys_; i++) {
+      keylenx = n_ -> get_keylenx()[i];
+      if (n_ -> keylenx_is_layer(keylenx)) {
+        nodeTrace_.push(n_);
+        posTrace_.push(i);
+        lv_ = n_ -> get_lv()[i];
+        n_ = static_cast<massnode<P>*>(lv_.layer());
+        pos_ = 0;
+        if (n_)
+          numKeys_ = n_ -> nkeys_;
+        else {
+          std::cout << "Error, node empty!!!\n";
+          return false;
+        }
+        goto nextKey;
+      }
+      else {
+        //keyList_.push_back(curNode -> get_ikey0()[i]);
+        valueList_.push_back(n_ -> get_lv()[i]);
+        //std::cout << n_ -> get_ikey0()[i] << "\n";
+        count++;
+        if (count >= range_)
+          goto finish;
+      }
+    }
+    if (nodeTrace_.empty()) {
+      std::cout << "Error, nodeTrace empty!\n";
+      return false;
+    }
+    else {
+      n_ = static_cast<massnode<P>*>(nodeTrace_.top());
+      pos_ = posTrace_.top() + 1;
+      numKeys_ = n_ -> nkeys_;
+      nodeTrace_.pop();
+      posTrace_.pop();
+      goto nextKey;
+    }
+
+ finish:
+    return true;
 }
 
 template <typename P>

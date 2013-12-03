@@ -105,6 +105,7 @@ threadinfo *threadinfo::make(int purpose, int index)
     memset(ti->allocDist, 0, 20*sizeof(int));
     ti->ksufSize = 0;
     ti->totalNumkeys = 0;
+    ti->totalMassnode = 0;
 
     memset(ti, 0, sizeof(*ti));
     ti->ti_next = allthreads;
