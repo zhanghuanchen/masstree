@@ -63,6 +63,8 @@
 #include "msgpack.hh"
 #include <algorithm>
 #include <deque>
+#include <iostream>
+
 using lcdf::StringAccum;
 
 enum { CKState_Quit, CKState_Uninit, CKState_Ready, CKState_Go };
@@ -952,9 +954,11 @@ int onego(query<row_type>& q, Json& request, Str request_str, threadinfo& ti) {
         pthread_mutex_unlock(&checkpoint_mu);
         request.resize(2);
     } else if (command == Cmd_Get) {
+        fprintf(stderr, "Get request\n");
         q.run_get(tree->table(), request, ti);
     } else if (command == Cmd_Put && request.size() > 3
                && (request.size() % 2) == 1) { // insert or update
+        fprintf(stderr, "Put request\n");
         Str key(request[2].as_s());
         const Json* req = request.array_data() + 3;
         const Json* end_req = request.end_array_data();
@@ -986,6 +990,7 @@ int onego(query<row_type>& q, Json& request, Str request_str, threadinfo& ti) {
       
     } else if (command == Cmd_buildStatic) {
          //hyw 
+        fprintf(stderr, "Start to build the static tree\n");
         q.run_buildStatic(tree->table(), ti);
 
     } else {

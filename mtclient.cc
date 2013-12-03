@@ -64,7 +64,7 @@ struct async {
 	put_async_cb put_fn;
 	remove_async_cb remove_fn;
     };
-    char key[16]; // just first 16 bytes
+    char key[2048]; // just first 16 bytes
     char wanted[16]; // just first 16 bytes
     int wantedlen;
     int acked;
@@ -205,6 +205,10 @@ struct kvtest_client {
     void buildStaticTree() {
         build_static_tree(c_);
     }
+   //hyw TODO: add the actual code here 
+    bool static_get(const Str &key, Str &value){
+        return false;
+    }
 
     void get(long ikey, Str *value) {
 	quick_istr key(ikey);
@@ -222,6 +226,12 @@ struct kvtest_client {
 	quick_istr key(ikey);
 	return ::get(c_, key.string(), got, sizeof(got)) >= 0;
     }
+    //hyw
+    bool get_sync(const Str &key, char* value) {
+    
+    return ::get(c_, key, value, 512) >= 0;
+    }
+    
     void get_check(long ikey, long iexpected) {
 	aget(c_, ikey, iexpected, 0);
     }
@@ -386,6 +396,10 @@ struct kvtest_client {
 MAKE_TESTRUNNER(init_urls, kvtest_initialize_url(client));
 //hyw
 MAKE_TESTRUNNER(build_static_tree, kvtest_buildStaticTree(client));
+//hyw
+MAKE_TESTRUNNER(originGet, kvtest_dynamic_client_get(client));
+//hyw
+MAKE_TESTRUNNER(myGet, kvtest_static_client_get(client));
 
 MAKE_TESTRUNNER(rw1, kvtest_rw1(client));
 MAKE_TESTRUNNER(rw2, kvtest_rw2(client));

@@ -143,6 +143,132 @@ void kvtest_rw1(C &client)
     kvtest_rw1_seed(client, kvtest_first_seed + client.id() % 48);
 }
 
+/*
+    hyw:
+        used for single threaded get
+*/
+template <typename C>
+void kvtest_dynamic_get(C &client)
+{
+    std::ifstream infile_init("hyw_url_init.dat");
+    std::string ops;
+    std::string url;
+    std::string range;
+    unsigned n = 0;
+    while (infile_init >> ops >> url && n < client.limit()) {
+      client.put(url, n);
+      n += 1;
+    }
+    infile_init.close();
+    std::ifstream infile_init2("hyw_url_init.dat");
+    unsigned g = 0;
+    client.notice("start getting !");
+    double tp0 = client.now();
+    while (infile_init2 >> ops >> url && g < client.limit()) {
+	    client.get_check(Str(url), g);
+        g++;
+    }
+    double tp1 = client.now();
+    Json result = Json();
+    kvtest_set_time(result, "gets", g, tp1 - tp0);
+    client.report(result);
+    infile_init2.close();
+}
+
+/*
+    hyw:
+    This is used for client side
+*/
+template <typename C>
+void kvtest_dynamic_client_get(C &client)
+{
+    
+    std::string ops;
+    std::string url;
+    std::ifstream infile_init2("hyw_url_init.dat");
+    unsigned g = 0;
+    client.notice("start getting !");
+    double tp0 = client.now();
+    while (infile_init2 >> ops >> url && g < client.limit()) {
+        //char value[512];
+        int value;
+        //client.get_sync(Str(url), value);
+        client.get(Str(url), &value);
+        //client.notice("%s\n", value);
+        g++;
+    }
+    double tp1 = client.now();
+    Json result = Json();
+    kvtest_set_time(result, "gets", g, tp1 - tp0);
+    client.report(result);
+    infile_init2.close();
+}
+
+template <typename C>
+void kvtest_static_get(C &client)
+{
+    std::ifstream infile_init("hyw_url_init.dat");
+    std::string ops;
+    std::string url;
+    std::string range;
+    unsigned n = 0;
+    while (infile_init >> ops >> url && n < client.limit()) {
+      client.put(url, n);
+      n += 1;
+    }
+    infile_init.close();
+
+    client.notice("\n\n-----------starts to build static tree---------------\n\n");
+    client.build_static_tree();
+    
+    std::ifstream infile_init2("hyw_url_init.dat");
+    unsigned g = 0;
+    bool found;
+    client.notice("start getting !");
+    double tp0 = client.now();
+    while (infile_init2 >> ops >> url && g < client.limit()) {
+      Str value;
+      found = client.static_get(Str(url), value);
+      if(!found)
+        client.notice("Not found %s", url.c_str());
+      g++;
+    }
+    double tp1 = client.now();
+    Json result = Json();
+    kvtest_set_time(result, "gets", g, tp1 - tp0);
+    client.report(result);
+    infile_init2.close();
+}
+
+/*
+    hyw:
+    This is used for client side static get
+*/
+template <typename C>
+void kvtest_static_client_get(C &client)
+{
+    std::string ops;
+    std::string url;
+    
+    std::ifstream infile_init2("hyw_url_init.dat");
+    unsigned g = 0;
+    bool found;
+    client.notice("start getting !");
+    double tp0 = client.now();
+    while (infile_init2 >> ops >> url && g < client.limit()) {
+      Str value;
+      found = client.static_get(Str(url), value);
+      if(!found)
+        client.notice("Not found %s", url.c_str());
+      g++;
+    }
+    double tp1 = client.now();
+    Json result = Json();
+    kvtest_set_time(result, "gets", g, tp1 - tp0);
+    client.report(result);
+    infile_init2.close();
+}
+
 template <typename C>
 void kvtest_url_seed(C &client, int seed) // hyw
 {
@@ -362,7 +488,10 @@ template <typename C>
 void kvtest_buildStaticTree(C &client) // hyw
 {
     client.buildStaticTree();
-    client.notice("Finish building static tree");
+    client.notice("Finish building static tree\n");
+    Json result = Json();
+    kvtest_set_time(result, "puts", 1, 1);
+    client.report(result);
 }
 
 // do a bunch of inserts to distinct keys, then check that they all showed up.

@@ -27,7 +27,8 @@ enum {
     Cmd_Checkpoint = 12,
     Cmd_Handshake = 14,
     Cmd_Max,
-    Cmd_buildStatic = 100
+    Cmd_buildStatic = 100,
+    Cmd_get_static = 102
 };
 
 enum result_t {

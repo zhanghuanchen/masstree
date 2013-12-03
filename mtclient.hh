@@ -159,7 +159,7 @@ class KVConn {
             This is command for build the static tree
     */
     void buildStaticTree(){
-        fprintf(stderr, "asking for a build the static tree\n");
+        fprintf(stderr, "Asking for building the static tree\n");
         j_.resize(2);
         // TODO: probably in the future, we need to add seq # or child #
         j_[0] = 0;
