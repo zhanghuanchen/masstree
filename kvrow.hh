@@ -77,6 +77,8 @@ class query {
     //hyw
     template<typename T>
     bool run_get1_static(T& table, Str key, int col, Str& value);
+    template<typename T>
+    void run_get_static(T& table, Json& req, threadinfo& ti);
 
     //hyw
     template <typename T>
