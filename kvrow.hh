@@ -170,6 +170,21 @@ bool query<R>::run_get1_static(T& table, Str key, int col, Str& value) {
 }
 
 template <typename R> template <typename T>
+void query<R>::run_get_static(T& table, Json& req, threadinfo& ti) {
+    typename T::static_cursor_type lp(table, req[2].as_s());
+    bool found = lp.find();
+    if (found && row_is_marker(lp.value()))
+        found = false;
+    if (found) {
+        f_.clear();
+        for (int i = 3; i != req.size(); ++i)
+            f_.push_back(req[i].as_i());
+        req.resize(2);
+        emit_fields(lp.value(), req, ti);
+    }
+}
+
+template <typename R> template <typename T>
 void query<R>::run_get(T& table, Json& req, threadinfo& ti) {
     typename T::unlocked_cursor_type lp(table, req[2].as_s());
     bool found = lp.find_unlocked(ti);

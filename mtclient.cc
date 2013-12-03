@@ -400,8 +400,9 @@ MAKE_TESTRUNNER(init_urls, kvtest_initialize_url(client));
 MAKE_TESTRUNNER(build_static_tree, kvtest_buildStaticTree(client));
 //hyw
 MAKE_TESTRUNNER(originGet, kvtest_dynamic_client_get(client));
+MAKE_TESTRUNNER(originGet_sync, kvtest_dynamic_client_get_sync(client));
 //hyw
-MAKE_TESTRUNNER(myGet, kvtest_static_client_get(client));
+MAKE_TESTRUNNER(myGet_sync, kvtest_static_client_get_sync(client));
 
 MAKE_TESTRUNNER(rw1, kvtest_rw1(client));
 MAKE_TESTRUNNER(rw2, kvtest_rw2(client));

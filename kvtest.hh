@@ -205,6 +205,29 @@ void kvtest_dynamic_client_get(C &client)
 }
 
 template <typename C>
+void kvtest_dynamic_client_get_sync(C &client)
+{
+    
+    std::string ops;
+    std::string url;
+    std::ifstream infile_init2("hyw_url_init.dat");
+    unsigned g = 0;
+    client.notice("start getting !");
+    double tp0 = client.now();
+    while (infile_init2 >> ops >> url && g < client.limit()) {
+        char value[512];
+        client.get_sync(Str(url), value);
+        //client.notice("%s\n", value);
+        g++;
+    }
+    double tp1 = client.now();
+    Json result = Json();
+    kvtest_set_time(result, "gets", g, tp1 - tp0);
+    client.report(result);
+    infile_init2.close();
+}
+
+template <typename C>
 void kvtest_static_get(C &client)
 {
     std::ifstream infile_init("hyw_url_init.dat");
@@ -245,7 +268,7 @@ void kvtest_static_get(C &client)
     This is used for client side static get
 */
 template <typename C>
-void kvtest_static_client_get(C &client)
+void kvtest_static_client_get_sync(C &client)
 {
     std::string ops;
     std::string url;

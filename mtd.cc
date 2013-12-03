@@ -954,11 +954,13 @@ int onego(query<row_type>& q, Json& request, Str request_str, threadinfo& ti) {
         pthread_mutex_unlock(&checkpoint_mu);
         request.resize(2);
     } else if (command == Cmd_Get) {
-        fprintf(stderr, "Get request\n");
+        //fprintf(stderr, "Get request\n");
         q.run_get(tree->table(), request, ti);
+    } else if (command == Cmd_Get_Static) {
+        q.run_get_static(tree->table(), request, ti);
     } else if (command == Cmd_Put && request.size() > 3
                && (request.size() % 2) == 1) { // insert or update
-        fprintf(stderr, "Put request\n");
+        //fprintf(stderr, "Put request\n");
         Str key(request[2].as_s());
         const Json* req = request.array_data() + 3;
         const Json* end_req = request.end_array_data();
