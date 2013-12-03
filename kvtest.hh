@@ -256,8 +256,8 @@ void kvtest_static_client_get(C &client)
     client.notice("start getting !");
     double tp0 = client.now();
     while (infile_init2 >> ops >> url && g < client.limit()) {
-      Str value;
-      found = client.static_get(Str(url), value);
+      char value[512];
+      found = client.static_get_sync(Str(url), value);
       if(!found)
         client.notice("Not found %s", url.c_str());
       g++;

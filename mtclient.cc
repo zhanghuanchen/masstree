@@ -102,6 +102,7 @@ void aget(struct child *c, long ikey, long iwanted, get_async_cb fn);
 void aget_col(struct child *c, const Str& key, int col, const Str& wanted,
               get_async_cb fn);
 int get(struct child *c, const Str &key, char *val, int max);
+int get_static(struct child *c, const Str &key, char *val, int max);
 
 void asyncgetcb(struct child *, struct async *a, bool, const Str &val);
 void asyncgetcb_int(struct child *, struct async *a, bool, const Str &val);
@@ -205,9 +206,10 @@ struct kvtest_client {
     void buildStaticTree() {
         build_static_tree(c_);
     }
-   //hyw TODO: add the actual code here 
-    bool static_get(const Str &key, Str &value){
-        return false;
+    //hyw TODO: add the actual code here 
+    bool static_get_sync(const Str &key, char* value){
+        
+        return ::get_static(c_, key, value, 512) >= 0;
     }
 
     void get(long ikey, Str *value) {
@@ -790,7 +792,29 @@ void KVConn::hard_check(int tryhard) {
     if (r != -1)
         inbuflen_ += r;
 }
+//hyw
+int
+get_static(struct child *c, const Str &key, char *val, int max)
+{
+    assert(c->seq0_ == c->seq1_);
 
+    unsigned sseq = c->seq1_;
+    ++c->seq1_;
+    ++c->nsent_;
+
+    c->conn->sendgetwhole_static(key, sseq);
+    c->conn->flush();
+
+    const Json& result = c->conn->receive();
+    always_assert(result && result[0] == sseq);
+    ++c->seq0_;
+    if (!result[2])
+        return -1;
+    always_assert(result.size() == 3 && result[2].is_s()
+                  && result[2].as_s().length() <= max);
+    memcpy(val, result[2].as_s().data(), result[2].as_s().length());
+    return result[2].as_s().length();
+}
 int
 get(struct child *c, const Str &key, char *val, int max)
 {

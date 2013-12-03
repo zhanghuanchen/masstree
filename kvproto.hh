@@ -28,7 +28,7 @@ enum {
     Cmd_Handshake = 14,
     Cmd_Max,
     Cmd_buildStatic = 100,
-    Cmd_get_static = 102
+    Cmd_Get_Static = 102
 };
 
 enum result_t {

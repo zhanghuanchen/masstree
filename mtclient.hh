@@ -80,6 +80,16 @@ class KVConn {
         j_[2] = String::make_stable(key);
         send();
     }
+
+    //hyw
+    void sendgetwhole_static(Str key, unsigned seq) {
+        j_.resize(3);
+        j_[0] = seq;
+        j_[1] = Cmd_Get_Static;
+        j_[2] = String::make_stable(key);
+        send();
+    }
+
     void sendgetcol(Str key, int col, unsigned seq) {
         j_.resize(4);
         j_[0] = seq;
@@ -96,7 +106,7 @@ class KVConn {
         j_[3] = Json(f.begin(), f.end());
         send();
     }
-
+   
     void sendputcol(Str key, int col, Str val, unsigned seq) {
         j_.resize(5);
         j_[0] = seq;
