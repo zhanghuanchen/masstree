@@ -227,7 +227,7 @@ struct kvtest_client {
 	return ::get(c_, key.string(), got, sizeof(got)) >= 0;
     }
     //hyw
-    bool get_sync(Str &key, char* value) {
+    bool get_sync(const Str &key, char* value) {
     
     return ::get(c_, key, value, 512) >= 0;
     }

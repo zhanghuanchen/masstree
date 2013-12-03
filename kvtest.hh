@@ -190,9 +190,11 @@ void kvtest_dynamic_client_get(C &client)
     client.notice("start getting !");
     double tp0 = client.now();
     while (infile_init2 >> ops >> url && g < client.limit()) {
-        char value[512];
-        client.get_sync(Str(url), value);
-        client.notice("%s\n", value);
+        //char value[512];
+        int value;
+        //client.get_sync(Str(url), value);
+        client.get(Str(url), &value);
+        //client.notice("%s\n", value);
         g++;
     }
     double tp1 = client.now();
