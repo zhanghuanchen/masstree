@@ -154,12 +154,18 @@ void kvtest_dynamic_get(C &client)
     std::string ops;
     std::string url;
     std::string range;
-    unsigned n = 0;
-    while (infile_init >> ops >> url && n < client.limit()) {
-      client.put(url, n);
-      n += 1;
+    
+    if(client.ti_->ti_index == 0) {
+        client.notice("start Putting !");
+        unsigned n = 0;
+        while (infile_init >> ops >> url && n < client.limit()) {
+          client.put(url, n);
+          n += 1;
+        }
+        infile_init.close();
     }
-    infile_init.close();
+
+    client.wait_all();
     std::ifstream infile_init2("hyw_url_init.dat");
     unsigned g = 0;
     client.notice("start getting !");
