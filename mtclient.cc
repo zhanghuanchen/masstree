@@ -278,6 +278,7 @@ struct kvtest_client {
     }
 
     void put(const Str &key, const Str &value) {
+        printf("Get called \n")
 	aput(c_, key, value);
     }
     void put(const Str &key, const Str &value, int *status) {
