@@ -82,7 +82,7 @@ class query {
 
     //hyw
     template <typename T>
-    bool run_scan_static(T& table, Str key, int col, int range, std::vector<Str>& values);
+    bool run_scan1_static(T& table, Str key, int col, int range, std::vector<Str>& values);
 
     const loginfo::query_times& query_times() const {
         return qtimes_;
