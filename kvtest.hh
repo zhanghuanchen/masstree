@@ -179,7 +179,7 @@ void kvtest_dynamic_get(C &client)
     else {
         pthread_mutex_lock(&mutex);
         while(!finished)
-            rc = pthread_cond_wait(&cond, &mutex);
+            pthread_cond_wait(&cond, &mutex);
         pthread_mutex_unlock(&mutex);
     }
     
