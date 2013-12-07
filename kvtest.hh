@@ -23,6 +23,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <unistd.h>
 
 using lcdf::Str;
 using lcdf::String;
@@ -150,12 +151,11 @@ void kvtest_rw1(C &client)
 template <typename C>
 void kvtest_dynamic_get(C &client)
 {
-    std::ifstream infile_init("hyw_url_init.dat");
     std::string ops;
     std::string url;
     std::string range;
-    
     if(client.ti_->ti_index == 0) {
+        std::ifstream infile_init("hyw_url_init.dat");
         client.notice("start Putting !");
         unsigned n = 0;
         while (infile_init >> ops >> url && n < client.limit()) {
@@ -163,9 +163,12 @@ void kvtest_dynamic_get(C &client)
           n += 1;
         }
         infile_init.close();
+        client.notice("stop Putting !");
+    } 
+    else {
+        usleep(4000000);
     }
-
-    client.wait_all();
+    
     std::ifstream infile_init2("hyw_url_init.dat");
     unsigned g = 0;
     client.notice("start getting !");
@@ -236,19 +239,22 @@ void kvtest_dynamic_client_get_sync(C &client)
 template <typename C>
 void kvtest_static_get(C &client)
 {
-    std::ifstream infile_init("hyw_url_init.dat");
     std::string ops;
     std::string url;
     std::string range;
-    unsigned n = 0;
-    while (infile_init >> ops >> url && n < client.limit()) {
-      client.put(url, n);
-      n += 1;
+    if(client.ti_->ti_index == 0) {
+        std::ifstream infile_init("hyw_url_init.dat");
+        unsigned n = 0;
+        while (infile_init >> ops >> url && n < client.limit()) {
+          client.put(url, n);
+          n += 1;
+        }
+        infile_init.close();
+        client.notice("\n\n-----------starts to build static tree---------------\n\n");
+        client.build_static_tree();
+    } else {
+        usleep(6000000);
     }
-    infile_init.close();
-
-    client.notice("\n\n-----------starts to build static tree---------------\n\n");
-    client.build_static_tree();
     
     std::ifstream infile_init2("hyw_url_init.dat");
     unsigned g = 0;
@@ -498,7 +504,7 @@ void kvtest_initializeURL_seed(C &client, int seed) // hyw
     client.wait_all();
     double tp1 = client.now();
     client.puts_done();
-     client.notice("Finish inserting %d urls\n", n);
+    client.notice("Finish inserting %d urls\n", n);
     Json result = Json();
     kvtest_set_time(result, "puts", n, tp1 - tp0);
     client.report(result);

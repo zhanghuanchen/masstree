@@ -278,7 +278,6 @@ struct kvtest_client {
     }
 
     void put(const Str &key, const Str &value) {
-        printf("Get called \n")
 	aput(c_, key, value);
     }
     void put(const Str &key, const Str &value, int *status) {
@@ -290,8 +289,8 @@ struct kvtest_client {
 	aput(c_, Str(key), Str(value));
     }
     void put(const Str &key, long ivalue) {
-	quick_istr value(ivalue);
-	aput(c_, key, value.string());
+        quick_istr value(ivalue);
+	    aput(c_, key, value.string());
     }
     void put(long ikey, long ivalue) {
 	quick_istr key(ikey), value(ivalue);

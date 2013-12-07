@@ -960,7 +960,6 @@ int onego(query<row_type>& q, Json& request, Str request_str, threadinfo& ti) {
         q.run_get_static(tree->table(), request, ti);
     } else if (command == Cmd_Put && request.size() > 3
                && (request.size() % 2) == 1) { // insert or update
-        printf("Put request\n");
         Str key(request[2].as_s());
         const Json* req = request.array_data() + 3;
         const Json* end_req = request.end_array_data();
@@ -975,6 +974,7 @@ int onego(query<row_type>& q, Json& request, Str request_str, threadinfo& ti) {
             ti.ti_log->record(logcmd_put, q.query_times(), key, req, end_req);
         request.resize(3);
     } else if (command == Cmd_Replace) { // insert or update
+        fprintf(stderr, "Replace request\n");
         Str key(request[2].as_s()), value(request[3].as_s());
         request[2] = q.run_replace(tree->table(), key, value, ti);
         if (ti.ti_log) // NB may block
@@ -996,6 +996,7 @@ int onego(query<row_type>& q, Json& request, Str request_str, threadinfo& ti) {
         q.run_buildStatic(tree->table(), ti);
 
     } else {
+        fprintf(stderr, "Receive unknown cmds\n");
         request[1] = -1;
         request.resize(2);
         return -1;

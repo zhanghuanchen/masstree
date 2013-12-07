@@ -175,6 +175,7 @@ class KVConn {
         j_[0] = 0;
         j_[1] = Cmd_buildStatic;
         send();
+        flush();
     }
 
 
