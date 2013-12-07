@@ -160,9 +160,8 @@ void kvtest_dynamic_get(C &client)
 {
     std::string ops;
     std::string url;
-    int rc;
     if(client.ti_->ti_index == 0) {
-        rc = pthread_mutex_lock(&mutex);
+        pthread_mutex_lock(&mutex);
         std::ifstream infile_init("hyw_url_init.dat");
         client.notice("start Putting !");
         unsigned n = 0;
@@ -173,16 +172,15 @@ void kvtest_dynamic_get(C &client)
         infile_init.close();
         client.notice("stop Putting !");
         finished = 1;
-        rc = pthread_cond_broadcast(&cond);
-        rc = pthread_mutex_unlock(&mutex);
+        pthread_cond_broadcast(&cond);
+        pthread_mutex_unlock(&mutex);
     } 
     else {
-        rc = pthread_mutex_lock(&mutex);
+        pthread_mutex_lock(&mutex);
         while(!finished)
-            rc = pthread_cond_wait(&cond, &mutex);
-        rc = pthread_mutex_unlock(&mutex);
+            pthread_cond_wait(&cond, &mutex);
+        pthread_mutex_unlock(&mutex);
     }
-    
     std::ifstream infile_init2("hyw_url_init.dat");
     unsigned g = 0;
     client.notice("start getting !\n");
