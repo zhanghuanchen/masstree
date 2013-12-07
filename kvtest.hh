@@ -263,6 +263,7 @@ void kvtest_static_get(C &client)
     std::string url;
     std::string range;
     if(client.ti_->ti_index == 0) {
+        pthread_mutex_lock(&mutex);
         std::ifstream infile_init("hyw_url_init.dat");
         unsigned n = 0;
         while (infile_init >> ops >> url && n < client.limit()) {
@@ -272,8 +273,16 @@ void kvtest_static_get(C &client)
         infile_init.close();
         client.notice("\n\n-----------starts to build static tree---------------\n\n");
         client.build_static_tree();
-    } else {
-        usleep(6000000);
+        
+        finished = 1;
+        pthread_cond_broadcast(&cond);
+        pthread_mutex_unlock(&mutex);
+    } 
+    else {
+        pthread_mutex_lock(&mutex);
+        while(!finished)
+            pthread_cond_wait(&cond, &mutex);
+        pthread_mutex_unlock(&mutex);
     }
     
     std::ifstream infile_init2("hyw_url_init.dat");
