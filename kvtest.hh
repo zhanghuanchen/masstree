@@ -296,7 +296,6 @@ void kvtest_static_client_get(C &client)
     
     std::ifstream infile_init2("hyw_url_init.dat");
     unsigned g = 0;
-    bool found;
     client.notice("start getting !");
     double tp0 = client.now();
     while (infile_init2 >> ops >> url && g < client.limit()) {
