@@ -949,7 +949,13 @@ checkasync(struct child *c, int force)
                 String s = result.size() > 2 ? result[2].as_s() : String();
                 if (tmpa.get_fn)
                     (tmpa.get_fn)(c, &tmpa, result.size() > 2, s);
-            } else if (tmpa.cmd == Cmd_Put || tmpa.cmd == Cmd_Replace) {
+            } else if(tmpa.cmd == Cmd_Get_Static){
+                // this is a reply to a get
+                String s = result.size() > 2 ? result[2].as_s() : String();
+                if (tmpa.get_fn)
+                    (tmpa.get_fn)(c, &tmpa, result.size() > 2, s);
+            }
+            else if (tmpa.cmd == Cmd_Put || tmpa.cmd == Cmd_Replace) {
                 // this is a reply to a put
                 if (tmpa.put_fn)
                     (tmpa.put_fn)(c, &tmpa, result[2].as_i());

@@ -171,7 +171,7 @@ void kvtest_dynamic_get(C &client)
     
     std::ifstream infile_init2("hyw_url_init.dat");
     unsigned g = 0;
-    client.notice("start getting !");
+    client.notice("start getting !\n");
     double tp0 = client.now();
     while (infile_init2 >> ops >> url && g < client.limit()) {
 	    client.get_check(Str(url), g);
@@ -196,7 +196,7 @@ void kvtest_dynamic_client_get(C &client)
     std::string url;
     std::ifstream infile_init2("hyw_url_init.dat");
     unsigned g = 0;
-    client.notice("start getting !");
+    client.notice("start getting !\n");
     double tp0 = client.now();
     while (infile_init2 >> ops >> url && g < client.limit()) {
         //char value[512];
@@ -225,7 +225,7 @@ void kvtest_dynamic_client_get_sync(C &client)
     std::string url;
     std::ifstream infile_init2("hyw_url_init.dat");
     unsigned g = 0;
-    client.notice("start getting !");
+    client.notice("start getting !\n");
     double tp0 = client.now();
     while (infile_init2 >> ops >> url && g < client.limit()) {
         char value[512];
@@ -296,7 +296,7 @@ void kvtest_static_client_get(C &client)
     
     std::ifstream infile_init2("hyw_url_init.dat");
     unsigned g = 0;
-    client.notice("start getting !");
+    client.notice("start getting !\n");
     double tp0 = client.now();
     while (infile_init2 >> ops >> url && g < client.limit()) {
       int value;
