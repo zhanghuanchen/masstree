@@ -854,8 +854,8 @@ public:
     //std::cout << "uint8_t = " << sizeof(uint8_t) << "\t";
     //std::cout << "leafvalue_type = " << sizeof(leafvalue_type) << "\t";
     //std::cout << "uint32_t = " << sizeof(uint32_t) << "\t";
-    std::cout << "nkeys = " << nkeys << "\t";
-    std::cout << "size = " << sz << "\n";
+    //std::cout << "nkeys = " << nkeys << "\t";
+    //std::cout << "size = " << sz << "\n";
     void* ptr = ti.allocate(sz, memtag_masstree_leaf);
     //ti.totalAllocSize += sz;
     ti.ksufSize += ksufSize;
