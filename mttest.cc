@@ -74,6 +74,11 @@ double duration[2] = {10, 0};
 static bool lazy_timer = false;
 int kvtest_first_seed = 31949;
 
+//hyw initialize mutex
+int finished = 0;
+pthread_cond_t   cond = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t  mutex = PTHREAD_MUTEX_INITIALIZER;
+
 uint64_t test_limit = ~uint64_t(0);
 bool quiet = false;
 bool print_table = false;

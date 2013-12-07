@@ -24,11 +24,18 @@
 #include <iostream>
 #include <vector>
 #include <unistd.h>
+#include <pthread.h>
 
 using lcdf::Str;
 using lcdf::String;
 using lcdf::Json;
 extern int kvtest_first_seed;
+
+//This is for conditional wait
+extern int finished;
+extern pthread_cond_t   cond;
+extern pthread_mutex_t  mutex;
+
 // Templated KV tests, so we can run them either client/server or linked with
 // the kvd binary.
 
