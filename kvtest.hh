@@ -261,7 +261,6 @@ void kvtest_static_get(C &client)
 {
     std::string ops;
     std::string url;
-    std::string range;
     if(client.ti_->ti_index == 0) {
         pthread_mutex_lock(&mutex);
         std::ifstream infile_init("hyw_url_init.dat");
@@ -362,6 +361,76 @@ void kvtest_static_client_get_sync(C &client)
     client.report(result);
     infile_init2.close();
 }
+
+template <typename C>
+void kvtest_static_scan(C &client)
+{
+    std::string ops;
+    std::string url;
+    std::string range;
+    if(client.ti_->ti_index == 0) {
+        pthread_mutex_lock(&mutex);
+        std::ifstream infile_init("hyw_url_init.dat");
+        unsigned n = 0;
+        client.notice("Start putting\n");
+        while (infile_init >> ops >> url && n < client.limit()) {
+          client.put(url, n);
+          n += 1;
+        }
+        infile_init.close();
+        client.notice("Stop putting\n");
+        client.notice("\n\n-----------starts to build static tree---------------\n\n");
+        client.build_static_tree();
+        
+        finished = 1;
+        pthread_cond_broadcast(&cond);
+        pthread_mutex_unlock(&mutex);
+    } 
+    else {
+        pthread_mutex_lock(&mutex);
+        while(!finished)
+            pthread_cond_wait(&cond, &mutex);
+        pthread_mutex_unlock(&mutex);
+    }
+
+    std::ifstream infile_wload("hyw_url_wload.dat");
+    unsigned g = 0;
+    bool found;
+    client.notice("Start to do scan or get !\n");
+    double tg0 = client.now();
+    while (infile_wload >> ops && g < client.limit()) {
+      if (ops == "SCAN") {
+        infile_wload >> url >> range;
+        std::vector<Str> values;
+        int range_int = atoi(range.c_str());
+        found = client.static_scan(Str(url), range_int, values);
+        if (!found)
+          std::cout << "did NOT find " << url.c_str() << "\t" << range << "\n";
+      
+      }
+      else {
+            infile_wload >> url;
+            Str value;
+            found = client.static_get(Str(url), value);
+            if (!found)
+              std::cout << "did NOT find " << url.c_str() << "\n";
+          
+      }
+      g++;
+    }
+    double tg1 = client.now();
+    infile_wload.close();
+    //TODO: need to add status report
+    Json result = Json();
+
+    kvtest_set_time(result, "ops", g, tg1 - tg0);
+    client.report(result);
+}
+
+
+
+
+
 
 template <typename C>
 void kvtest_url_seed(C &client, int seed) // hyw

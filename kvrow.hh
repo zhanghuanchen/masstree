@@ -382,9 +382,22 @@ void query<R>::run_rscan(T& table, Json& request, threadinfo& ti) {
     table.rscan(key, true, scanf, ti);
 }
 
+//hyw
+// template <typename R> template <typename T>
+// void query<R>::run_scan_static(T& table, Json& request, threadinfo& ti) {
+//     assert(request[3].as_i() > 0);
+//     lcdf::Str key = request[2].as_s();
+//     typename T::static_cursor_type lp(table, key);
+//     lp.set_range(range);
+//     bool found = lp.scan();
+//     f_.clear();
+//     for (int i = 4; i != request.size(); ++i)
+//         f_.push_back(request[i].as_i());
+    
+// }
 
 template <typename R> template <typename T>
-bool query<R>::run_scan_static(T& table, Str key, int col, int range, std::vector<Str>& values) {
+bool query<R>::run_scan1_static(T& table, Str key, int col, int range, std::vector<Str>& values) {
   typename T::static_cursor_type lp(table, key);
   lp.set_range(range);
   bool found = lp.scan();

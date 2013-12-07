@@ -344,7 +344,7 @@ bool kvtest_client<T>::static_get(const Str &key, Str &value) {
 
 template <typename T>
 bool kvtest_client<T>::static_scan(const Str &key, int range, std::vector<Str> &values) {
-  return q_[0].run_scan_static(table_->table(), key, 0, range, values);
+  return q_[0].run_scan1_static(table_->table(), key, 0, range, values);
 }
 
 
@@ -533,6 +533,7 @@ static pthread_cond_t subtest_cond;
 MAKE_TESTRUNNER(url, kvtest_url(client)); // hyw
 MAKE_TESTRUNNER(originGet, kvtest_dynamic_get(client));
 MAKE_TESTRUNNER(myGet, kvtest_static_get(client));
+MAKE_TESTRUNNER(mixedOps, kvtest_static_scan(client));
 
 MAKE_TESTRUNNER(rw1, kvtest_rw1(client));
 // MAKE_TESTRUNNER(palma, kvtest_palma(client));
