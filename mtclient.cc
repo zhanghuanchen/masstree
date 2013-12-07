@@ -97,6 +97,7 @@ inline void child::check_flush() {
 }
 //hyw
 void build_static_tree(struct child *);
+void aget_static(struct child *c, const Str &key, const Str &wanted, get_async_cb fn);
 void aget(struct child *, const Str &key, const Str &wanted, get_async_cb fn);
 void aget(struct child *c, long ikey, long iwanted, get_async_cb fn);
 void aget_col(struct child *c, const Str& key, int col, const Str& wanted,
@@ -960,6 +961,31 @@ checkasync(struct child *c, int force)
         } else if (!force)
             break;
     }
+}
+
+void
+aget_static(struct child *c, const Str &key, const Str &wanted, get_async_cb fn)
+{
+    c->check_flush();
+
+    c->conn->sendgetwhole_static(key, c->seq1_);
+    if (c->udp)
+        c->conn->flush();
+
+    struct async *a = &c->a[c->seq1_ & (window - 1)];
+    a->cmd = Cmd_Get_Static;
+    a->seq = c->seq1_;
+    a->get_fn = (fn ? fn : defaultget);
+    assert(key.len < int(sizeof(a->key)) - 1);
+    memcpy(a->key, key.s, key.len);
+    a->key[key.len] = 0;
+    a->wantedlen = wanted.len;
+    int wantedavail = std::min(wanted.len, int(sizeof(a->wanted)));
+    memcpy(a->wanted, wanted.s, wantedavail);
+    a->acked = 0;
+
+    ++c->seq1_;
+    ++c->nsent_;
 }
 
 // async get, checkasync() will eventually check reply
