@@ -266,11 +266,13 @@ void kvtest_static_get(C &client)
         pthread_mutex_lock(&mutex);
         std::ifstream infile_init("hyw_url_init.dat");
         unsigned n = 0;
+        client.notice("Start putting\n");
         while (infile_init >> ops >> url && n < client.limit()) {
           client.put(url, n);
           n += 1;
         }
         infile_init.close();
+        client.notice("Stop putting\n");
         client.notice("\n\n-----------starts to build static tree---------------\n\n");
         client.build_static_tree();
         
