@@ -974,8 +974,9 @@ int onego(query<row_type>& q, Json& request, Str request_str, threadinfo& ti) {
             ti.ti_log->record(logcmd_put, q.query_times(), key, req, end_req);
         request.resize(3);
     } else if (command == Cmd_Replace) { // insert or update
-        fprintf(stderr, "Replace request\n");
+        
         Str key(request[2].as_s()), value(request[3].as_s());
+        fprintf(stderr, "Put request %.*s\n", value.len, value.s);
         request[2] = q.run_replace(tree->table(), key, value, ti);
         if (ti.ti_log) // NB may block
             ti.ti_log->record(logcmd_replace, q.query_times(), key, value);
