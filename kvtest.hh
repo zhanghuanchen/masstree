@@ -160,6 +160,8 @@ void kvtest_dynamic_get(C &client)
 {
     std::string ops;
     std::string url;
+    std::string range;
+
     if(client.ti_->ti_index == 0) {
         pthread_mutex_lock(&mutex);
         std::ifstream infile_init("hyw_url_init.dat");
@@ -181,11 +183,18 @@ void kvtest_dynamic_get(C &client)
             pthread_cond_wait(&cond, &mutex);
         pthread_mutex_unlock(&mutex);
     }
-    std::ifstream infile_init2("hyw_url_init.dat");
+    std::ifstream infile_wload("hyw_url_wload.dat");
     unsigned g = 0;
     client.notice("start getting !\n");
     double tp0 = client.now();
-    while (infile_init2 >> ops >> url && g < client.limit()) {
+    while (infile_wload >> ops && g < client.limit()) {
+
+        if (ops == "SCAN") {
+            infile_wload >> url >> range;
+        } else {
+            infile_wload >> url;
+        }
+
 	    client.get_check(Str(url), g);
         g++;
     }
@@ -193,7 +202,7 @@ void kvtest_dynamic_get(C &client)
     Json result = Json();
     kvtest_set_time(result, "gets", g, tp1 - tp0);
     client.report(result);
-    infile_init2.close();
+    infile_wload.close();
 }
 
 /*
@@ -206,11 +215,18 @@ void kvtest_dynamic_client_get(C &client)
     
     std::string ops;
     std::string url;
-    std::ifstream infile_init2("hyw_url_init.dat");
+    std::string range;
+
+    std::ifstream infile_wload("hyw_url_wload.dat");
     unsigned g = 0;
     client.notice("start getting !\n");
     double tp0 = client.now();
-    while (infile_init2 >> ops >> url && g < client.limit()) {
+    while (infile_wload >> ops && g < client.limit()) {
+        if (ops == "SCAN") {
+            infile_wload >> url >> range;
+        } else {
+            infile_wload >> url;
+        }
         //char value[512];
         int value;
         //client.get_sync(Str(url), value);
@@ -222,7 +238,7 @@ void kvtest_dynamic_client_get(C &client)
     Json result = Json();
     kvtest_set_time(result, "gets", g, tp1 - tp0);
     client.report(result);
-    infile_init2.close();
+    infile_wload.close();
 }
 
 /*
@@ -235,11 +251,19 @@ void kvtest_dynamic_client_get_sync(C &client)
     
     std::string ops;
     std::string url;
-    std::ifstream infile_init2("hyw_url_init.dat");
+    std::string range;
+    std::ifstream infile_wload("hyw_url_wload.dat");
     unsigned g = 0;
     client.notice("start getting !\n");
     double tp0 = client.now();
-    while (infile_init2 >> ops >> url && g < client.limit()) {
+    while (infile_wload >> ops && g < client.limit()) {
+
+     if (ops == "SCAN") {
+        infile_wload >> url >> range;
+     } else {
+        infile_wload >> url;
+     }
+
         char value[512];
         client.get_sync(Str(url), value);
         //client.notice("%s\n", value);
@@ -249,7 +273,7 @@ void kvtest_dynamic_client_get_sync(C &client)
     Json result = Json();
     kvtest_set_time(result, "gets", g, tp1 - tp0);
     client.report(result);
-    infile_init2.close();
+    infile_wload.close();
 }
 
 /*
@@ -357,13 +381,19 @@ void kvtest_static_client_get_sync(C &client)
 {
     std::string ops;
     std::string url;
-    
-    std::ifstream infile_init2("hyw_url_init.dat");
+    std::string range;
+    std::ifstream infile_wload("hyw_url_wload.dat");
     unsigned g = 0;
     bool found;
     client.notice("start getting !");
     double tp0 = client.now();
-    while (infile_init2 >> ops >> url && g < client.limit()) {
+    while (infile_wload >> ops && g < client.limit()) {
+
+     if (ops == "SCAN") {
+        infile_wload >> url >> range;
+     } else {
+        infile_wload >> url;
+     }
       char value[512];
       found = client.static_get_sync(Str(url), value);
       if(!found)
@@ -374,7 +404,7 @@ void kvtest_static_client_get_sync(C &client)
     Json result = Json();
     kvtest_set_time(result, "gets", g, tp1 - tp0);
     client.report(result);
-    infile_init2.close();
+    infile_wload.close();
 }
 
 template <typename C>
@@ -414,24 +444,18 @@ void kvtest_static_scan(C &client)
     client.notice("Start to do scan or get !\n");
     double tg0 = client.now();
     while (infile_wload >> ops && g < client.limit()) {
-      if (ops == "SCAN") {
-        infile_wload >> url >> range;
-        std::vector<Str> values;
-        int range_int = atoi(range.c_str());
-        found = client.static_scan(Str(url), range_int, values);
-        if (!found)
-          std::cout << "did NOT find " << url.c_str() << "\t" << range << "\n";
-      
-      }
-      else {
-            infile_wload >> url;
-            Str value;
-            found = client.static_get(Str(url), value);
+
+        if (ops == "SCAN") {
+               
+            infile_wload >> url >> range;
+            std::vector<Str> values;
+            int range_int = atoi(range.c_str());
+            found = client.static_scan(Str(url), range_int, values);
             if (!found)
-              std::cout << "did NOT find " << url.c_str() << "\n";
-          
-      }
-      g++;
+            std::cout << "did NOT find " << url.c_str() << "\t" << range << "\n";
+      
+            g++;
+        }
     }
     double tg1 = client.now();
     infile_wload.close();
