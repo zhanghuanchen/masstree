@@ -261,6 +261,7 @@ void kvtest_static_get(C &client)
 {
     std::string ops;
     std::string url;
+    std:: string range;
     if(client.ti_->ti_index == 0) {
         pthread_mutex_lock(&mutex);
         std::ifstream infile_init("hyw_url_init.dat");
@@ -286,12 +287,12 @@ void kvtest_static_get(C &client)
         pthread_mutex_unlock(&mutex);
     }
     
-    std::ifstream infile_init2("hyw_url_wload.dat");
+    std::ifstream infile_wload("hyw_url_wload.dat");
     unsigned g = 0;
     bool found;
     client.notice("start getting !");
     double tp0 = client.now();
-    while (infile_init2 >> ops && g < client.limit()) {
+    while (infile_wload >> ops && g < client.limit()) {
 
      if (ops == "SCAN") {
         infile_wload >> url >> range;
@@ -309,7 +310,7 @@ void kvtest_static_get(C &client)
     Json result = Json();
     kvtest_set_time(result, "gets", g, tp1 - tp0);
     client.report(result);
-    infile_init2.close();
+    infile_wload.close();
 }
 
 
@@ -322,12 +323,12 @@ void kvtest_static_client_get(C &client)
 {
     std::string ops;
     std::string url;
-    
-    std::ifstream infile_init2("hyw_url_init.dat");
+    std::string range; 
+    std::ifstream infile_wload("hyw_url_init.dat");
     unsigned g = 0;
     client.notice("start getting !\n");
     double tp0 = client.now();
-    while (infile_init2 >> ops && g < client.limit()) {
+    while (infile_wload >> ops && g < client.limit()) {
 
      if (ops == "SCAN") {
         infile_wload >> url >> range;
@@ -343,7 +344,7 @@ void kvtest_static_client_get(C &client)
     Json result = Json();
     kvtest_set_time(result, "gets", g, tp1 - tp0);
     client.report(result);
-    infile_init2.close();
+    infile_wload.close();
 }
 
 
