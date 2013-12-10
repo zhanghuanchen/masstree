@@ -6096,7 +6096,8 @@ fi
 if test "${enable_max_key_len+set}" = set; then :
   enableval=$enable_max_key_len; ac_cv_max_key_len=$enableval
 else
-  ac_cv_max_key_len=255
+  #ac_cv_max_key_len=255
+  ac_cv_max_key_len=2048
 fi
 
 
