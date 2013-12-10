@@ -187,6 +187,7 @@ void kvtest_dynamic_get(C &client)
     unsigned g = 0;
     client.notice("start getting !\n");
     double tp0 = client.now();
+    bool found;
     while (infile_wload >> ops && g < client.limit()) {
 
         if (ops == "SCAN") {
@@ -194,9 +195,12 @@ void kvtest_dynamic_get(C &client)
         } else {
             infile_wload >> url;
         }
-	Str value;
-	client.get_sync(Str(url), value);
-        g++;
+	   Str value;
+	   found = client.get_sync(Str(url), value);
+       if (!found) {
+        client.notice("NOT FOUND %s", url.c_str());
+       }
+       g++;
     }
     double tp1 = client.now();
     Json result = Json();
