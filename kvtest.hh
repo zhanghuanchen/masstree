@@ -515,6 +515,8 @@ void kvtest_scan_dynamic(C &client )
             int range_int = atoi(range.c_str());
 
             client.scan_sync(url, range_int, keys, values);
+            if(values.size() == 0)
+                client.notice("NOT FOUND %s\n", url.c_str());
             client.rcu_quiesce();
         } else {
             infile_wload >> url;
