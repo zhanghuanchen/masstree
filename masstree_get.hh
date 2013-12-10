@@ -392,7 +392,7 @@ bool scursor<P>::scan()
     count = 0;
  nextKey:
     //std::cout << "\t\t" << ". # keys " << numKeys_ << "\n";
-    for (int i = pos_; i < numKeys_; i++) {
+    for (int i = pos_; i < (int)numKeys_; i++) {
       keylenx = n_ -> get_keylenx()[i];
       if (n_ -> keylenx_is_layer(keylenx)) {
         nodeTrace_.push(n_);

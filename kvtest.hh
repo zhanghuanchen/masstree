@@ -449,7 +449,7 @@ void kvtest_url_seed(C &client, int seed) // hyw
     //for (n = 0; !client.timeout(0) && n <= client.limit(); ++n) {
 	    //int32_t x = (int32_t) client.rand.next();
 	    //client.put(x, x + 1);
-    while (infile_init >> ops >> url && count < client.limit()) {
+    while (infile_init >> ops >> url && count < (int)client.limit()) {
       client.put(url, url);
 	  totalInsertedKeyLen += url.size();
 	  totalValueSize += (int)sizeof(n);
