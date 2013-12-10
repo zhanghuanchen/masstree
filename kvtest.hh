@@ -444,7 +444,7 @@ void kvtest_static_scan(C &client)
 
     std::ifstream infile_wload("hyw_url_wload.dat");
     unsigned g = 0;
-    bool found;
+    //bool found;
     client.notice("Start to do scan or get !\n");
     double tg0 = client.now();
     while (infile_wload >> ops && g < client.limit()) {
@@ -453,7 +453,7 @@ void kvtest_static_scan(C &client)
             infile_wload >> url >> range;
             std::vector<Str> values;
             int range_int = atoi(range.c_str());
-            found = client.static_scan(Str(url), range_int, values);
+             client.static_scan(Str(url), range_int, values);
             //if (!found)
             	//std::cout << "did NOT find " << url.c_str() << "\t" << range << "\n";
         } else {
@@ -475,7 +475,7 @@ void kvtest_static_scan(C &client)
         dynamic scan a t server side
 */
 template <typename C>
-void kvtest_scan_dynamic(C &client )
+void kvtest_dynamic_scan(C &client )
 {
     std::string ops;
     std::string url;
