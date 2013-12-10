@@ -459,6 +459,9 @@ void kvtest_static_scan(C &client)
             std::cout << "did NOT find " << url.c_str() << "\t" << range << "\n";
       
             g++;
+        } else {
+            infile_wload >> url;
+            
         }
     }
     double tg1 = client.now();
