@@ -286,12 +286,19 @@ void kvtest_static_get(C &client)
         pthread_mutex_unlock(&mutex);
     }
     
-    std::ifstream infile_init2("hyw_url_init.dat");
+    std::ifstream infile_init2("hyw_url_wload.dat");
     unsigned g = 0;
     bool found;
     client.notice("start getting !");
     double tp0 = client.now();
-    while (infile_init2 >> ops >> url && g < client.limit()) {
+    while (infile_init2 >> ops && g < client.limit()) {
+
+     if (ops == "SCAN") {
+        infile_wload >> url >> range;
+     } else {
+        infile_wload >> url;
+     }
+
       Str value;
       found = client.static_get(Str(url), value);
       if(!found)
@@ -320,7 +327,14 @@ void kvtest_static_client_get(C &client)
     unsigned g = 0;
     client.notice("start getting !\n");
     double tp0 = client.now();
-    while (infile_init2 >> ops >> url && g < client.limit()) {
+    while (infile_init2 >> ops && g < client.limit()) {
+
+     if (ops == "SCAN") {
+        infile_wload >> url >> range;
+     } else {
+        infile_wload >> url;
+     }
+
       int value;
       client.static_get(Str(url), &value);
       g++;
