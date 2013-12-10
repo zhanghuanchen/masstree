@@ -418,7 +418,7 @@ bool scursor<P>::scan()
       }
     }
     if (nodeTrace_.empty()) {
-      std::cout << "Error, nodeTrace empty!\n";
+      //std::cout << "Error, nodeTrace empty!\n";
       return false;
     }
     else {
