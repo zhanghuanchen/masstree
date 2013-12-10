@@ -534,6 +534,7 @@ MAKE_TESTRUNNER(url, kvtest_url(client)); // hyw
 MAKE_TESTRUNNER(originGet, kvtest_dynamic_get(client));
 MAKE_TESTRUNNER(myGet, kvtest_static_get(client));
 MAKE_TESTRUNNER(myScan, kvtest_static_scan(client));
+MAKE_TESTRUNNER(originScan, kvtest_scan_dynamic(client));
 
 MAKE_TESTRUNNER(rw1, kvtest_rw1(client));
 // MAKE_TESTRUNNER(palma, kvtest_palma(client));
