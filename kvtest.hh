@@ -194,8 +194,8 @@ void kvtest_dynamic_get(C &client)
         } else {
             infile_wload >> url;
         }
-
-	    client.get_check(Str(url), g);
+	Str value;
+	client.get_sync(Str(url), value);
         g++;
     }
     double tp1 = client.now();

@@ -533,7 +533,7 @@ static pthread_cond_t subtest_cond;
 MAKE_TESTRUNNER(url, kvtest_url(client)); // hyw
 MAKE_TESTRUNNER(originGet, kvtest_dynamic_get(client));
 MAKE_TESTRUNNER(myGet, kvtest_static_get(client));
-MAKE_TESTRUNNER(mixedOps, kvtest_static_scan(client));
+MAKE_TESTRUNNER(myScan, kvtest_static_scan(client));
 
 MAKE_TESTRUNNER(rw1, kvtest_rw1(client));
 // MAKE_TESTRUNNER(palma, kvtest_palma(client));
@@ -1013,7 +1013,7 @@ static void run_one_test_body(int trial, const char *treetype, const char *test)
 	    test_thread_map[i].func(main_ti); // initialize table
 	    runtest(tcpthreads, test_thread_map[i].func);
         // hyw
-        //tree_stats = true;
+        tree_stats = false;
             if (tree_stats)
                 test_thread_map[i].func(0); // print tree_stats
 	    break;
