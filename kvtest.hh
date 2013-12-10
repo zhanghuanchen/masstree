@@ -2,7 +2,7 @@
  * Eddie Kohler, Yandong Mao, Robert Morris
  * Copyright (c) 2012-2013 President and Fellows of Harvard College
  * Copyright (c) 2012-2013 Massachusetts Institute of Technology
- *
+ * i
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, subject to the conditions
